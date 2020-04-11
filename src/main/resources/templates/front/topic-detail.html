@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>话题详情</title>
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <link rel="stylesheet" type="text/css" th:href="@{/layui/css/layui.css}">
+    <script type="text/javascript" th:src="@{/myfile/js/jquery.min.js}"></script>
+    <link rel="stylesheet" type="text/css" th:href="@{/myfile/css/main.css}">
+</head>
+<body class="micronews">
+<div class="micronews-header-wrap">
+    <div class="micronews-header w1000 layui-clear">
+        <h1 class="logo">
+            <a href="/">
+                <img width="66px" height="22px" th:src="@{/layuiadmin/myfile/images/logo3.png}" alt="logo">
+                <span class="layui-hide">logo</span>
+            </a>
+        </h1>
+        <p class="nav">
+            <a href="/front/page/index">首页</a>
+            <a href="/question/list-page" class="active">小组</a>
+            <a href="/travel-essay/list-page">问答</a>
+            <a href="/question/list-page">发表攻略</a>
+        </p>
+        <div class="search-bar">
+            <form class="layui-form" action="">
+                <div class="layui-form-item">
+                    <div class="layui-input-block">
+                        <input type="text" name="title" placeholder="搜索你要的内容" autocomplete="off" class="layui-input">
+                        <button class="layui-btn search-btn" formnovalidate><i class="layui-icon layui-icon-search"></i>
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="login">
+            <!--<a th:if="${session.sessionUser == null}" href="/front/page/login">-->
+            <!--登录-->
+            <!--</a>-->
+            <!--<img th:src="@{/layuiadmin/myfile/images/header.png}" style="width: 36px; height: 36px;">-->
+            <ul class="layui-nav" style="background-color: #fff;">
+                <li class="layui-nav-item">
+                    <a href="" style="font-size: 16px;color: #222;">消息<span class="layui-badge">3</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</a>
+                </li>
+                <li class="layui-nav-item" lay-unselect="">
+                    <a href="javascript:;" style="font-size: 16px;color: #222;"><img th:src="@{/layuiadmin/myfile/images/test01.jpg}" style="height: 30px; width: 30px;" class="layui-nav-img">&nbsp;&nbsp;</a>
+                    <dl class="layui-nav-child">
+                        <dd style="text-align: center"><a href="javascript:;"><i class="layui-icon layui-icon-user"></i>&nbsp;个人资料</a></dd>
+                        <dd style="text-align: center"><a href="javascript:;"><i class="layui-icon layui-icon-note"></i>&nbsp;攻略/问答</a></dd>
+                        <dd style="text-align: center"><a href="javascript:;"><i class="layui-icon layui-icon-rate"></i>&nbsp;收藏</a></dd>
+                        <dd style="text-align: center"><a href="javascript:;"><i class="layui-icon layui-icon-logout"></i>&nbsp;登出</a></dd>
+                    </dl>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+<style type="text/css">
+    .wrap{
+        margin: 20px auto;
+        max-width: 1000px;
+    }
+    #topic-info{height:48px;line-height:48px;margin-bottom:20px}
+    #topic-info h1{
+        display: inline;
+        margin: 0;
+        padding: 0;
+        vertical-align: middle;
+        font-size: 26px;
+        font-weight: bold;
+        color: #494949;
+    }
+    #topic-info img{
+        margin-right: 5px;
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        overflow: hidden;
+        vertical-align: middle;
+    }
+    .author a{color: #6294B5;}
+    .author a:hover{text-decoration: underline;}
+    .time{color: #999;font-size: 13px;margin-left: 10px;}
+    .topic_author{margin:-5px 0px 10px 30px;position: relative;}
+    .topic-detail{
+        margin: 60px 20px 20px 20px;
+        padding: 5px 8px;
+        border: 1px solid #999;
+    }
+    .topic_talk{
+        margin: 10px;
+        overflow: hidden;
+    }
+    .topic_talk ul li{list-style: none;}
+    .topic-reply{
+        width: 100%;
+        word-wrap: break-word;
+        overflow: hidden;
+        padding: 20px 0 0;
+    }
+    .topic-reply li {
+        margin-bottom: 30px;
+        background: #fff;
+        position: relative;
+    }
+    .user h4{
+        margin-left: 5px;
+        margin-top: 5px;
+    }
+    .topic-reply .user img{
+        float: left;
+        width: 35px;
+        height: 35px;
+        border-radius: 50%;
+        overflow: hidden;
+        vertical-align: middle;
+    }
+    .topic-reply .reply-doc{
+        line-height: 40px;
+        margin-left: 40px;
+    }
+    .reply-content{
+        margin: 5px;
+    }
+    .operation_div{
+        float: right;
+        margin-right: 5px;
+        margin-top: -10px;
+    }
+    .operation_div span{
+        color: #c0c0c0;
+    }
+    .operation_div span:hover{cursor: pointer;}
+    .replys{margin: 10px 0px 0px 5px;overflow: hidden}
+    .replys .replys-content{
+        font-size: 14px;
+        padding: 5px;
+        background-color: #f5f5f5;
+        border-radius: 2px;
+    }
+
+    .eh-right{
+        position: absolute;
+        right: 20px;
+        bottom: 1px;
+        color: #6294b5;
+        font-size: 12px;
+        line-height: normal;
+    }
+    .eh-right i{
+        display: block;
+        color: #6294b5;
+        font-size: 30px;
+    }
+    .eh-right p{
+        margin-left: 3px;
+    }
+    .eh-right i:hover{
+        cursor: pointer;
+    }
+</style>
+<div class="layui-container wrap">
+    <div class="layui-col-md9">
+        <div id="topic-info">
+            <h1>旅行也要穿得很好看</h1>
+            <div class="topic_author">
+                <img th:src="@{/layuiadmin/myfile/images/test01.jpg}">
+                <span>来自：</span>
+                <span class="author"><a href="#">蝈蝈小姐</a> </span>
+                <span class="time">2020-03-27</span>
+                <div class="eh-right">
+                    <i class="layui-icon layui-icon-star"></i>
+                    <p>收藏</p>
+                </div>
+            </div>
+        </div>
+        <div class="topic-detail">
+            一．钱<br>
+            　　１．少量现金，多换些零钱，搭公车、逛寺庙时大派用场<br>
+            　　２．银行卡，工行或建行的最好，能透支更好<br>
+            二．证件<br>
+            　　３．身份证，护照，开车带车本，学生证，老年证，教师证，导游证，军官证，记者证有什么都带着<br>
+            　　４．机票，火车票<br>
+            三．通讯v<br>
+            　　５．手机和充电器<br>
+        </div>
+        <div class="topic_talk">
+            <blockquote class="layui-elem-quote" style="font-size: 16px;font-weight: bold;height: 18px">讨论</blockquote>
+            <ul class="topic-reply">
+                <li class="clearfix">
+                    <div class="user">
+                        <img th:src="@{/layuiadmin/myfile/images/test01.jpg}">
+                        <div style="margin-left: 40px;background-color: #d2d2d2">
+                            <h4 class="author">
+                                <a href="#">蝈蝈小姐</a>
+                                <span class="time">2007-11-25 15:16:57</span>
+                            </h4>
+                        </div>
+                    </div>
+                    <div class="reply-doc" style="padding-left:0px;">
+                        <div class="replys author">
+                            <div class="replys-content"><a href="#">wenfdfwefwet323</a>:&nbsp;&nbsp;hfiuawehifua符文啊法文歌发文复兴风格</br>fhawuie复合物i</div></div>
+                        <div class="reply-content">费瓦发违法为对方</div>
+                        <div class="operation_div"><span>回复</span></div>
+                    </div>
+                </li>
+                <li class="clearfix">
+                    <div class="user">
+                        <img th:src="@{/layuiadmin/myfile/images/test01.jpg}">
+                        <div style="margin-left: 40px;background-color: #d2d2d2">
+                            <h4 class="author">
+                                <a href="#">蝈蝈小姐</a>
+                                <span class="time">2007-11-25 15:16:57</span>
+                            </h4>
+                        </div>
+                    </div>
+                    <div class="reply-doc" style="padding-left:0px;">
+                        <div class="reply-content">费瓦发违法为对方</div>
+                        <div class="operation_div"><span>回复</span></div>
+                    </div>
+                </li>
+                <li class="clearfix">
+                    <div class="user">
+                        <img th:src="@{/layuiadmin/myfile/images/test01.jpg}">
+                        <div style="margin-left: 40px;background-color: #d2d2d2">
+                            <h4 class="author">
+                                <a href="#">蝈蝈小姐</a>
+                                <span class="time">2007-11-25 15:16:57</span>
+                            </h4>
+                        </div>
+                    </div>
+                    <div class="reply-doc" style="padding-left:0px;">
+                        <div class="replys author">
+                            <div class="replys-content"><a href="#">wenfdfwefwet323</a>:&nbsp;&nbsp;hfiuawehifua符文啊法文歌发文复兴风格</br>fhawuie复合物i</div></div>
+                        <div class="reply-content">费瓦发违法为对方</div>
+                        <div class="operation_div"><span>回复</span></div>
+                    </div>
+                </li>
+                <li class="clearfix">
+                    <div class="user">
+                        <img th:src="@{/layuiadmin/myfile/images/test01.jpg}">
+                        <div style="margin-left: 40px;background-color: #d2d2d2">
+                            <h4 class="author">
+                                <a href="#">蝈蝈小姐</a>
+                                <span class="time">2007-11-25 15:16:57</span>
+                            </h4>
+                        </div>
+                    </div>
+                    <div class="reply-doc" style="padding-left:0px;">
+                        <div class="reply-content">费瓦发违法为对方</div>
+                        <div class="operation_div"><span>回复</span></div>
+                    </div>
+                </li>
+                <li class="clearfix">
+                    <div class="user">
+                        <img th:src="@{/layuiadmin/myfile/images/test01.jpg}">
+                        <div style="margin-left: 40px;background-color: #d2d2d2">
+                            <h4 class="author">
+                                <a href="#">蝈蝈小姐</a>
+                                <span class="time">2007-11-25 15:16:57</span>
+                            </h4>
+                        </div>
+                    </div>
+                    <div class="reply-doc" style="padding-left:0px;">
+                        <div class="reply-content">费瓦发违法为对方</div>
+                        <div class="operation_div"><span>回复</span></div>
+                    </div>
+                </li>
+                <li class="clearfix">
+                    <div class="user">
+                        <img th:src="@{/layuiadmin/myfile/images/test01.jpg}">
+                        <div style="margin-left: 40px;background-color: #d2d2d2">
+                            <h4 class="author">
+                                <a href="#">蝈蝈小姐</a>
+                                <span class="time">2007-11-25 15:16:57</span>
+                            </h4>
+                        </div>
+                    </div>
+                    <div class="reply-doc" style="padding-left:0px;">
+                        <div class="reply-content">费瓦发违法为对方</div>
+                        <div class="operation_div"><span>回复</span></div>
+                    </div>
+                </li>
+            </ul>
+
+        </div>
+    </div>
+    <div class="layui-col-md3"></div>
+</div>
+<script type="text/javascript" th:src="@{/layui/layui.js}"></script>
+<script>
+    layui.use(['element','carousel'], function(){
+        var element = layui.element; //导航的hover效果、二级菜单等功能，需要依赖element模块
+        var carousel = layui.carousel; // 轮播框设置
+        /*旅游攻略页面*/
+        /*left nav*/
+        $('.nav-item').hover(function() {
+            $('.gonglve-nav').css('border-right-color', '#fff');
+            $('.nav-item .nav-panel').eq($(this).index()).css('display', 'block');
+        }, function() {
+            $('.gonglve-nav').css('border-right-color', '#ddd');
+            $('.nav-panel').css('display', 'none');
+        });
+        // 收藏按钮   实际开发时要先判断用户是否已经收藏
+        $(".eh-right i").hover(function () {
+            $(this).removeClass("layui-icon-star");
+            $(this).addClass("layui-icon-star-fill");
+        },function () {
+            $(this).removeClass("layui-icon-star-fill");
+            $(this).addClass("layui-icon-star");
+        });
+    });
+</script>
+</body>
+</html>

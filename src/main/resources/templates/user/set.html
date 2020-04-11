@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>首页</title>
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <link rel="stylesheet" type="text/css" th:href="@{/layui/css/layui.css}">
+    <script type="text/javascript" th:src="@{/myfile/js/jquery.min.js}"></script>
+    <link rel="stylesheet" type="text/css" th:href="@{/myfile/css/main.css}">
+    <script type="text/javascript" th:src="@{/myfile/js/jquery.min.js}"></script>
+    <link rel="stylesheet" type="text/css" th:href="@{/myfile/css/global.css}">
+</head>
+<body class="micronews">
+<div class="micronews-header-wrap">
+    <div class="micronews-header w1000 layui-clear">
+        <h1 class="logo">
+            <a href="/">
+                <img width="66px" height="22px" th:src="@{/layuiadmin/myfile/images/logo3.png}" alt="logo">
+                <span class="layui-hide">logo</span>
+            </a>
+        </h1>
+        <p class="nav">
+            <a href="/front/page/index">首页</a>
+            <a href="/question/list-page">小组</a>
+            <a href="/travel-essay/list-page">问答</a>
+            <a href="/question/list-page">发表攻略</a>
+        </p>
+        <div class="search-bar">
+            <form class="layui-form" action="">
+                <div class="layui-form-item">
+                    <div class="layui-input-block">
+                        <input type="text" name="title" placeholder="搜索你要的内容" autocomplete="off" class="layui-input">
+                        <button class="layui-btn search-btn" formnovalidate><i class="layui-icon layui-icon-search"></i>
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="login">
+            <!--<a th:if="${session.sessionUser == null}" href="/front/page/login">-->
+            <!--登录-->
+            <!--</a>-->
+            <!--<img th:src="@{/layuiadmin/myfile/images/header.png}" style="width: 36px; height: 36px;">-->
+            <ul class="layui-nav" style="background-color: #fff;">
+                <li class="layui-nav-item">
+                    <a href="" style="font-size: 16px;color: #222;">消息<span class="layui-badge">3</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</a>
+                </li>
+                <li class="layui-nav-item" lay-unselect="">
+                    <a href="javascript:;" style="font-size: 16px;color: #222;"><img th:src="@{/layuiadmin/myfile/images/test01.jpg}" style="height: 30px; width: 30px;" class="layui-nav-img">&nbsp;&nbsp;</a>
+                    <dl class="layui-nav-child">
+                        <dd style="text-align: center"><a href="javascript:;"><i class="layui-icon layui-icon-user"></i>&nbsp;个人资料</a></dd>
+                        <dd style="text-align: center"><a href="javascript:;"><i class="layui-icon layui-icon-note"></i>&nbsp;攻略/问答</a></dd>
+                        <dd style="text-align: center"><a href="javascript:;"><i class="layui-icon layui-icon-rate"></i>&nbsp;收藏</a></dd>
+                        <dd style="text-align: center"><a href="javascript:;"><i class="layui-icon layui-icon-logout"></i>&nbsp;登出</a></dd>
+                    </dl>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+<style type="text/css">
+    .wrap{
+        margin: 10px auto;
+        max-width: 1000px;
+    }
+    * {
+        font-family: 微软雅黑;
+        margin: 0px;
+        padding: 0px;
+        list-style: none;
+    }
+    body{
+        background-color: #F2F2F2;
+    }
+
+</style>
+<div class="layui-container fly-marginTop fly-user-main">
+    <ul class="layui-nav layui-nav-tree layui-inline" lay-filter="user">
+        <li class="layui-nav-item">
+            <a href="/user">
+                <i class="layui-icon">&#xe609;</i>
+                我的主页
+            </a>
+        </li>
+        <li class="layui-nav-item">
+            <a href="/userstrategy">
+                <i class="layui-icon layui-icon-note"></i>
+                攻略
+            </a>
+        </li>
+        <li class="layui-nav-item">
+            <a href="/usergroup">
+                <i class="layui-icon layui-icon-group"></i>
+                小组
+            </a>
+        </li>
+        <li class="layui-nav-item">
+            <a href="/userquestion">
+                <i class="layui-icon layui-icon-survey"></i>
+                问答
+            </a>
+        </li>
+        <li class="layui-nav-item layui-this">
+            <a href="/userset">
+                <i class="layui-icon">&#xe620;</i>
+                基本设置
+            </a>
+        </li>
+        <li class="layui-nav-item">
+            <a href="/usermsg">
+                <i class="layui-icon">&#xe611;</i>
+                我的消息
+            </a>
+        </li>
+    </ul>
+
+    <div class="site-tree-mobile layui-hide">
+        <i class="layui-icon">&#xe602;</i>
+    </div>
+    <div class="site-mobile-shade"></div>
+
+    <div class="site-tree-mobile layui-hide">
+        <i class="layui-icon">&#xe602;</i>
+    </div>
+    <div class="site-mobile-shade"></div>
+
+
+    <div class="fly-panel fly-panel-user" pad20>
+        <!--
+        <div class="fly-msg" style="margin-top: 15px;">
+          您的邮箱尚未验证，这比较影响您的帐号安全，<a href="activate.html">立即去激活？</a>
+        </div>
+        -->
+        <div class="layui-tab layui-tab-brief" lay-filter="user">
+            <ul class="layui-tab-title" id="LAY_mine">
+                <li class="layui-this" lay-id="info">我的资料</li>
+                <li lay-id="avatar">头像</li>
+                <li lay-id="pass">密码</li>
+            </ul>
+            <div class="layui-tab-content" style="padding: 20px 0;">
+                <div class="layui-form layui-form-pane layui-tab-item layui-show">
+                    <form method="post">
+                        <div class="layui-form-item">
+                            <label for="L_email" class="layui-form-label">邮箱</label>
+                            <div class="layui-input-inline">
+                                <input type="text" id="L_email" name="email" required lay-verify="email" autocomplete="off" value="1622367283@qq.com" class="layui-input" readonly>
+                            </div>
+                            <div class="layui-form-mid layui-word-aux">如果您要变更邮箱，需<a href="activate.html" style="font-size: 12px; color: #4f99cf;">重新绑定新邮箱</a>。</div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label for="L_username" class="layui-form-label">昵称</label>
+                            <div class="layui-input-inline">
+                                <input type="text" id="L_username" name="username" required lay-verify="required" autocomplete="off" value="" class="layui-input">
+                            </div>
+                            <div class="layui-inline">
+                                <div class="layui-input-inline">
+                                    <input type="radio" name="sex" value="0" checked title="男">
+                                    <input type="radio" name="sex" value="1" title="女">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label for="L_city" class="layui-form-label">城市</label>
+                            <div class="layui-input-inline">
+                                <input type="text" id="L_city" name="city" autocomplete="off" value="" class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-form-item layui-form-text">
+                            <label for="L_sign" class="layui-form-label">签名</label>
+                            <div class="layui-input-block">
+                                <textarea placeholder="随便写些什么刷下存在感" id="L_sign"  name="sign" autocomplete="off" class="layui-textarea" style="height: 80px;"></textarea>
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <button class="layui-btn" key="set-mine" lay-filter="*" lay-submit>确认修改</button>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="layui-form layui-form-pane layui-tab-item">
+                    <div class="layui-form-item">
+                        <div class="avatar-add">
+                            <p>建议尺寸168*168，支持jpg、png、gif，最大不能超过50KB</p>
+                            <button type="button" class="layui-btn upload-img">
+                                <i class="layui-icon">&#xe67c;</i>上传头像
+                            </button>
+                            <img src="https://tva1.sinaimg.cn/crop.0.0.118.118.180/5db11ff4gw1e77d3nqrv8j203b03cweg.jpg">
+                            <span class="loading"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="layui-form layui-form-pane layui-tab-item">
+                    <form action="/user/repass" method="post">
+                        <div class="layui-form-item">
+                            <label for="L_nowpass" class="layui-form-label">当前密码</label>
+                            <div class="layui-input-inline">
+                                <input type="password" id="L_nowpass" name="nowpass" required lay-verify="required" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label for="L_pass" class="layui-form-label">新密码</label>
+                            <div class="layui-input-inline">
+                                <input type="password" id="L_pass" name="pass" required lay-verify="required" autocomplete="off" class="layui-input">
+                            </div>
+                            <div class="layui-form-mid layui-word-aux">6到16个字符</div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label for="L_repass" class="layui-form-label">确认密码</label>
+                            <div class="layui-input-inline">
+                                <input type="password" id="L_repass" name="repass" required lay-verify="required" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <button class="layui-btn" key="set-mine" lay-filter="*" lay-submit>确认修改</button>
+                        </div>
+                    </form>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+</div>
+<script type="text/javascript" th:src="@{/layui/layui.js}"></script>
+<script>
+    layui.use(['element','laytpl'],function () {
+        var element = layui.element; //导航的hover效果、二级菜单等功能，需要依赖element模块
+        var taytpl = layui.laytpl;
+        element.on('tab(user)', function(data){
+            // console.log(this); //当前Tab标题所在的原始DOM元素
+            // console.log(data.index); //得到当前Tab的所在下标
+            // console.log(data.elem); //得到当前的Tab大容器
+            var id = '#' + $(this).attr('data-type');
+            setData(id);
+        });
+        function setData(id) {
+
+        }
+    });
+</script>
+</body>
+</html>

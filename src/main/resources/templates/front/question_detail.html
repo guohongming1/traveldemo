@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>问答详情</title>
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <link rel="stylesheet" type="text/css" th:href="@{/layui/css/layui.css}">
+    <script type="text/javascript" th:src="@{/myfile/js/jquery.min.js}"></script>
+    <link rel="stylesheet" type="text/css" th:href="@{/myfile/css/main.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/myfile/css/global.css}">
+</head>
+<body class="micronews">
+<div class="micronews-header-wrap">
+    <div class="micronews-header w1000 layui-clear">
+        <h1 class="logo">
+            <a href="/">
+                <img width="66px" height="22px" th:src="@{/layuiadmin/myfile/images/logo3.png}" alt="logo">
+                <span class="layui-hide">logo</span>
+            </a>
+        </h1>
+        <p class="nav">
+            <a href="/front/page/index">首页</a>
+            <a href="/question/list-page">小组</a>
+            <a href="/travel-essay/list-page">问答</a>
+            <a href="/question/list-page">发表攻略</a>
+        </p>
+        <div class="search-bar">
+            <form class="layui-form" action="">
+                <div class="layui-form-item">
+                    <div class="layui-input-block">
+                        <input type="text" name="title" placeholder="搜索你要的内容" autocomplete="off" class="layui-input">
+                        <button class="layui-btn search-btn" formnovalidate><i class="layui-icon layui-icon-search"></i>
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="login">
+            <!--<a th:if="${session.sessionUser == null}" href="/front/page/login">-->
+            <!--登录-->
+            <!--</a>-->
+            <!--<img th:src="@{/layuiadmin/myfile/images/header.png}" style="width: 36px; height: 36px;">-->
+            <ul class="layui-nav" style="background-color: #fff;">
+                <li class="layui-nav-item">
+                    <a href="" style="font-size: 16px;color: #222;">消息<span class="layui-badge">3</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</a>
+                </li>
+                <li class="layui-nav-item" lay-unselect="">
+                    <a href="javascript:;" style="font-size: 16px;color: #222;"><img th:src="@{/layuiadmin/myfile/images/test01.jpg}" style="height: 30px; width: 30px;" class="layui-nav-img">&nbsp;&nbsp;</a>
+                    <dl class="layui-nav-child">
+                        <dd style="text-align: center"><a href="javascript:;"><i class="layui-icon layui-icon-user"></i>&nbsp;个人资料</a></dd>
+                        <dd style="text-align: center"><a href="javascript:;"><i class="layui-icon layui-icon-note"></i>&nbsp;攻略/问答</a></dd>
+                        <dd style="text-align: center"><a href="javascript:;"><i class="layui-icon layui-icon-rate"></i>&nbsp;收藏</a></dd>
+                        <dd style="text-align: center"><a href="javascript:;"><i class="layui-icon layui-icon-logout"></i>&nbsp;登出</a></dd>
+                    </dl>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+<style type="text/css">
+    * {
+        font-family: 微软雅黑;
+        margin: 0px;
+        padding: 0px;
+        list-style: none;
+    }
+    body{
+        background-color: #F2F2F2;
+    }
+    .wrap{
+        margin: 10px auto;
+    }
+    .detail{
+        margin: 20px;
+    }
+    .fly-list-one dd span{
+        float: right;
+        font-size: 12px; color: #ccc;}
+    .detail-body{margin: 20px 0 0; min-height: 155px; line-height: 26px; font-size: 16px; color: #333; word-wrap: break-word;}
+    .fly-detail-info .fly-list-nums{
+        float: right;font-size: 16px;}
+    /* 面板 */
+    .fly-panel{margin-bottom: 15px; border-radius: 2px; background-color: #fff; box-shadow: 0 1px 2px 0 rgba(0,0,0,.05);}
+    .fly-panel[pad20]{padding: 20px;}
+    .fly-panel-title{position: relative; height: 50px; line-height: 50px; padding: 0 15px; border-bottom: 1px dotted #E9E9E9;font-weight: bold; color: #333; border-radius: 2px 2px 0 0; font-size: 16px;}
+    .fly-panel-main{padding: 10px 15px;}
+
+    /* Detail页 */
+    .detail-box{padding: 20px;}
+    .detail h1{font-size: 24px; line-height: 36px;}
+    .fly-detail-info{position: relative; margin: 10px 0 15px;}
+    .fly-detail-info .layui-btn{height: 20px; line-height: 20px; vertical-align: top; border-radius: 0;}
+    .fly-detail-info .layui-btn+.layui-btn{margin-left: 0;}
+    .fly-admin-box{position: relative; display: inline-block; vertical-align: top; margin-left: 20px;}
+    .fly-detail-info .fly-list-nums i{padding: 0 3px 0 15px; font-size: 16px; color: #999;}
+
+    .detail-about{position: relative; line-height: 20px; padding: 15px 15px 15px 75px; font-size: 13px; background-color: #f8f8f8; color: #999;}
+    .detail-about .jie-status, .detail-about .jie-status-ok{color:#fff;}
+    .detail-about .fly-jing{padding:0 6px; background-color:#c00; color:#fff;}
+    .detail-about .detail-hits{position: relative; top: 5px; line-height: 20px;}
+    .fly-detail-user{white-space: nowrap; overflow: hidden;}
+    .fly-detail-user a{padding-right: 10px; font-size: 14px;}
+    .fly-detail-user .icon-renzheng{top: 1px;}
+
+    /* 头像 */
+    .fly-avatar{position: absolute; left: 15px; top: 15px;}
+    .fly-avatar img{display: block; width: 45px; height: 45px; margin: 0; border-radius: 2px;}
+
+    .fly-link{color: #01AAED;}
+    .fly-link:hover{color: #5FB878;}
+    .fly-grey{color: #999;}
+
+
+    .detail-body p{margin-bottom:15px;}
+    .detail-body a{color:#4f99cf;}
+    .detail-body img{max-width: 100%; cursor: crosshair;}
+    .detail-body table{margin: 10px 0 15px;}
+    .detail-body table thead{background-color:#f2f2f2;}
+    .detail-body table th,
+    .detail-body table td{padding: 10px 20px; line-height: 22px; border: 1px solid #DFDFDF; font-size: 14px; font-weight: 400;}
+    .detail .page-title{ border: none; background-color: #f2f2f2;}
+
+
+
+    .detail-about-reply{padding: 0 0 0 55px; background: none;}
+    .detail-about-reply .detail-hits{left: 0; bottom: 0;}
+    .detail-about-reply .fly-avatar{left: 0; top: 0;}
+
+    .jieda-body{margin: 25px 0 20px; min-height: 0; line-height: 24px; font-size:14px;}
+    .jieda-body p{margin-bottom: 10px;}
+    .jieda-body a{color:#4f99cf}
+    .jieda-reply{position:relative;}
+    .jieda-reply span{padding-right:20px; color:#999; cursor:pointer;}
+    .jieda-reply span:hover{color:#666;}
+    .jieda-reply span i{margin-right:5px; font-size:16px;}
+    .jieda-reply span em{font-style: normal;}
+    .jieda-reply span .icon-zan{font-size: 22px;}
+    .jieda-reply .zanok,
+    .jieda-reply .jieda-zan:hover{color:#c00}
+    .jieda-reply span .icon-svgmoban53{position: relative; top: 1px;}
+
+
+</style>
+<div class="layui-container wrap">
+    <div class="layui-row layui-col-space15">
+        <div class="layui-col-md8 content detail">
+            <div class="fly-panel detail-box">
+                <h1>Fly Template v3.0，基于 layui 的极简社区页面模版</h1>
+                <div class="fly-detail-info">
+                    <span class="layui-badge layui-bg-red">置顶</span>
+                    <span class="layui-badge" style="background-color: #999;">未结</span>
+                    <span class="layui-badge" style="background-color: #999;">未结</span>
+                    <span class="layui-badge" style="background-color: #999;">未结</span>
+                    <span class="fly-list-nums">
+                         <a href="#comment"><i class="layui-icon layui-icon-dialogue"></i>66</a>
+                         <i class="layui-icon layui-icon-fire"></i> 999
+                    </span>
+                </div>
+                <div class="detail-about">
+                    <a class="fly-avatar" href="#">
+                        <img src="https://tva1.sinaimg.cn/crop.0.0.118.118.180/5db11ff4gw1e77d3nqrv8j203b03cweg.jpg" alt="贤心">
+                    </a>
+                    <div class="fly-detail-user">
+                        <a href="../user/home.html" class="fly-link">
+                            <cite>贤心</cite>
+                        </a>
+                        <span>2017-11-30</span>
+                    </div>
+                    <div class="detail-hits" id="LAY_jieAdmin" data-id="123">
+                        <span style="padding-right: 10px; color: #FF7200">悬赏：60飞吻</span>
+                    </div>
+                </div>
+                <div class="detail-body photos">
+                    <p>
+                    该模版由 layui官方社区（<a href="http://fly.layui.com/" target="_blank">fly.layui.com</a>）倾情提供，只为表明我们对 layui 执着的信念、以及对未来持续加强的承诺。该模版基于 layui 搭建而成，可作为极简通用型社区的页面支撑。
+                </p>
+                </div>
+            </div>
+            <div class="fly-panel detail-box" id="flyReply">
+                <fieldset class="layui-elem-field layui-field-title" style="text-align: center;">
+                    <legend>回答</legend>
+                </fieldset>
+                <ul class="jieda" id="jieda">
+                    <li data-id="111" class="jieda-daan">
+                        <a name="item-1111111111"></a>
+                        <div class="detail-about detail-about-reply">
+                            <a class="fly-avatar" href="">
+                                <img src="https://tva1.sinaimg.cn/crop.0.0.118.118.180/5db11ff4gw1e77d3nqrv8j203b03cweg.jpg" alt=" ">
+                            </a>
+                            <div class="fly-detail-user">
+                                <a href="" class="fly-link">
+                                    <cite>贤心</cite>
+                                </a>
+
+                                <span>(楼主)</span>
+                            </div>
+
+                            <div class="detail-hits">
+                                <span>2017-11-30</span>
+                            </div>
+
+                            <i class="layui-icon layui-icon-auz iconfont icon-caina" title="最佳答案"></i>
+                        </div>
+                        <div class="detail-body jieda-body photos">
+                            <p>香菇那个蓝瘦，这是一条被采纳的回帖</p>
+                        </div>
+                        <div class="jieda-reply">
+                        <span class="jieda-zan zanok" type="zan">
+                        <i class="layui-icon layui-icon-praise"></i>
+                        <em>66</em>
+                        </span>
+                            <span class="jieda-zan" type="zan">
+                            <i class="layui-icon layui-icon-tread"></i>
+                            <em>6</em>
+                          </span>
+                            <span type="reply">
+                <i class="layui-icon layui-icon-reply-fill"></i>
+                回复
+              </span>
+                            <div class="jieda-admin">
+                                <span type="del">删除</span>
+                                <span class="jieda-accept" type="accept">采纳</span>
+                            </div>
+                        </div>
+                    </li>
+                    <li data-id="111" class="jieda-daan">
+                        <a name="item-1111111111"></a>
+                        <div class="detail-about detail-about-reply">
+                            <a class="fly-avatar" href="">
+                                <img src="https://tva1.sinaimg.cn/crop.0.0.118.118.180/5db11ff4gw1e77d3nqrv8j203b03cweg.jpg" alt=" ">
+                            </a>
+                            <div class="fly-detail-user">
+                                <a href="" class="fly-link">
+                                    <cite>贤心</cite>
+                                </a>
+
+                                <span>(楼主)</span>
+                            </div>
+
+                            <div class="detail-hits">
+                                <span>2017-11-30</span>
+                            </div>
+                        </div>
+                        <div class="detail-body jieda-body photos">
+                            <p>香菇那个蓝瘦，这是一条被采纳的回帖</p>
+                        </div>
+                        <div class="jieda-reply">
+              <span class="jieda-zan zanok" type="zan">
+                <i class=" layui-icon layui-icon-praise"></i>
+                <em>66</em>
+              </span>
+                            <span class="jieda-zan" type="zan">
+                            <i class="layui-icon layui-icon-tread"></i>
+                            <em>6</em>
+                          </span>
+                            <span type="reply">
+                <i class="layui-icon layui-icon-reply-fill"></i>
+                回复
+              </span>
+                            <div class="jieda-admin">
+                                <span type="del">删除</span>
+                                <span class="jieda-accept" type="accept">采纳</span>
+                            </div>
+                        </div>
+                    </li>
+                    <li data-id="111" class="jieda-daan">
+                        <a name="item-1111111111"></a>
+                        <div class="detail-about detail-about-reply">
+                            <a class="fly-avatar" href="">
+                                <img src="https://tva1.sinaimg.cn/crop.0.0.118.118.180/5db11ff4gw1e77d3nqrv8j203b03cweg.jpg" alt=" ">
+                            </a>
+                            <div class="fly-detail-user">
+                                <a href="" class="fly-link">
+                                    <cite>贤心</cite>
+                                </a>
+
+                                <span>(楼主)</span>
+                            </div>
+
+                            <div class="detail-hits">
+                                <span>2017-11-30</span>
+                            </div>
+                        </div>
+                        <div class="detail-body jieda-body photos">
+                            <p>香菇那个蓝瘦，这是一条被采纳的回帖</p>
+                        </div>
+                        <div class="jieda-reply">
+              <span class="jieda-zan" type="zan">
+                <i class="layui-icon layui-icon-praise"></i>
+                <em>66</em>
+              </span>
+                            <span class="jieda-zan" type="zan">
+                            <i class="layui-icon layui-icon-tread"></i>
+                            <em>6</em>
+                          </span>
+                            <span type="reply">
+                <i class="layui-icon layui-icon-reply-fill"></i>
+                回复
+              </span>
+                            <div class="jieda-admin">
+                                <span type="del">删除</span>
+                                <span class="jieda-accept" type="accept">采纳</span>
+                            </div>
+                        </div>
+                    </li>
+                    <!-- 无数据时 -->
+                    <!-- <li class="fly-none">消灭零回复</li> -->
+                </ul>
+                <div class="layui-form layui-form-pane">
+                    <form action="/jie/reply/" method="post">
+                        <div class="layui-form-item layui-form-text">
+                            <a name="comment"></a>
+                            <div class="layui-input-block">
+                                <textarea id="L_content" name="content" required lay-verify="required" placeholder="请输入内容"  class="layui-textarea fly-editor" style="height: 150px;"></textarea>
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <input type="hidden" name="jid" value="123">
+                            <button class="layui-btn" lay-filter="*" lay-submit>提交回复</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="layui-col-md4" style="max-width: 360px;margin-left:-20px;margin-top: 20px">
+            <dl class="fly-panel fly-list-one">
+                <dt class="fly-panel-title">你可能还想问</dt>
+                <dd>
+                    <a href="">基于 layui 的极简社区页面模版基于 layui 的极简社区页面模版</a>
+                    <span><i class=" layui-icon layui-icon-dialogue"></i> 16</span>
+                </dd>
+                <dd>
+                    <a href="">基于 layui 的极简社区页面模版</a>
+                    <span><i class=" layui-icon layui-icon-dialogue"></i> 16</span>
+                </dd>
+                <dd>
+                    <a href="">基于 layui 的极简社区页面模版</a>
+                    <span><i class=" layui-icon layui-icon-dialogue"></i> 16</span>
+                </dd>
+                <dd>
+                    <a href="">基于 layui 的极简社区页面模版</a>
+                    <span><i class=" layui-icon layui-icon-dialogue"></i> 16</span>
+                </dd>
+                <dd>
+                    <a href="">基于 layui 的极简社区页面模版</a>
+                    <span><i class=" layui-icon layui-icon-dialogue"></i> 16</span>
+                </dd>
+                <dd>
+                    <a href="">基于 layui 的极简社区页面模版</a>
+                    <span><i class=" layui-icon layui-icon-dialogue"></i> 16</span>
+                </dd>
+
+            </dl>
+        </div>
+    </div>
+</div>
+<script type="text/javascript" th:src="@{/layui/layui.js}"></script>
+<script>
+    layui.cache.page = 'jie';
+    layui.cache.user = {
+        username: '游客'
+        ,uid: -1
+        ,avatar: '../../res/images/avatar/00.jpg'
+        ,experience: 83
+        ,sex: '男'
+    };
+    layui.config({
+        version: "3.0.0"
+        ,base: '/mods/'
+    }).extend({
+        fly: 'index'
+    }).use(['fly', 'face','element'], function(){
+        var $ = layui.$
+            ,fly = layui.fly;
+        //如果你是采用模版自带的编辑器，你需要开启以下语句来解析。
+        /*
+        $('.detail-body').each(function(){
+          var othis = $(this), html = othis.html();
+          othis.html(fly.content(html));
+        });
+        */
+    });
+    // layui.use(['element','carousel','layer','form','layedit'], function(){
+    //     var element = layui.element; //导航的hover效果、二级菜单等功能，需要依赖element模块
+    //     var carousel = layui.carousel; // 轮播框设置
+    //     /*旅游攻略页面*/
+    //     /*left nav*/
+    //     $('.nav-item').hover(function() {
+    //         $('.gonglve-nav').css('border-right-color', '#fff');
+    //         $('.nav-item .nav-panel').eq($(this).index()).css('display', 'block');
+    //     }, function() {
+    //         $('.gonglve-nav').css('border-right-color', '#ddd');
+    //         $('.nav-panel').css('display', 'none');
+    //     });
+    //     var layedit = layui.layedit;
+    //     layedit.build('L_content'); //建立编辑器
+    // });
+</script>
+</body>
+</html>

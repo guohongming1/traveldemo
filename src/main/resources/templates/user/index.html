@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>首页</title>
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <link rel="stylesheet" type="text/css" th:href="@{/layui/css/layui.css}">
+    <script type="text/javascript" th:src="@{/myfile/js/jquery.min.js}"></script>
+    <link rel="stylesheet" type="text/css" th:href="@{/myfile/css/main.css}">
+    <script type="text/javascript" th:src="@{/myfile/js/jquery.min.js}"></script>
+    <link rel="stylesheet" type="text/css" th:href="@{/myfile/css/global.css}">
+</head>
+<body class="micronews">
+<div class="micronews-header-wrap">
+    <div class="micronews-header w1000 layui-clear">
+        <h1 class="logo">
+            <a href="/">
+                <img width="66px" height="22px" th:src="@{/layuiadmin/myfile/images/logo3.png}" alt="logo">
+                <span class="layui-hide">logo</span>
+            </a>
+        </h1>
+        <p class="nav">
+            <a href="/front/page/index">首页</a>
+            <a href="/question/list-page">小组</a>
+            <a href="/travel-essay/list-page">问答</a>
+            <a href="/question/list-page">发表攻略</a>
+        </p>
+        <div class="search-bar">
+            <form class="layui-form" action="">
+                <div class="layui-form-item">
+                    <div class="layui-input-block">
+                        <input type="text" name="title" placeholder="搜索你要的内容" autocomplete="off" class="layui-input">
+                        <button class="layui-btn search-btn" formnovalidate><i class="layui-icon layui-icon-search"></i>
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="login">
+            <!--<a th:if="${session.sessionUser == null}" href="/front/page/login">-->
+            <!--登录-->
+            <!--</a>-->
+            <!--<img th:src="@{/layuiadmin/myfile/images/header.png}" style="width: 36px; height: 36px;">-->
+            <ul class="layui-nav" style="background-color: #fff;">
+                <li class="layui-nav-item">
+                    <a href="" style="font-size: 16px;color: #222;">消息<span class="layui-badge">3</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</a>
+                </li>
+                <li class="layui-nav-item" lay-unselect="">
+                    <a href="javascript:;" style="font-size: 16px;color: #222;"><img th:src="@{/layuiadmin/myfile/images/test01.jpg}" style="height: 30px; width: 30px;" class="layui-nav-img">&nbsp;&nbsp;</a>
+                    <dl class="layui-nav-child">
+                        <dd style="text-align: center"><a href="javascript:;"><i class="layui-icon layui-icon-user"></i>&nbsp;个人资料</a></dd>
+                        <dd style="text-align: center"><a href="javascript:;"><i class="layui-icon layui-icon-note"></i>&nbsp;攻略/问答</a></dd>
+                        <dd style="text-align: center"><a href="javascript:;"><i class="layui-icon layui-icon-rate"></i>&nbsp;收藏</a></dd>
+                        <dd style="text-align: center"><a href="javascript:;"><i class="layui-icon layui-icon-logout"></i>&nbsp;登出</a></dd>
+                    </dl>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+<style type="text/css">
+    .wrap{
+        margin: 10px auto;
+        max-width: 1000px;
+    }
+    * {
+        font-family: 微软雅黑;
+        margin: 0px;
+        padding: 0px;
+        list-style: none;
+    }
+    body{
+        background-color: #F2F2F2;
+    }
+
+</style>
+<div class="fly-home fly-panel" style="background-image: url(/myfile/temp/ex01.jpg);">
+    <img src="https://tva1.sinaimg.cn/crop.0.0.118.118.180/5db11ff4gw1e77d3nqrv8j203b03cweg.jpg" alt="贤心">
+    <i class="iconfont icon-renzheng" title="Fly社区认证"></i>
+    <h1>
+        贤心
+        <i class="iconfont icon-nan"></i>
+        <!-- <i class="iconfont icon-nv"></i>  -->
+        <i class="layui-badge fly-badge-vip">VIP3</i>
+        <!--
+        <span style="color:#c00;">（管理员）</span>
+        <span style="color:#5FB878;">（社区之光）</span>
+        <span>（该号已被封）</span>
+        -->
+    </h1>
+
+    <p style="padding: 10px 0; color: #5FB878;">认证信息：layui 作者</p>
+
+    <p class="fly-home-info">
+        <!--<i class="iconfont icon-kiss" title="飞吻"></i><span style="color: #FF7200;">66666 飞吻</span>-->
+        <i class="iconfont icon-shijian"></i><span>2015-6-17 加入</span>
+        <i class="iconfont icon-chengshi"></i><span>来自杭州</span>
+    </p>
+
+    <p class="fly-home-sign">（人生仿若一场修行）</p>
+
+    <div class="fly-sns" data-user="">
+        <a href="javascript:;" class="layui-btn layui-btn-normal fly-imActive" data-type="chat">发起会话</a>
+    </div>
+
+</div>
+
+<div class="layui-container">
+    <div class="layui-row layui-col-space15">
+        <div class="layui-col-md6 fly-home-jie">
+            <div class="fly-panel">
+                <h3 class="fly-panel-title">他（她）的攻略</h3>
+                <ul class="jie-row">
+                    <li>
+                        <span class="fly-jing">精</span>
+                        <a href="" class="jie-title"> 基于 layui 的极简社区页面模版</a>
+                        <i>刚刚</i>
+                        <em class="layui-hide-xs">1136阅/27答</em>
+                    </li>
+                    <li>
+                        <a href="" class="jie-title"> 基于 layui 的极简社区页面模版</a>
+                        <i>1天前</i>
+                        <em class="layui-hide-xs">1136阅/27答</em>
+                    </li>
+                    <li>
+                        <a href="" class="jie-title"> 基于 layui 的极简社区页面模版</a>
+                        <i>2017-10-30</i>
+                        <em class="layui-hide-xs">1136阅/27答</em>
+                    </li>
+                    <li>
+                        <a href="" class="jie-title"> 基于 layui 的极简社区页面模版</a>
+                        <i>1天前</i>
+                        <em class="layui-hide-xs">1136阅/27答</em>
+                    </li>
+                    <li>
+                        <a href="" class="jie-title"> 基于 layui 的极简社区页面模版</a>
+                        <i>1天前</i>
+                        <em class="layui-hide-xs">1136阅/27答</em>
+                    </li>
+                    <li>
+                        <a href="" class="jie-title"> 基于 layui 的极简社区页面模版</a>
+                        <i>1天前</i>
+                        <em class="layui-hide-xs">1136阅/27答</em>
+                    </li>
+                    <li>
+                        <a href="" class="jie-title"> 基于 layui 的极简社区页面模版</a>
+                        <i>1天前</i>
+                        <em class="layui-hide-xs">1136阅/27答</em>
+                    </li>
+                    <!-- <div class="fly-none" style="min-height: 50px; padding:30px 0; height:auto;"><i style="font-size:14px;">没有发表任何求解</i></div> -->
+                </ul>
+            </div>
+        </div>
+
+        <div class="layui-col-md6 fly-home-jie">
+            <div class="fly-panel">
+                <h3 class="fly-panel-title">他（她）的问答</h3>
+                <ul class="jie-row">
+                    <li>
+                        <span class="fly-jing">精</span>
+                        <a href="" class="jie-title"> 基于 layui 的极简社区页面模版</a>
+                        <i>刚刚</i>
+                        <em class="layui-hide-xs">1136阅/27答</em>
+                    </li>
+                    <li>
+                        <a href="" class="jie-title"> 基于 layui 的极简社区页面模版</a>
+                        <i>1天前</i>
+                        <em class="layui-hide-xs">1136阅/27答</em>
+                    </li>
+                    <li>
+                        <a href="" class="jie-title"> 基于 layui 的极简社区页面模版</a>
+                        <i>2017-10-30</i>
+                        <em class="layui-hide-xs">1136阅/27答</em>
+                    </li>
+                    <li>
+                        <a href="" class="jie-title"> 基于 layui 的极简社区页面模版</a>
+                        <i>1天前</i>
+                        <em class="layui-hide-xs">1136阅/27答</em>
+                    </li>
+                    <li>
+                        <a href="" class="jie-title"> 基于 layui 的极简社区页面模版</a>
+                        <i>1天前</i>
+                        <em class="layui-hide-xs">1136阅/27答</em>
+                    </li>
+                    <li>
+                        <a href="" class="jie-title"> 基于 layui 的极简社区页面模版</a>
+                        <i>1天前</i>
+                        <em class="layui-hide-xs">1136阅/27答</em>
+                    </li>
+                    <li>
+                        <a href="" class="jie-title"> 基于 layui 的极简社区页面模版</a>
+                        <i>1天前</i>
+                        <em class="layui-hide-xs">1136阅/27答</em>
+                    </li>
+                    <!-- <div class="fly-none" style="min-height: 50px; padding:30px 0; height:auto;"><i style="font-size:14px;">没有发表任何求解</i></div> -->
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript" th:src="@{/layui/layui.js}"></script>
+<script>
+    layui.use(['element','laytpl'],function () {
+        var element = layui.element; //导航的hover效果、二级菜单等功能，需要依赖element模块
+        var taytpl = layui.laytpl;
+        element.on('tab(user)', function(data){
+            // console.log(this); //当前Tab标题所在的原始DOM元素
+            // console.log(data.index); //得到当前Tab的所在下标
+            // console.log(data.elem); //得到当前的Tab大容器
+            var id = '#' + $(this).attr('data-type');
+            setData(id);
+        });
+        function setData(id) {
+
+        }
+    });
+</script>
+</body>
+</html>

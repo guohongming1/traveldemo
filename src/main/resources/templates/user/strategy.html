@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>个人中心</title>
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <link rel="stylesheet" type="text/css" th:href="@{/layui/css/layui.css}">
+    <script type="text/javascript" th:src="@{/myfile/js/jquery.min.js}"></script>
+    <link rel="stylesheet" type="text/css" th:href="@{/myfile/css/main.css}">
+    <script type="text/javascript" th:src="@{/myfile/js/jquery.min.js}"></script>
+    <link rel="stylesheet" type="text/css" th:href="@{/myfile/css/global.css}">
+</head>
+<body class="micronews">
+<div class="micronews-header-wrap">
+    <div class="micronews-header w1000 layui-clear">
+        <h1 class="logo">
+            <a href="/">
+                <img width="66px" height="22px" th:src="@{/layuiadmin/myfile/images/logo3.png}" alt="logo">
+                <span class="layui-hide">logo</span>
+            </a>
+        </h1>
+        <p class="nav">
+            <a href="/front/page/index">首页</a>
+            <a href="/question/list-page">小组</a>
+            <a href="/travel-essay/list-page">问答</a>
+            <a href="/question/list-page">发表攻略</a>
+        </p>
+        <div class="search-bar">
+            <form class="layui-form" action="">
+                <div class="layui-form-item">
+                    <div class="layui-input-block">
+                        <input type="text" name="title" placeholder="搜索你要的内容" autocomplete="off" class="layui-input">
+                        <button class="layui-btn search-btn" formnovalidate><i class="layui-icon layui-icon-search"></i>
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="login">
+            <!--<a th:if="${session.sessionUser == null}" href="/front/page/login">-->
+            <!--登录-->
+            <!--</a>-->
+            <!--<img th:src="@{/layuiadmin/myfile/images/header.png}" style="width: 36px; height: 36px;">-->
+            <ul class="layui-nav" style="background-color: #fff;">
+                <li class="layui-nav-item">
+                    <a href="" style="font-size: 16px;color: #222;">消息<span class="layui-badge">3</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</a>
+                </li>
+                <li class="layui-nav-item" lay-unselect="">
+                    <a href="javascript:;" style="font-size: 16px;color: #222;"><img th:src="@{/layuiadmin/myfile/images/test01.jpg}" style="height: 30px; width: 30px;" class="layui-nav-img">&nbsp;&nbsp;</a>
+                    <dl class="layui-nav-child">
+                        <dd style="text-align: center"><a href="javascript:;"><i class="layui-icon layui-icon-user"></i>&nbsp;个人资料</a></dd>
+                        <dd style="text-align: center"><a href="javascript:;"><i class="layui-icon layui-icon-note"></i>&nbsp;攻略/问答</a></dd>
+                        <dd style="text-align: center"><a href="javascript:;"><i class="layui-icon layui-icon-rate"></i>&nbsp;收藏</a></dd>
+                        <dd style="text-align: center"><a href="javascript:;"><i class="layui-icon layui-icon-logout"></i>&nbsp;登出</a></dd>
+                    </dl>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+<style type="text/css">
+    .wrap{
+        margin: 10px auto;
+        max-width: 1000px;
+    }
+    * {
+        font-family: 微软雅黑;
+        margin: 0px;
+        padding: 0px;
+        list-style: none;
+    }
+    body{
+        background-color: #F2F2F2;
+    }
+
+</style>
+    <div class="layui-container fly-marginTop fly-user-main">
+        <ul class="layui-nav layui-nav-tree layui-inline" lay-filter="user">
+            <li class="layui-nav-item">
+                <a href="/user">
+                    <i class="layui-icon">&#xe609;</i>
+                    我的主页
+                </a>
+            </li>
+            <li class="layui-nav-item layui-this">
+                <a href="/userstrategy">
+                    <i class="layui-icon layui-icon-note"></i>
+                    攻略
+                </a>
+            </li>
+            <li class="layui-nav-item">
+                <a href="/usergroup">
+                    <i class="layui-icon layui-icon-group"></i>
+                    小组
+                </a>
+            </li>
+            <li class="layui-nav-item">
+                <a href="/userquestion">
+                    <i class="layui-icon layui-icon-survey"></i>
+                    问答
+                </a>
+            </li>
+            <li class="layui-nav-item">
+                <a href="/userset">
+                    <i class="layui-icon">&#xe620;</i>
+                    基本设置
+                </a>
+            </li>
+            <li class="layui-nav-item">
+                <a href="/usermsg">
+                    <i class="layui-icon">&#xe611;</i>
+                    我的消息
+                </a>
+            </li>
+        </ul>
+
+        <div class="site-tree-mobile layui-hide">
+            <i class="layui-icon">&#xe602;</i>
+        </div>
+        <div class="site-mobile-shade"></div>
+
+        <div class="site-tree-mobile layui-hide">
+            <i class="layui-icon">&#xe602;</i>
+        </div>
+        <div class="site-mobile-shade"></div>
+
+
+        <div class="fly-panel fly-panel-user" pad20>
+            <!--
+            <div class="fly-msg" style="margin-top: 15px;">
+              您的邮箱尚未验证，这比较影响您的帐号安全，<a href="activate.html">立即去激活？</a>
+            </div>
+            -->
+            <div class="layui-tab layui-tab-brief" lay-filter="user">
+                <ul class="layui-tab-title" id="LAY_mine">
+                    <li data-type="mine-jie" lay-id="index" class="layui-this">我的攻略（<span>89</span>）</li>
+                    <li data-type="collection" lay-id="collection">收藏（<span>16</span>）</li>
+                </ul>
+                <div class="layui-tab-content" style="padding: 20px 0;">
+                    <div class="layui-tab-item layui-show" id="mine-jie">
+                        <ul class="mine-view jie-row">
+                            <li>
+                                <a class="jie-title" href="../jie/detail.html" target="_blank">基于 layui 的极简社区页面模版</a>
+                                <i>2017/3/14 上午8:30:00</i>
+                                <a class="mine-look" href="/jie/edit/8116">查看</a>
+                                <a class="mine-edit" href="/jie/edit/8116">编辑</a>
+                                <em>661阅/10问</em>
+                            </li>
+                            <li>
+                                <a class="jie-title" href="../jie/detail.html" target="_blank">基于 layui 的极简社区页面模版</a>
+                                <i>2017/3/14 上午8:30:00</i>
+                                <a class="mine-look" href="/jie/edit/8116">查看</a>
+                                <a class="mine-edit" href="/jie/edit/8116">编辑</a>
+                                <em>661阅/10问</em>
+                            </li>
+                            <li>
+                                <a class="jie-title" href="../jie/detail.html" target="_blank">基于 layui 的极简社区页面模版</a>
+                                <i>2017/3/14 上午8:30:00</i>
+                                <a class="mine-look" href="/jie/edit/8116">查看</a>
+                                <a class="mine-edit" href="/jie/edit/8116">编辑</a>
+                                <em>661阅/10问</em>
+                            </li>
+                            <li>
+                                <a class="jie-title" href="../jie/detail.html" target="_blank">基于 layui 的极简社区页面模版</a>
+                                <i>2017/3/14 上午8:30:00</i>
+                                <a class="mine-look" href="/jie/edit/8116">查看</a>
+                                <a class="mine-edit" href="/jie/edit/8116">编辑</a>
+                                <em>661阅/10问</em>
+                            </li>
+                            <li>
+                                <a class="jie-title" href="../jie/detail.html" target="_blank">基于 layui 的极简社区页面模版</a>
+                                <i>2017/3/14 上午8:30:00</i>
+                                <a class="mine-look" href="/jie/edit/8116">查看</a>
+                                <a class="mine-edit" href="/jie/edit/8116">编辑</a>
+                                <em>661阅/10问</em>
+                            </li>
+                        </ul>
+                        <div id="LAY_page"></div>
+                    </div>
+                    <div class="layui-tab-item" id="collection">
+                        <ul class="mine-view jie-row">
+                            <li>
+                                <a class="jie-title" href="../jie/detail.html" target="_blank">基于 layui 的极简社区页面模版</a>
+                                <i>收藏于23小时前</i>
+                                <a class="mine-look" href="/jie/edit/8116">查看</a>
+                                <a class="mine-del" href="/jie/edit/8116">删除</a>
+                                <em><img th:src="@{/myfile/image/new.png}"></em>
+                            </li>
+                            <li>
+                                <a class="jie-title" href="../jie/detail.html" target="_blank">基于 layui 的极简社区页面模版</a>
+                                <i>收藏于23小时前</i>
+                                <a class="mine-look" href="/jie/edit/8116">查看</a>
+                                <a class="mine-del" href="/jie/edit/8116">删除</a>
+                                <em><img th:src="@{/myfile/image/new.png}"></em>
+                            </li>
+                            <li>
+                                <a class="jie-title" href="../jie/detail.html" target="_blank">基于 layui 的极简社区页面模版</a>
+                                <i>收藏于23小时前</i>
+                                <a class="mine-look" href="/jie/edit/8116">查看</a>
+                                <a class="mine-del" href="/jie/edit/8116">删除</a>
+                                <em><img th:src="@{/myfile/image/new.png}"></em>
+                            </li>
+                            <li>
+                                <a class="jie-title" href="../jie/detail.html" target="_blank">基于 layui 的极简社区页面模版</a>
+                                <i>收藏于23小时前</i>
+                                <a class="mine-look" href="/jie/edit/8116">查看</a>
+                                <a class="mine-del" href="/jie/edit/8116">删除</a>
+                                <em><img th:src="@{/myfile/image/new.png}"></em>
+                            </li>
+
+                        </ul>
+                        <div id="LAY_page1"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script type="text/javascript" th:src="@{/layui/layui.js}"></script>
+    <script>
+        layui.use(['element','laytpl'],function () {
+            var element = layui.element; //导航的hover效果、二级菜单等功能，需要依赖element模块
+            var taytpl = layui.laytpl;
+            element.on('tab(user)', function(data){
+                // console.log(this); //当前Tab标题所在的原始DOM元素
+                // console.log(data.index); //得到当前Tab的所在下标
+                // console.log(data.elem); //得到当前的Tab大容器
+                var id = '#' + $(this).attr('data-type');
+                setData(id);
+            });
+            function setData(id) {
+
+            }
+        });
+    </script>
+</body>
+</html>

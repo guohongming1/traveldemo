@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>提问</title>
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <link rel="stylesheet" type="text/css" th:href="@{/layui/css/layui.css}">
+    <script type="text/javascript" th:src="@{/myfile/js/jquery.min.js}"></script>
+    <link rel="stylesheet" type="text/css" th:href="@{/myfile/css/main.css}">
+    <script type="text/javascript" th:src="@{/myfile/js/jquery.min.js}"></script>
+</head>
+<body class="micronews">
+<div class="micronews-header-wrap">
+    <div class="micronews-header w1000 layui-clear">
+        <h1 class="logo">
+            <a href="/">
+                <img width="66px" height="22px" th:src="@{/layuiadmin/myfile/images/logo3.png}" alt="logo">
+                <span class="layui-hide">logo</span>
+            </a>
+        </h1>
+        <p class="nav">
+            <a href="/front/page/index">首页</a>
+            <a href="/question/list-page">小组</a>
+            <a href="/travel-essay/list-page">问答</a>
+            <a href="/question/list-page">发表攻略</a>
+        </p>
+        <div class="search-bar">
+            <form class="layui-form" action="">
+                <div class="layui-form-item">
+                    <div class="layui-input-block">
+                        <input type="text" name="title" placeholder="搜索你要的内容" autocomplete="off" class="layui-input">
+                        <button class="layui-btn search-btn" formnovalidate><i class="layui-icon layui-icon-search"></i>
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="login">
+            <!--<a th:if="${session.sessionUser == null}" href="/front/page/login">-->
+            <!--登录-->
+            <!--</a>-->
+            <!--<img th:src="@{/layuiadmin/myfile/images/header.png}" style="width: 36px; height: 36px;">-->
+            <ul class="layui-nav" style="background-color: #fff;">
+                <li class="layui-nav-item">
+                    <a href="" style="font-size: 16px;color: #222;">消息<span class="layui-badge">3</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</a>
+                </li>
+                <li class="layui-nav-item" lay-unselect="">
+                    <a href="javascript:;" style="font-size: 16px;color: #222;"><img th:src="@{/layuiadmin/myfile/images/test01.jpg}" style="height: 30px; width: 30px;" class="layui-nav-img">&nbsp;&nbsp;</a>
+                    <dl class="layui-nav-child">
+                        <dd style="text-align: center"><a href="javascript:;"><i class="layui-icon layui-icon-user"></i>&nbsp;个人资料</a></dd>
+                        <dd style="text-align: center"><a href="javascript:;"><i class="layui-icon layui-icon-note"></i>&nbsp;攻略/问答</a></dd>
+                        <dd style="text-align: center"><a href="javascript:;"><i class="layui-icon layui-icon-rate"></i>&nbsp;收藏</a></dd>
+                        <dd style="text-align: center"><a href="javascript:;"><i class="layui-icon layui-icon-logout"></i>&nbsp;登出</a></dd>
+                    </dl>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<style type="text/css">
+    .wrap{
+        max-width: 1000px;
+        margin: 30px auto;
+    }
+    .question-description {
+        font-family: "Microsoft YaHei","\5b8b\4f53",sans-serif,tahoma;
+    }
+    .question-description .qb-layout-tit {
+        word-break: break-all;
+        position: relative;
+        color: #8296a0;
+    }
+    .question-description .qb-layout-tit .ask-title {
+        display: inline;
+        font-size: 24px;
+        line-height: 34px;
+        font-weight: 400;
+        overflow: hidden;
+    }
+    .question-description .qb-layout-tit .how-to-ask-btn {
+        font-size: 12px;
+        color: #26bf68;
+        line-height: 12px;
+        display: inline-block;
+        position: absolute;
+        right: 0;
+        bottom: 0;
+        cursor: pointer;
+    }
+    .question-description .qd-layout {
+        position: relative;
+    }
+    .question-description .qd-layout .qd-content {
+        margin-top: 20px;
+        border: 1px solid #c6d1d9;
+        -webkit-border-radius: 3px;
+        -moz-border-radius: 3px;
+        border-radius: 3px;
+    }
+
+    .question-description .qd-ct {
+        margin: 15px;
+    }
+    .question-description .qd-title {
+        position: relative;
+    }
+    .question-description .qd-title textarea {
+        width: 100%;
+        height: 30px;
+        max-height: 78px;
+        min-height: 30px;
+        color: #333;
+        word-break: break-all;
+    }
+
+    .question-description textarea {
+        display: block;
+        border: 0;
+        padding: 0;
+        background: #fff;
+        resize: none;
+        overflow: hidden;
+        font-size: 20px;
+        line-height: 30px;
+        outline: 0;
+        font-family: "Microsoft YaHei";
+    }
+    .question-description .count {
+        position: absolute;
+        color: #9eacb6;
+        right: 0;
+        bottom: -10px;
+        font-size: 12px;
+        text-align: right;
+        height: 14px;
+        line-height: 14px;
+    }
+    .question-description .count b {
+        font-weight: 400;
+    }
+    .question_des{margin-top:20px; }
+    .interest-tags {
+        margin-top: 20px;
+        position: relative;
+    }
+    .interest-tags span {
+        margin-bottom: 12px;
+        margin-right: 12px;
+        display: inline-block;
+        padding: 0 14px 0 14px;
+        height: 22px;
+        line-height: 22px;
+        font-size: 14px;
+        border: 1px solid #bdbfc2;
+        border-radius: 12px;
+        position: relative;
+        font-family: "Microsoft YaHei";
+    }
+    .interest-tags .g:hover{
+        cursor: pointer;
+        background-color: #26bf68;
+        color: #fff;
+    }
+    .check{
+        background-color: #26bf68;
+        color: #fff;
+    }
+    .addtag{
+        margin-left: 5px;
+        color: #26bf68;
+        font-size: 14px;
+    }
+    .addtag:hover{
+        cursor: pointer;
+    }
+    .tag{
+        background-color: #26bf68;
+        color: #fff;
+    }
+    .tag:hover{
+        cursor: pointer;
+    }
+    .tag i{
+        margin-left: 10px;
+    }
+    .closetag{
+        font-size: 14px;color: #fff;
+    }
+    textarea::placeholder{
+        color:#c6d1d9;
+    }
+    input::placeholder{
+        color:#c6d1d9;
+    }
+    .qd-content.qd-content-desc {
+        margin-top: 14px;
+    }
+    .question-description .qd-desc textarea {
+        width: 100%;
+        height: 78px;
+        color: #333;
+        max-height: 520px;
+        min-height: 106px;
+        font-size: 14px;
+        line-height: 24px;
+    }
+    .question-description .qd-plus {
+        position: relative;
+        line-height: 26px;
+        margin: 0 15px;
+        padding: 15px 0;
+        font-size: 0;
+        border-top: 1px solid #e8ecee;
+    }
+    .question-description .qd-plus-stuff.img {
+        margin-left: 5px;
+    }
+    .question-description .qd-plus-stuff.img i:hover{
+        cursor: pointer;
+    }
+    .question-description .qd-plus-stuff {
+        display: inline-block;
+        vertical-align: top;
+        line-height: 16px;
+        color: #999;
+        font-size: 13px;
+    }
+
+    ul, ol, li {
+        list-style: none;
+    }
+    .submitquestion{
+        width:120px;
+        margin: 20px 0px 20px 870px;
+    }
+    .qt-sider{
+        font-size: 14px;
+        line-height: 24px;
+        color: #666;
+    }
+    .qts-tit{
+        line-height: 30px;
+        font-weight: bold;
+        color: #26bf68;
+    }
+</style>
+<div class="layui-container wrap">
+    <div class="question-description">
+        <div class="qb-layout-tit">
+            <img th:src="@{/myfile/image/question.png}" style="margin-top:-10px; "/>
+            <span class="ask-title f-pening">提问</span>
+            <span class="how-to-ask-btn"><i class="layui-icon layui-icon-tips"></i>如何提问</span>
+        </div>
+        <div class="qd-layout">
+            <div class="qd-content">
+                <div class="qd-ct qd-title">
+                    <textarea id="title-area" placeholder="一句话完整的描述你的问题" style="height: 30px;"></textarea>
+                    <span id="title-count" class="count"><b>0</b>/49</span>
+                </div>
+            </div>
+        </div>
+        <div class="question_des qb-layout-tit">
+            <i class="layui-icon layui-icon-location"></i>
+            <span class="ask-title f-pening">地点</span>（非必填）
+        </div>
+        <div class="question_des layui-form-item">
+            <div class="layui-input-block" style="margin-left: 0px">
+                <input type="text" name="title" lay-verify="title" autocomplete="off" placeholder="问题相关地点" class="layui-input">
+            </div>
+        </div>
+        <div class="question_des qb-layout-tit">
+            <i class="layui-icon layui-icon-note"></i>
+            <span class="ask-title f-pening">选择标签</span>
+            <span class="addtag">+添加标签</span>
+        </div>
+        <div class="interest-tags">
+            <span class="g">自驾</span>
+            <span class="g">亲子</span>
+            <span class="g">摄影</span>
+            <span class="g">购物</span>
+            <span class="g">徒步</span>
+        </div>
+        <div class="question_des qb-layout-tit">
+            <i class="layui-icon layui-icon-tabs"></i>
+            <span class="ask-title f-pening">详细内容补充</span>
+        </div>
+        <div class="qd-layout">
+            <div class="qd-content qd-content-desc">
+                <div class="qd-ct qd-desc">
+                    <textarea id="content-area" placeholder="详细说明问题，以便更好的获得回答（选填）" style="height: 126px;"></textarea>
+                </div>
+                <div class="qd-plus" id="qd-plus-btn">
+                    <ul id="qd-img-list" class="qd-img-list clearfix" style="display: none"></ul>
+                    <ul class="qd-plus-stuff img">
+                        <i class="layui-icon layui-icon-picture" style="font-size: 40px"></i>
+                        <span>添加必要配图将会得到更多人回答</span>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="submitquestion">
+        <button type="button" class="layui-btn" style="margin: 0px auto">提交问题</button>
+    </div>
+</div>
+<div class="micronews-footer-wrap">
+    <div class="micronews-footer w1000">
+        <div class="Copyright">
+            <span>Copyright&nbsp;</span>&nbsp;&copy;<span>旅游攻略平台&nbsp;&nbsp;</span>
+        </div>
+    </div>
+</div>
+<script type="text/javascript" th:src="@{/layui/layui.js}"></script>
+<script>
+    $(document).scroll(function () {
+        var scroll_top = $(document).scrollTop();
+        //高度多少出现返回顶部，可以随意调整
+        if (scroll_top > 300) {
+            $(".questions").addClass("fix")
+        } else {
+            $(".questions").removeClass("fix")
+        }
+    });
+    layui.use(['element','layer'], function(){
+        var element = layui.element; //导航的hover效果、二级菜单等功能，需要依赖element模块
+        var layer = layui.layer; // 轮播框设置
+        /*旅游攻略页面*/
+        /*left nav*/
+        $('.nav-item').hover(function() {
+            $('.gonglve-nav').css('border-right-color', '#fff');
+            $('.nav-item .nav-panel').eq($(this).index()).css('display', 'block');
+        }, function() {
+            $('.gonglve-nav').css('border-right-color', '#ddd');
+            $('.nav-panel').css('display', 'none');
+        });
+        // 如何提问 beg
+        $(".how-to-ask-btn").click(function () {
+            var str = "<div class=\"qt-sider\">\n" +
+                "            <div class=\"qts-tit\">提问的正确姿势</div>\n" +
+                "            <div class=\"qts-con\">\n" +
+                "                <p>1.问题要【具体】【真实】【诚恳】，问题较多，需全面阐述时，可以添加问题补充。结伴/交易/与旅行无关的提问将被删除。</p>\n" +
+                "                <p>2.给问题添加目的地，并打上正确的标签将有助于更快地获得回答。</p>\n" +
+                "            </div>\n" +
+                "        </div>"
+            //屏蔽浏览器滚动条
+            layer.open({
+                title:"如何提问",
+                content: str,
+                scrollbar: false
+            });
+        });
+        // 如何提问 end
+        // 标签添加   beg
+        var tags = 0;
+        var flagtags = 0; // 使用id可以防止使用class注册点击事件时出现重复注册
+       $(".interest-tags .g").click(function () {
+            if($(this).hasClass('check')){
+                $(this).removeClass('check');
+                tags --;
+                console.log(tags)
+            }else{
+                if(tags>=3){
+                    layer.msg('标签至多选择3个！',{icon:5,time: 1000});
+                }else{
+                    tags++;
+                    console.log(tags)
+                    $(this).addClass('check');
+                }
+            }
+        });
+        $('.addtag').click(function () {
+            if(tags>=3){
+                layer.msg('标签至多选择3个！',{icon:5,time: 1000});
+            }else{
+                layer.prompt({
+                    maxlength: 5,
+                    title: '添加标签-（1至5个字符）',
+                }, function(value, index, elem){
+                    flagtags++;
+                    if(value != null && value != ""){
+                        var str = "<span class=\"tag\" data-tag=\""+value+"\""+">"+value+"<i id='"+flagtags+"' class=\"closetag layui-icon layui-icon-close\" title=\"删除\"></i> </span>";
+                        $('.interest-tags').append(str);
+                        // 注册关闭事件
+                        $("#"+flagtags).click(function () {
+                            $(this).parent().remove();
+                            tags--;
+                        });
+                        tags++;
+                        console.log(tags)
+                    }
+                    layer.close(index);
+                });
+            }
+        });
+        // 标签添加   end
+    });
+</script>
+</body>
+</html>

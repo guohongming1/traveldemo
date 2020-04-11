@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>创建话题</title>
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <link rel="stylesheet" type="text/css" th:href="@{/layui/css/layui.css}">
+    <script type="text/javascript" th:src="@{/myfile/js/jquery.min.js}"></script>
+    <link rel="stylesheet" type="text/css" th:href="@{/myfile/css/main.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/myfile/css/global.css}">
+</head>
+<body class="micronews">
+<div class="micronews-header-wrap">
+    <div class="micronews-header w1000 layui-clear">
+        <h1 class="logo">
+            <a href="/">
+                <img width="66px" height="22px" th:src="@{/layuiadmin/myfile/images/logo3.png}" alt="logo">
+                <span class="layui-hide">logo</span>
+            </a>
+        </h1>
+        <p class="nav">
+            <a href="/front/page/index">首页</a>
+            <a href="/question/list-page">小组</a>
+            <a href="/travel-essay/list-page">问答</a>
+            <a href="/question/list-page">发表攻略</a>
+        </p>
+        <div class="search-bar">
+            <form class="layui-form" action="">
+                <div class="layui-form-item">
+                    <div class="layui-input-block">
+                        <input type="text" name="title" placeholder="搜索你要的内容" autocomplete="off" class="layui-input">
+                        <button class="layui-btn search-btn" formnovalidate><i class="layui-icon layui-icon-search"></i>
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="login">
+            <!--<a th:if="${session.sessionUser == null}" href="/front/page/login">-->
+            <!--登录-->
+            <!--</a>-->
+            <!--<img th:src="@{/layuiadmin/myfile/images/header.png}" style="width: 36px; height: 36px;">-->
+            <ul class="layui-nav" style="background-color: #fff;">
+                <li class="layui-nav-item">
+                    <a href="" style="font-size: 16px;color: #222;">消息<span class="layui-badge">3</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</a>
+                </li>
+                <li class="layui-nav-item" lay-unselect="">
+                    <a href="javascript:;" style="font-size: 16px;color: #222;"><img th:src="@{/layuiadmin/myfile/images/test01.jpg}" style="height: 30px; width: 30px;" class="layui-nav-img">&nbsp;&nbsp;</a>
+                    <dl class="layui-nav-child">
+                        <dd style="text-align: center"><a href="javascript:;"><i class="layui-icon layui-icon-user"></i>&nbsp;个人资料</a></dd>
+                        <dd style="text-align: center"><a href="javascript:;"><i class="layui-icon layui-icon-note"></i>&nbsp;攻略/问答</a></dd>
+                        <dd style="text-align: center"><a href="javascript:;"><i class="layui-icon layui-icon-rate"></i>&nbsp;收藏</a></dd>
+                        <dd style="text-align: center"><a href="javascript:;"><i class="layui-icon layui-icon-logout"></i>&nbsp;登出</a></dd>
+                    </dl>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+<style type="text/css">
+    * {
+        font-family: 微软雅黑;
+        margin: 0px;
+        padding: 0px;
+        list-style: none;
+    }
+    body{
+        background-color: #F2F2F2;
+    }
+    .wrap{
+        margin: 10px auto;
+    }
+</style>
+<div class="layui-container wrap">
+    <div class="fly-panel" pad20 style="padding-top: 5px;">
+        <div class="layui-form layui-form-pane">
+            <div class="layui-tab layui-tab-brief">
+                <ul class="layui-tab-title">
+                    <li class="layui-this">发表话题</li>
+                </ul>
+                <div class="layui-form layui-tab-content" style="padding: 20px 0;">
+                    <div class="layui-tab-item layui-show">
+                        <form action="" method="post">
+                            <div class="layui-row layui-col-space15 layui-form-item">
+                                <div class="layui-col-md12">
+                                    <label for="L_title" class="layui-form-label">标题</label>
+                                    <div class="layui-input-block">
+                                        <input type="text" id="L_title" placeholder="字数小于20" name="title" required lay-verify="title" autocomplete="off" class="layui-input" maxlength="20"/>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="layui-form-item">
+                                <div class="layui-inline">
+                                <label class="layui-form-label">选择标签</label>
+                                <div class="layui-input-block">
+                                    <input class="tag" lay-filter="tags" type="checkbox" name="like[write]" title="环球旅行">
+                                    <input class="tag" lay-filter="tags" type="checkbox" name="like[read]" title="独步">
+                                    <input class="tag" lay-filter="tags" type="checkbox" name="like[dai]" title="时尚">
+                                    <input class="tag" lay-filter="tags" type="checkbox" name="like[write]" title="自驾">
+                                    <input class="tag" lay-filter="tags" type="checkbox" name="like[read]" title="生活">
+                                    <input class="tag" lay-filter="tags" type="checkbox" name="like[dai]" title="旅行必备">
+                                </div>
+                                    <div class="layui-form-mid layui-word-aux">标签来源于小组标签，选择合理的标签有助于话题讨论</div>
+                                </div>
+                            </div>
+                            <div class="layui-form-item layui-form-text">
+                                <div class="layui-input-block">
+                                    <textarea id="L_content" name="content" required lay-verify="required" placeholder="详细描述" class="layui-textarea fly-editor" style="height: 260px;"></textarea>
+                                </div>
+                            </div>
+                            <div class="layui-form-item">
+                                <button class="layui-btn" lay-filter="*" lay-submit>立即发布</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript" th:src="@{/layui/layui.js}"></script>
+<script>
+    layui.cache.page = 'jie';
+    layui.cache.user = {
+        username: '游客'
+        ,uid: -1
+        ,avatar: '../../res/images/avatar/00.jpg'
+        ,experience: 83
+        ,sex: '男'
+    };
+    layui.config({
+        version: "3.0.0"
+        ,base: '/mods/'
+    }).extend({
+        fly: 'index'
+    }).use(['fly','element','form'], function(){
+        var $ = layui.$
+            ,fly = layui.fly;
+        var form = layui.form;
+        //自定义验证规则
+        form.verify({
+            title: function(value){
+                if(value.length < 2){
+                    return '标题至少得2个字符啊';
+                }
+                if(value.length >20 ){
+                    return '标题最多得20个字符啊';
+                }
+            }
+        });
+        form.on('checkbox(tags)',function(data){
+            var len=$(".tag:checked").length;
+            if(len>3){
+                $(data.elem).next().attr("class","layui-unselect layui-form-checkbox");
+                $(data.elem).prop("checked",false);
+                layer.msg('最多只能选3项！',{icon:5,time:1000});
+                return false;
+            }
+        });
+
+    });
+</script>
+</body>
+</html>

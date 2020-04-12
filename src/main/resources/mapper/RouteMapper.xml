@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.guo.traveldemo.web.mapper.RouteMapper" >
+  <resultMap id="BaseResultMap" type="com.guo.traveldemo.web.pojo.Route" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="nextday_id" property="nextdayId" jdbcType="INTEGER" />
+    <result column="content" property="content" jdbcType="VARCHAR" />
+    <result column="stra_de_id" property="straDeId" jdbcType="INTEGER" />
+    <result column="head_flag" property="headFlag" jdbcType="TINYINT" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, nextday_id, content, stra_de_id, head_flag
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from route
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from route
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.guo.traveldemo.web.pojo.Route" >
+    insert into route (id, nextday_id, content, 
+      stra_de_id, head_flag)
+    values (#{id,jdbcType=INTEGER}, #{nextdayId,jdbcType=INTEGER}, #{content,jdbcType=VARCHAR}, 
+      #{straDeId,jdbcType=INTEGER}, #{headFlag,jdbcType=TINYINT})
+  </insert>
+  <insert id="insertSelective" parameterType="com.guo.traveldemo.web.pojo.Route" >
+    insert into route
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="nextdayId != null" >
+        nextday_id,
+      </if>
+      <if test="content != null" >
+        content,
+      </if>
+      <if test="straDeId != null" >
+        stra_de_id,
+      </if>
+      <if test="headFlag != null" >
+        head_flag,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="nextdayId != null" >
+        #{nextdayId,jdbcType=INTEGER},
+      </if>
+      <if test="content != null" >
+        #{content,jdbcType=VARCHAR},
+      </if>
+      <if test="straDeId != null" >
+        #{straDeId,jdbcType=INTEGER},
+      </if>
+      <if test="headFlag != null" >
+        #{headFlag,jdbcType=TINYINT},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.guo.traveldemo.web.pojo.Route" >
+    update route
+    <set >
+      <if test="nextdayId != null" >
+        nextday_id = #{nextdayId,jdbcType=INTEGER},
+      </if>
+      <if test="content != null" >
+        content = #{content,jdbcType=VARCHAR},
+      </if>
+      <if test="straDeId != null" >
+        stra_de_id = #{straDeId,jdbcType=INTEGER},
+      </if>
+      <if test="headFlag != null" >
+        head_flag = #{headFlag,jdbcType=TINYINT},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.guo.traveldemo.web.pojo.Route" >
+    update route
+    set nextday_id = #{nextdayId,jdbcType=INTEGER},
+      content = #{content,jdbcType=VARCHAR},
+      stra_de_id = #{straDeId,jdbcType=INTEGER},
+      head_flag = #{headFlag,jdbcType=TINYINT}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

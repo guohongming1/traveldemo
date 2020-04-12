@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.guo.traveldemo.web.mapper.TravelTableMapper" >
+  <resultMap id="BaseResultMap" type="com.guo.traveldemo.web.pojo.TravelTable" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="stra_de_id" property="straDeId" jdbcType="INTEGER" />
+    <result column="days" property="days" jdbcType="TINYINT" />
+    <result column="fee" property="fee" jdbcType="VARCHAR" />
+    <result column="address" property="address" jdbcType="VARCHAR" />
+    <result column="people" property="people" jdbcType="VARCHAR" />
+    <result column="date" property="date" jdbcType="TIMESTAMP" />
+    <result column="advice" property="advice" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, stra_de_id, days, fee, address, people, date, advice
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from travel_table
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from travel_table
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.guo.traveldemo.web.pojo.TravelTable" >
+    insert into travel_table (id, stra_de_id, days, 
+      fee, address, people, 
+      date, advice)
+    values (#{id,jdbcType=INTEGER}, #{straDeId,jdbcType=INTEGER}, #{days,jdbcType=TINYINT}, 
+      #{fee,jdbcType=VARCHAR}, #{address,jdbcType=VARCHAR}, #{people,jdbcType=VARCHAR}, 
+      #{date,jdbcType=TIMESTAMP}, #{advice,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.guo.traveldemo.web.pojo.TravelTable" >
+    insert into travel_table
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="straDeId != null" >
+        stra_de_id,
+      </if>
+      <if test="days != null" >
+        days,
+      </if>
+      <if test="fee != null" >
+        fee,
+      </if>
+      <if test="address != null" >
+        address,
+      </if>
+      <if test="people != null" >
+        people,
+      </if>
+      <if test="date != null" >
+        date,
+      </if>
+      <if test="advice != null" >
+        advice,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="straDeId != null" >
+        #{straDeId,jdbcType=INTEGER},
+      </if>
+      <if test="days != null" >
+        #{days,jdbcType=TINYINT},
+      </if>
+      <if test="fee != null" >
+        #{fee,jdbcType=VARCHAR},
+      </if>
+      <if test="address != null" >
+        #{address,jdbcType=VARCHAR},
+      </if>
+      <if test="people != null" >
+        #{people,jdbcType=VARCHAR},
+      </if>
+      <if test="date != null" >
+        #{date,jdbcType=TIMESTAMP},
+      </if>
+      <if test="advice != null" >
+        #{advice,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.guo.traveldemo.web.pojo.TravelTable" >
+    update travel_table
+    <set >
+      <if test="straDeId != null" >
+        stra_de_id = #{straDeId,jdbcType=INTEGER},
+      </if>
+      <if test="days != null" >
+        days = #{days,jdbcType=TINYINT},
+      </if>
+      <if test="fee != null" >
+        fee = #{fee,jdbcType=VARCHAR},
+      </if>
+      <if test="address != null" >
+        address = #{address,jdbcType=VARCHAR},
+      </if>
+      <if test="people != null" >
+        people = #{people,jdbcType=VARCHAR},
+      </if>
+      <if test="date != null" >
+        date = #{date,jdbcType=TIMESTAMP},
+      </if>
+      <if test="advice != null" >
+        advice = #{advice,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.guo.traveldemo.web.pojo.TravelTable" >
+    update travel_table
+    set stra_de_id = #{straDeId,jdbcType=INTEGER},
+      days = #{days,jdbcType=TINYINT},
+      fee = #{fee,jdbcType=VARCHAR},
+      address = #{address,jdbcType=VARCHAR},
+      people = #{people,jdbcType=VARCHAR},
+      date = #{date,jdbcType=TIMESTAMP},
+      advice = #{advice,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

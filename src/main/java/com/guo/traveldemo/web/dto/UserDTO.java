@@ -1,12 +1,16 @@
-package com.guo.traveldemo.web.pojo;
+package com.guo.traveldemo.web.dto;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableId;
+import java.io.Serializable;
 
-import java.util.Date;
+/**
+ * @author 郭红明
+ * @version 1.0
+ * @Date: 2020/4/13
+ */
+public class UserDTO implements Serializable {
 
-public class User {
-    @TableId(value = "id",type = IdType.AUTO)
+    private static final long serialVersionUID = -6900068961332588689L;
+
     private Integer id;
 
     private String name;
@@ -27,7 +31,9 @@ public class User {
 
     private String remark;
 
-    private Date date;
+    public static long getSerialVersionUID() {
+        return serialVersionUID;
+    }
 
     public Integer getId() {
         return id;
@@ -107,13 +113,5 @@ public class User {
 
     public void setRemark(String remark) {
         this.remark = remark;
-    }
-
-    public Date getDate() {
-        return date;
-    }
-
-    public void setDate(Date date) {
-        this.date = date;
     }
 }

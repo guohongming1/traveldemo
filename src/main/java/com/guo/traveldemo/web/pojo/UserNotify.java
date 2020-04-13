@@ -5,17 +5,17 @@ import com.baomidou.mybatisplus.annotation.TableId;
 
 import java.util.Date;
 
-public class TopicDetail {
+public class UserNotify {
     @TableId(value = "id",type = IdType.AUTO)
     private Integer id;
 
-    private String title;
+    private Byte readflag;
 
     private Integer userId;
 
-    private String content;
+    private Integer notifyId;
 
-    private Date date;
+    private Date createTime;
 
     public Integer getId() {
         return id;
@@ -25,12 +25,12 @@ public class TopicDetail {
         this.id = id;
     }
 
-    public String getTitle() {
-        return title;
+    public Byte getReadflag() {
+        return readflag;
     }
 
-    public void setTitle(String title) {
-        this.title = title;
+    public void setReadflag(Byte readflag) {
+        this.readflag = readflag;
     }
 
     public Integer getUserId() {
@@ -41,19 +41,19 @@ public class TopicDetail {
         this.userId = userId;
     }
 
-    public String getContent() {
-        return content;
+    public Integer getNotifyId() {
+        return notifyId;
     }
 
-    public void setContent(String content) {
-        this.content = content;
+    public void setNotifyId(Integer notifyId) {
+        this.notifyId = notifyId;
     }
 
-    public Date getDate() {
-        return date;
+    public Date getCreateTime() {
+        return createTime;
     }
 
-    public void setDate(Date date) {
-        this.date = date;
+    public void setCreateTime(Date createTime) {
+        this.createTime = createTime;
     }
 }

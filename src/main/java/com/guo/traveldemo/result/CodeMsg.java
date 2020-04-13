@@ -20,7 +20,7 @@ public enum CodeMsg {
     /**
      * 空用户
      */
-    USER_NULL(500001, "空用户"),
+    USER_NULL(500001, "缺失必要参数"),
     /**
      * 账号或密码错误
      */
@@ -61,6 +61,7 @@ public enum CodeMsg {
      * 游记发表失败
      */
     ESSAY_PUSH_FAIL(500011, "游记发表失败");
+
     private Integer code;
     private String msg;
 

@@ -79,4 +79,12 @@ public class FrontPageController {
     public String usermsg(){
         return "user/message";
     }
+    @RequestMapping("/reg")
+    public String reg(){
+        return "reg";
+    }
+    @RequestMapping("/login")
+    public String login(){
+        return "login";
+    }
 }

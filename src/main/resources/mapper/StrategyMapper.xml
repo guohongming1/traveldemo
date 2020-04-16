@@ -41,7 +41,7 @@
       #{date,jdbcType=TIMESTAMP}, #{pushFlag,jdbcType=TINYINT}, #{delFlag,jdbcType=TINYINT}
       )
   </insert>
-  <insert id="insertSelective" parameterType="com.guo.traveldemo.web.pojo.Strategy" >
+  <insert id="insertSelective" parameterType="com.guo.traveldemo.web.pojo.Strategy" useGeneratedKeys="true" keyProperty="id" >
     insert into strategy
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="id != null" >

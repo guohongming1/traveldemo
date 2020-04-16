@@ -1,5 +1,6 @@
 package com.guo.traveldemo.web.pojo;
 
+import com.alibaba.fastjson.annotation.JSONField;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 
@@ -14,7 +15,7 @@ public class Collect {
     private Byte type;
 
     private Integer proId;
-
+    @JSONField(format = "yyyy-MM-dd HH:mm:ss")
     private Date date;
 
     private Byte flag;

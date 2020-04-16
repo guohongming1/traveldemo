@@ -38,21 +38,21 @@
             </form>
         </div>
         <div class="login">
-            <!--<a th:if="${session.sessionUser == null}" href="/front/page/login">-->
-            <!--登录-->
-            <!--</a>-->
+            <a th:if="${session.userinfo == null}" href="/login">
+                登录
+            </a>
             <!--<img th:src="@{/layuiadmin/myfile/images/header.png}" style="width: 36px; height: 36px;">-->
-            <ul class="layui-nav" style="background-color: #fff;">
+            <ul th:if="${session.userinfo != null}" class="layui-nav" style="background-color: #fff;">
                 <li class="layui-nav-item">
-                    <a href="" style="font-size: 16px;color: #222;">消息<span class="layui-badge">3</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</a>
+                    <a href="/usermsg" style="font-size: 16px;color: #222;">消息<span th:text="${session.msgnum}" class="layui-badge"></span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</a>
                 </li>
                 <li class="layui-nav-item" lay-unselect="">
-                    <a href="javascript:;" style="font-size: 16px;color: #222;"><img th:src="@{/layuiadmin/myfile/images/test01.jpg}" style="height: 30px; width: 30px;" class="layui-nav-img">&nbsp;&nbsp;</a>
+                    <a href="javascript:;" style="font-size: 16px;color: #222;"><img th:src="${session.userinfo.getImgUrl()}" style="height: 30px; width: 30px;" class="layui-nav-img" onerror="getdefaultImg(event)">&nbsp;&nbsp;</a>
                     <dl class="layui-nav-child">
                         <dd style="text-align: center"><a href="javascript:;"><i class="layui-icon layui-icon-user"></i>&nbsp;个人资料</a></dd>
                         <dd style="text-align: center"><a href="javascript:;"><i class="layui-icon layui-icon-note"></i>&nbsp;攻略/问答</a></dd>
                         <dd style="text-align: center"><a href="javascript:;"><i class="layui-icon layui-icon-rate"></i>&nbsp;收藏</a></dd>
-                        <dd style="text-align: center"><a href="javascript:;"><i class="layui-icon layui-icon-logout"></i>&nbsp;登出</a></dd>
+                        <dd layadmin-event="logout" style="text-align: center"><a href="javascript:;"><i class="layui-icon layui-icon-logout"></i>&nbsp;登出</a></dd>
                     </dl>
                 </li>
             </ul>
@@ -146,6 +146,10 @@
         background-color: transparent;/*背景透明*/
         box-shadow: 0 0 0 rgba(0,0,0,0);/*前景无阴影*/
     }
+    .head_img{
+        max-height: 200px;
+        max-width: 200px;
+    }
 
 </style>
 <div class="layui-container wrap">
@@ -155,28 +159,36 @@
                 <ul class="layui-tab-title">
                     <li class="layui-this">发表攻略</li>
                 </ul>
-                <div class="layui-form layui-tab-content" style="padding: 20px 0;">
+                <div class="layui-form layui-tab-content" lay-filter="streategyform" style="padding: 20px 0;">
                     <div class="layui-tab-item layui-show">
                         <form action="" method="post">
                             <div class="layui-row layui-col-space15 layui-form-item">
                                 <div class="layui-col-md12">
                                     <label for="L_title" class="layui-form-label">标题</label>
                                     <div class="layui-input-block">
-                                        <input type="text" id="L_title" placeholder="字数小于20" name="title" required lay-verify="title" autocomplete="off" class="layui-input" maxlength="20"/>
+                                        <input type="text" id="L_title" placeholder="字数小于20" name="title" lay-verify="required" autocomplete="off" class="layui-input" maxlength="20"/>
                                     </div>
                                 </div>
                             </div>
                             <div class="layui-form-item">
                                 <div class="layui-inline">
+                                    <button type="button" class="layui-btn" id="uploadHeadImgbtn"><i class="layui-icon">&#xe67c;</i>上传配图</button>
+                                    <input name="headImgUrl" id="LAY_headImgSrc" style="display: none"
+                                           autocomplete="off" class="layui-input">
+                                </div>
+                                <div class="head_img" style="display: none"></div>
+                            </div>
+                            <div class="layui-form-item">
+                                <div class="layui-inline">
                                     <label class="layui-form-label">地点</label>
                                     <div class="layui-input-inline">
-                                        <input type="text" name="place" lay-verify="required" autocomplete="off" class="layui-input">
+                                        <input type="text" name="address" lay-verify="required" autocomplete="off" class="layui-input">
                                     </div>
                                 </div>
                                 <div class="layui-inline">
                                     <label class="layui-form-label">出发时间</label>
                                     <div class="layui-input-inline">
-                                        <input type="text" name="date" id="date" lay-verify="date" placeholder="yyyy-MM-dd" autocomplete="off" class="layui-input">
+                                        <input type="text" name="date" id="date" lay-verify="required|date" placeholder="yyyy-MM-dd" autocomplete="off" class="layui-input">
                                     </div>
                                 </div>
                             </div>
@@ -184,7 +196,7 @@
                                 <div class="layui-inline">
                                     <label class="layui-form-label">出行天数</label>
                                     <div class="layui-input-inline">
-                                        <input type="text" name="people" lay-verify="required" autocomplete="off" class="layui-input">
+                                        <input type="text" name="days" lay-verify="required" autocomplete="off" class="layui-input">
                                     </div>
                                 </div>
                                 <div class="layui-inline">
@@ -193,11 +205,23 @@
                                         <input type="text" name="money" lay-verify="required" autocomplete="off" class="layui-input">
                                     </div>
                                 </div>
+                                <div class="layui-inline">
+                                    <label class="layui-form-label">人物</label>
+                                    <div class="layui-input-inline">
+                                        <input type="text" name="people" lay-verify="required" autocomplete="off" class="layui-input">
+                                    </div>
+                                </div>
                             </div>
                             <div class="layui-form-item layui-form-text">
                                 <label class="layui-form-label">建议(选填)</label>
                                 <div class="layui-input-block">
-                                    <textarea placeholder="为出行的驴友给点建议吧" class="layui-textarea"></textarea>
+                                    <textarea name="advice" placeholder="为出行的驴友给点建议吧" class="layui-textarea"></textarea>
+                                </div>
+                            </div>
+                            <div class="layui-form-item layui-form-text">
+                                <label class="layui-form-label">简述(必填)</label>
+                                <div class="layui-input-block">
+                                    <textarea name="sketch" lay-verify="required" placeholder="为你的攻略简要叙述下吧" class="layui-textarea"></textarea>
                                 </div>
                             </div>
                             <div class="layui-form-item">
@@ -259,7 +283,7 @@
                             </div>
                             <div class="layui-form-item">
                                 <button type="submit" class="layui-btn" lay-submit lay-filter="demo1">立即发布</button>
-                                <button class="layui-btn layui-btn-primary">保存进度</button>
+                                <button type="button" class="layui-btn layui-btn-primary" id="save">保存进度</button>
                             </div>
                         </form>
                     </div>
@@ -268,6 +292,32 @@
         </div>
     </div>
 </div>
+<script id="route-mod" type="text/html">
+    {{#  layui.each(d, function(index, day){ }}
+    <li class="layui-timeline-item time-route-item">
+        <i class="layui-icon layui-timeline-axis">&#xe63f;</i>
+        <div class="layui-timeline-content layui-text">
+            <h3 class="layui-timeline-title layui-inline">DAY{{index+1}}</h3>
+            <i class="dayoper layui-icon layui-icon-add-1" title="添加节点"></i>
+            <ul class="time-route-li">
+                {{# var item = day.split('}');item.splice(0,1);console.log(item) }}
+                {{#  layui.each(item, function(inde, i){ }}
+                <li>
+                    <input type="text" class="route-jie" maxlength="100" value='{{i}}' style="display: none;"/>
+                    <span>{{i}}</span>
+                    <div class="layui-inline">
+                        <i class="dayoper-i layui-icon layui-icon-edit edit"></i>
+                        <i class="dayoper-i layui-icon del">&#xe640;</i>
+                    </div>
+                </li>
+                {{#  }); }}
+            </ul>
+        </div>
+    </li>
+    {{#  }); }}
+    <li class="layui-timeline-item">
+    </li>
+</script>
 <script type="text/javascript" th:src="@{/layui/layui.js}"></script>
 <script>
     $(document).scroll(function () {
@@ -279,15 +329,18 @@
             $(".questions").removeClass("fix")
         }
     });
+    var timerouteFlag = 1;// 初始增加的天数
     layui.config({
         version: "3.0.0"
         ,base: '/mymods/'
     }).extend({
-        travel: 'index'
-    }).use(['travel','element','form','laydate','layer'], function(){
+        travel: 'index',
+    }).use(['travel','element','form','laydate','layer','laytpl'], function(){
         var element = layui.element; //导航的hover效果、二级菜单等功能，需要依赖element模块
         var laydate = layui.laydate;
         var layer = layui.layer;
+        var form = layui.form;
+        var laytpl = layui.laytpl;
 
         //创建监听函数
         var xhrOnProgress=function(fun) {
@@ -323,13 +376,179 @@
             $('.gonglve-nav').css('border-right-color', '#ddd');
             $('.nav-panel').css('display', 'none');
         });
+        function loadData(){
+            var data;
+            //请求接口
+            $.ajax({
+                type: "post",
+                url: "/strategy/pull",
+                success: function(res){
+                    if (res.code === 200) {
+                        data=res.data;
+                        console.log(res.data)
+                        layer.msg('检测到上次有未完成攻略', {
+                            offset: '15px'
+                            , icon: 1
+                            , time: 2000
+                        },function () {
+                            if(null != data && data != ""){
+                                // 表单初始化
+                                form.val("streategyform", { //streategyform 即 class="layui-form" 所在元素属性 lay-filter="" 对应的值
+                                    title: data.title
+                                    ,headImgUrl: data.headImgUrl
+                                    ,address: data.address
+                                    ,date: data.date
+                                    ,days: data.days
+                                    ,money: data.money
+                                    ,people: data.people
+                                    ,advice: data.advice
+                                    ,sketch: data.sketch
+                                });
+                                form.render(null, 'streategyform');
+                                $(".fly-editor").html(data.content);
+                                if(data.headImgUrl != null && data.headImgUrl != ""){
+                                    $(".head_img").html('<img src="'+data.headImgUrl + '" width="200px" height="200px"> ');
+                                    $(".head_img").show();
+                                }
+                                loadRouteData(data.route)
+                            }
+                        });
+                    } else {
+                        data = "";
+                    }
+                },
+                error: function (res) {
+                    layer.msg(res.message);
+                    data = "";
+                }
+            });
+        }
+        function loadRouteData(route) {
+            if(route.length>1) {
+                var days = route.split('{');
+                days.splice(0, 1);
+                timerouteFlag = days.length;
+                console.log(days);
+                // 获取节点
+                var getTpl = document.getElementById('route-mod').innerHTML;
+                // 执行tpl渲染
+                laytpl(getTpl).render(days, function (html) {
+                    document.getElementById('time-route').innerHTML = html;
+                });
+            }
+        }
+        loadData(); // 加载上次未完成攻略
+        // 表单验证
+        form.verify({
+
+        });
+        /*
+         * 监听表格提交
+         */
+        form.on('submit(demo1)', function (data) {
+            // 获取Div中的所有内容\
+            var str="";
+            var text = $(".fly-editor").html();
+            // 获取时间节点
+            $("#time-route").find(".time-route-item").each(function (index) {
+                str +='{';
+                $(this).find("input").each(function (inde) {
+                    if($(this).val() != null && $(this).val() != ""){
+                        str =str+ '}'+$(this).val();
+                    }
+                })
+            });
+            if(text == null || text == ""){
+                layer.msg("请完成详情描述", {icon: 5});
+                return false;
+            }
+            var field = data.field;
+            if(null == field["headImgUrl"] || ""==field["headImgUrl"]){
+                layer.msg("请上传配图", {icon: 5});
+                return false;
+            }
+            field["content"]= text;
+            field["route"]= str;
+            field["pushFlag"] = true;
+            console.log(field)
+            var flag = false;
+            // TODO 使用ajax
+            //请求接口
+            $.ajax({
+                type: "post",
+                url: "/strategy/updateorsave",
+                data: field,
+                success: function(res){
+                    if (res.code === 200) {
+                        layer.msg('发表成功', {
+                            offset: '15px'
+                            , icon: 1
+                            , time: 1000
+                        }, function () {
+                            layer.msg(res.data);
+                            flag = true;
+                            location.href = '/login'; //跳转到登入页
+                        });
+                    } else {
+                        layer.msg(res.message);
+                    }
+                },
+                error: function (res) {
+                    layer.msg(res.message);
+                }
+            });
+            if(!flag){
+                return false;
+            }
+        });
+
+        $("#save").click(function () {
+            // 获取Div中的所有内容\
+            var str="";
+            var text = $(".fly-editor").html();
+            // 获取时间节点
+            $("#time-route").find(".time-route-item").each(function (index) {
+                str +='{';
+                $(this).find("input").each(function (inde) {
+                    if($(this).val() != null && $(this).val() != ""){
+                        str =str+ '}'+$(this).val();
+                    }
+                })
+            });
+            var data = form.val("streategyform");
+            data["content"]= text;
+            data["route"]= str;
+            data["pushFlag"]= false;
+            console.log(data);
+            //请求接口
+            $.ajax({
+                type: "post",
+                url: "/strategy/updateorsave",
+                data: data,
+                success: function(res){
+                    if (res.code === 200) {
+                        layer.msg('保存成功', {
+                            offset: '15px'
+                            , icon: 1
+                            , time: 1000
+                        }, function () {
+                           // layer.msg(res.data);
+                        });
+                    } else {
+                        layer.msg(res.data);
+                    }
+                },
+                error: function (res) {
+                    layer.msg(res.message);
+                }
+            });
+        });
     });
 
 
     /*
     * 时间线编辑 start
     * */
-    var timerouteFlag = 1;// 初始增加的天数
     function addDay(){
         var str = "<li class=\"layui-timeline-item time-route-item\">\n" +
             "                                                <i class=\"layui-icon layui-timeline-axis\">&#xe63f;</i>\n" +

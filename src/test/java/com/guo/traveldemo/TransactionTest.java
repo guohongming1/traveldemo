@@ -9,12 +9,16 @@ import com.guo.traveldemo.web.mapper.UserMapper;
 import com.guo.traveldemo.web.pojo.Role;
 import com.guo.traveldemo.web.pojo.Strategy;
 import com.guo.traveldemo.web.pojo.User;
+import com.guo.traveldemo.web.service.MessageService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Date;
+import java.util.Map;
 
 /**
  * @author 郭红明
@@ -34,6 +38,9 @@ public class TransactionTest {
     @Autowired
     private UserMapper userMapper;
 
+    @Autowired
+    private MessageService messageService;
+
     @Test
     public void test(){
 //        Role role = new Role();
@@ -44,9 +51,13 @@ public class TransactionTest {
 //        queryWrapper.eq("id",1);
 //        Role role1 = roleMapper.selectOne(queryWrapper);
 //        System.out.println(role1);
-        User user = new User();
-        user.setName("测试数据");
-        userMapper.insert(user);
+//        User user = new User();
+//        user.setId(5);
+//        user.setName("测试数据");
+//        user.setDate(new Date());
+//        userMapper.insert(user);
+        //messageService.queryUserREJECTMsg(4);
+        System.out.println(userMapper.selectByPrimaryKey(5).getDate());
     }
 
     @Test

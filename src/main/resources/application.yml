@@ -5,7 +5,7 @@ server:
 spring:
   #数据库配置 start
   datasource:
-    url: jdbc:mysql://localhost:3306/traveldemo?allowPublicKeyRetrieval=true&useSSL=false&serverTimezone=UTC
+    url: jdbc:mysql://localhost:3306/traveldemo?allowPublicKeyRetrieval=true&useSSL=false&serverTimezone=Asia/Shanghai
     username: root
     password: 123456
     type: com.alibaba.druid.pool.DruidDataSource
@@ -68,8 +68,12 @@ spring:
         min-idle: 10
         max-idle: 30
 # mybatis配置
-mybatis:
+# mybatis 配置
+mybatis-plus:
   mapper-locations: classpath:/mapper/*.xml
+  type-aliases-package: com.wanner.primary.web.entity
+  configuration:
+    use-generated-keys: true
 # 控制台输出日志
 logging:
   level:

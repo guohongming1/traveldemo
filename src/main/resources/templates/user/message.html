@@ -136,29 +136,46 @@
             <button class="layui-btn layui-btn-danger" id="LAY_delallmsg">清空全部消息</button>
             <div  id="LAY_minemsg" style="margin-top: 10px;">
                 <!--<div class="fly-none">您暂时没有最新消息</div>-->
-                <ul class="mine-msg">
-                    <li data-id="123">
-                        <blockquote class="layui-elem-quote">
-                            <a href="/jump?username=Absolutely" target="_blank"><cite>Absolutely</cite></a>回答了您的求解<a target="_blank" href="/jie/8153.html/page/0/#item-1489505778669"><cite>layui后台框架</cite></a>
-                        </blockquote>
-                        <p><span>1小时前</span><a href="javascript:;" class="layui-btn layui-btn-small layui-btn-danger fly-delete">删除</a></p>
-                    </li>
-                    <li data-id="123">
-                        <blockquote class="layui-elem-quote">
-                            系统消息：欢迎使用 layui
-                        </blockquote>
-                        <p><span>1小时前</span><a href="javascript:;" class="layui-btn layui-btn-small layui-btn-danger fly-delete">删除</a></p>
-                    </li>
-                </ul>
+                <!--<ul class="mine-msg">-->
+                    <!--<li data-id="123">-->
+                        <!--<blockquote class="layui-elem-quote">-->
+                            <!--<a href="/jump?username=Absolutely" target="_blank"><cite>Absolutely</cite></a>回答了您的求解<a target="_blank" href="/jie/8153.html/page/0/#item-1489505778669"><cite>layui后台框架</cite></a>-->
+                        <!--</blockquote>-->
+                        <!--<p><span>1小时前</span><a href="javascript:;" class="layui-btn layui-btn-small layui-btn-danger fly-delete">删除</a></p>-->
+                    <!--</li>-->
+                    <!--<li data-id="123">-->
+                        <!--<blockquote class="layui-elem-quote">-->
+                            <!--系统消息：欢迎使用 layui-->
+                        <!--</blockquote>-->
+                        <!--<p><span>1小时前</span><a href="javascript:;" class="layui-btn layui-btn-small layui-btn-danger fly-delete">删除</a></p>-->
+                    <!--</li>-->
+                <!--</ul>-->
             </div>
         </div>
     </div>
 </div>
+<script id="msg-mod" type="text/html">
+    {{# if(d != null){  }}
+    <ul class="mine-msg">
+        {{#  layui.each(d, function(index, item){ }}
+        <li data-id="{{item.id}}">
+            <blockquote class="layui-elem-quote">
+                {{item.content}}
+            </blockquote>
+            <p><span>{{item.createTime}}</span><a href="javascript:;" class="layui-btn layui-btn-small layui-btn-danger fly-delete">删除</a></p>
+        </li>
+        {{#  }); }}
+    </ul>
+    {{# }else{ }}
+    <div class="fly-none">您暂时没有最新消息</div>
+    {{# } }}
+</script>
 <script type="text/javascript" th:src="@{/layui/layui.js}"></script>
 <script>
-    layui.use(['element','laytpl'],function () {
+    layui.use(['element','laytpl','layer'],function () {
         var element = layui.element; //导航的hover效果、二级菜单等功能，需要依赖element模块
-        var taytpl = layui.laytpl;
+        var laytpl = layui.laytpl;
+        var layer = layui.layer;
         element.on('tab(user)', function(data){
             // console.log(this); //当前Tab标题所在的原始DOM元素
             // console.log(data.index); //得到当前Tab的所在下标
@@ -166,6 +183,27 @@
             var id = '#' + $(this).attr('data-type');
             setData(id);
         });
+        loadData();
+        function loadData() {
+            $.ajax({
+                url:"/user/userReMsg",
+                type:"post",
+                success:function(res){
+                    console.log(res);
+                    if (res.code === 200) {
+                        // 获取节点
+                        var getTpl = document.getElementById('msg-mod').innerHTML;
+                        // 执行tpl渲染
+                        laytpl(getTpl).render(res.data, function (html) {
+                            document.getElementById('LAY_minemsg').innerHTML = html;
+                        });
+                    }
+                },
+                error:function(res){
+                    layer.msg("错误"+res);
+                }
+            });
+        }
         function setData(id) {
 
         }

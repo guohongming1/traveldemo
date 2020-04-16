@@ -1,17 +1,13 @@
 package com.guo.traveldemo.web.pojo;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableId;
-
 import java.util.Date;
 
 public class TravelTable {
-    @TableId(value = "id",type = IdType.AUTO)
     private Integer id;
 
     private Integer straDeId;
 
-    private Byte days;
+    private String days;
 
     private String fee;
 
@@ -39,11 +35,11 @@ public class TravelTable {
         this.straDeId = straDeId;
     }
 
-    public Byte getDays() {
+    public String getDays() {
         return days;
     }
 
-    public void setDays(Byte days) {
+    public void setDays(String days) {
         this.days = days;
     }
 

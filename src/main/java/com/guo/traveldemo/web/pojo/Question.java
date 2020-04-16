@@ -1,7 +1,10 @@
 package com.guo.traveldemo.web.pojo;
 
+import com.alibaba.fastjson.annotation.JSONField;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
+
+import java.util.Date;
 
 public class Question {
     @TableId(value = "id",type = IdType.AUTO)
@@ -22,6 +25,9 @@ public class Question {
     private Integer commentNum;
 
     private Byte flag;
+
+    @JSONField(format = "yyyy-MM-dd HH:mm:ss")
+    private Date date;
 
     public Integer getId() {
         return id;
@@ -93,5 +99,13 @@ public class Question {
 
     public void setFlag(Byte flag) {
         this.flag = flag;
+    }
+
+    public Date getDate() {
+        return date;
+    }
+
+    public void setDate(Date date) {
+        this.date = date;
     }
 }

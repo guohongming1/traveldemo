@@ -108,6 +108,7 @@ layui.define(['layer', 'laytpl', 'form', 'element', 'upload', 'util'],function(e
                 ,'<span type="picture" title="插入图片：img[src]"><i class="iconfont icon-tupian"></i></span>'
                 ,'<span type="href" title="超链接格式：a(href)[text]"><i class="iconfont icon-lianjie"></i></span>'
                 ,'<span type="hr" title="插入水平线">hr</span>'
+                ,'<span type="h3" title="插入标题">h3</span>'
                 ,'<span type="yulan" title="预览"><i class="iconfont icon-yulan1"></i></span>'
                 ,'</div>'].join('');
 
@@ -285,6 +286,23 @@ layui.define(['layer', 'laytpl', 'form', 'element', 'upload', 'util'],function(e
                 ,hr: function(editor){ //插入水平分割线
                     layui.insertHtmlAtCaret('<hr>');
                 }
+                ,h3:function (editor) {
+                    layer.prompt({
+                        title: '请输入标题'
+                        ,shade: false
+                        ,fixed: false
+                        ,id: 'LAY_flyedit_href'
+                        ,offset: [
+                            editor.offset().top - $(window).scrollTop() + 'px'
+                            ,editor.offset().left + 'px'
+                        ]
+                    }, function(val, index, elem){
+                        if(val != null && val != ""){
+                            layui.insertHtmlAtCaret('<h2>'+val+'</h2>');
+                            layer.close(index);
+                        }
+                    });
+                }
                 ,yulan: function(editor){ //预览
                     var content = editor.html();
                     layer.open({
@@ -319,6 +337,32 @@ layui.define(['layer', 'laytpl', 'form', 'element', 'upload', 'util'],function(e
     //加载编辑器
     travel.layEditor({
         elem: '.fly-editor'
+    });
+    /* 上传攻略头图*/
+    var headImgSrc = $('#LAY_headImgSrc');
+    upload.render({
+        elem: '#uploadHeadImgbtn'
+        ,url: '/uploadImg/'
+        ,size: 50000
+        ,accept: 'file'
+        ,before:function(){
+            layer.load(); //上传loading
+        }
+        ,done: function(res){
+            layer.closeAll('loading'); //关闭loading
+            if(res.code == 1){
+                headImgSrc.val(res.data.src);
+                $(".head_img").html('<img src="'+res.data.src + '" width="200px" height="200px"> ');
+                $(".head_img").show();
+                layer.msg("上传成功")
+            } else {
+                layer.msg(res.msg, {icon: 5});
+            }
+        }
+        ,error: function(index, upload){
+            layer.closeAll('loading'); //关闭loading
+            layer.msg("上传失败")
+        }
     });
     exports('travel', travel);
 });

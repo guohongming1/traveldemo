@@ -1,7 +1,10 @@
 package com.guo.traveldemo.web.service;
 
+import com.guo.traveldemo.result.Response;
+import com.guo.traveldemo.result.StrategyDTO;
 import com.guo.traveldemo.web.pojo.Strategy;
 import com.guo.traveldemo.web.pojo.StrategyDetail;
+import com.guo.traveldemo.web.pojo.TravelTable;
 
 /**
  * @author 郭红明
@@ -10,5 +13,7 @@ import com.guo.traveldemo.web.pojo.StrategyDetail;
  */
 public interface StrategyService {
 
-    public Boolean save(Strategy strategy, StrategyDetail strategyDetail);
+    public Response<String> createStrategy(Strategy strategy, TravelTable travelTable, String route, String content);
+    Response<StrategyDTO> pullStrategy(int userId);
+    Response<String> updateStrategy(Strategy strategy, TravelTable travelTable, String route, String content);
 }

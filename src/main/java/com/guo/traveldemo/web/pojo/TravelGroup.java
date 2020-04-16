@@ -1,11 +1,12 @@
 package com.guo.traveldemo.web.pojo;
 
+import com.alibaba.fastjson.annotation.JSONField;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 
 import java.util.Date;
 
-public class Group {
+public class TravelGroup {
     @TableId(value = "id",type = IdType.AUTO)
     private Integer id;
 
@@ -23,6 +24,13 @@ public class Group {
 
     private Integer topicNum;
 
+    private String headImg;
+
+    private String address;
+
+    private Byte flag;
+
+    @JSONField(format = "yyyy-MM-dd HH:mm:ss")
     private Date date;
 
     public Integer getId() {
@@ -87,6 +95,30 @@ public class Group {
 
     public void setTopicNum(Integer topicNum) {
         this.topicNum = topicNum;
+    }
+
+    public String getHeadImg() {
+        return headImg;
+    }
+
+    public void setHeadImg(String headImg) {
+        this.headImg = headImg;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    public Byte getFlag() {
+        return flag;
+    }
+
+    public void setFlag(Byte flag) {
+        this.flag = flag;
     }
 
     public Date getDate() {

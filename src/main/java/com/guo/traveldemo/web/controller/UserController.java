@@ -3,7 +3,9 @@ package com.guo.traveldemo.web.controller;
 import com.guo.traveldemo.result.CodeMsg;
 import com.guo.traveldemo.result.Response;
 import com.guo.traveldemo.web.dto.UserDTO;
+import com.guo.traveldemo.web.pojo.Notify;
 import com.guo.traveldemo.web.pojo.User;
+import com.guo.traveldemo.web.service.MessageService;
 import com.guo.traveldemo.web.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -12,6 +14,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpSession;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author 郭红明
@@ -23,6 +27,9 @@ import javax.servlet.http.HttpSession;
 public class UserController {
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private MessageService messageService;
 
     /**
      * 用户注册
@@ -66,6 +73,20 @@ public class UserController {
             session.invalidate();
         }
         return Response.success(true);
+    }
+
+    /**
+     * 拉取用户未读消息
+     */
+    @PostMapping("/userReMsg")
+    @ResponseBody
+    public Response<List<Notify>> queryMsg(HttpSession session){
+        List<Notify> list = new ArrayList<Notify>();
+        User user = (User)session.getAttribute("userinfo");
+        if(null != user && user.getId() !=null){
+            list = messageService.queryUserREJECTMsg(user.getId());
+        }
+        return Response.success(list);
     }
 
 }

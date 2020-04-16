@@ -33,7 +33,7 @@
     values (#{id,jdbcType=INTEGER}, #{routeId,jdbcType=INTEGER}, #{tableId,jdbcType=INTEGER}, 
       #{content,jdbcType=LONGVARCHAR})
   </insert>
-  <insert id="insertSelective" parameterType="com.guo.traveldemo.web.pojo.StrategyDetail" >
+  <insert id="insertSelective" parameterType="com.guo.traveldemo.web.pojo.StrategyDetail" useGeneratedKeys="true" keyProperty="id"  >
     insert into strategy_detail
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="id != null" >

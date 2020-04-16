@@ -37,21 +37,21 @@
             </form>
         </div>
         <div class="login">
-            <!--<a th:if="${session.sessionUser == null}" href="/front/page/login">-->
-            <!--登录-->
-            <!--</a>-->
+            <a th:if="${session.userinfo == null}" href="/login">
+                登录
+            </a>
             <!--<img th:src="@{/layuiadmin/myfile/images/header.png}" style="width: 36px; height: 36px;">-->
-            <ul class="layui-nav" style="background-color: #fff;">
+            <ul th:if="${session.userinfo != null}" class="layui-nav" style="background-color: #fff;">
                 <li class="layui-nav-item">
-                    <a href="" style="font-size: 16px;color: #222;">消息<span class="layui-badge">3</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</a>
+                    <a href="/usermsg" style="font-size: 16px;color: #222;">消息<span th:text="${session.msgnum}" class="layui-badge"></span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</a>
                 </li>
                 <li class="layui-nav-item" lay-unselect="">
-                    <a href="javascript:;" style="font-size: 16px;color: #222;"><img th:src="@{/layuiadmin/myfile/images/test01.jpg}" style="height: 30px; width: 30px;" class="layui-nav-img">&nbsp;&nbsp;</a>
+                    <a href="javascript:;" style="font-size: 16px;color: #222;"><img th:src="${session.userinfo.getImgUrl()}" style="height: 30px; width: 30px;" class="layui-nav-img" onerror="getdefaultImg(event)">&nbsp;&nbsp;</a>
                     <dl class="layui-nav-child">
                         <dd style="text-align: center"><a href="javascript:;"><i class="layui-icon layui-icon-user"></i>&nbsp;个人资料</a></dd>
                         <dd style="text-align: center"><a href="javascript:;"><i class="layui-icon layui-icon-note"></i>&nbsp;攻略/问答</a></dd>
                         <dd style="text-align: center"><a href="javascript:;"><i class="layui-icon layui-icon-rate"></i>&nbsp;收藏</a></dd>
-                        <dd style="text-align: center"><a href="javascript:;"><i class="layui-icon layui-icon-logout"></i>&nbsp;登出</a></dd>
+                        <dd layadmin-event="logout" style="text-align: center"><a href="javascript:;"><i class="layui-icon layui-icon-logout"></i>&nbsp;登出</a></dd>
                     </dl>
                 </li>
             </ul>
@@ -256,8 +256,8 @@
         <div class="qd-layout">
             <div class="qd-content">
                 <div class="qd-ct qd-title">
-                    <textarea id="title-area" placeholder="一句话完整的描述你的问题" style="height: 30px;"></textarea>
-                    <span id="title-count" class="count"><b>0</b>/49</span>
+                    <textarea id="title-area" maxlength="40" placeholder="一句话完整的描述你的问题" style="height: 30px;"></textarea>
+                    <span id="title-count" class="count"></span>
                 </div>
             </div>
         </div>
@@ -267,7 +267,7 @@
         </div>
         <div class="question_des layui-form-item">
             <div class="layui-input-block" style="margin-left: 0px">
-                <input type="text" name="title" lay-verify="title" autocomplete="off" placeholder="问题相关地点" class="layui-input">
+                <input type="text" id="address" name="address" lay-verify="" autocomplete="off" placeholder="问题相关地点" class="layui-input">
             </div>
         </div>
         <div class="question_des qb-layout-tit">
@@ -293,16 +293,16 @@
                 </div>
                 <div class="qd-plus" id="qd-plus-btn">
                     <ul id="qd-img-list" class="qd-img-list clearfix" style="display: none"></ul>
-                    <ul class="qd-plus-stuff img">
-                        <i class="layui-icon layui-icon-picture" style="font-size: 40px"></i>
-                        <span>添加必要配图将会得到更多人回答</span>
-                    </ul>
+                    <!--<ul class="qd-plus-stuff img">-->
+                        <!--<i class="layui-icon layui-icon-picture" style="font-size: 40px"></i>-->
+                        <!--<span>添加必要配图将会得到更多人回答</span>-->
+                    <!--</ul>-->
                 </div>
             </div>
         </div>
     </div>
     <div class="submitquestion">
-        <button type="button" class="layui-btn" style="margin: 0px auto">提交问题</button>
+        <button type="button" id="submit" class="layui-btn" style="margin: 0px auto">提交问题</button>
     </div>
 </div>
 <div class="micronews-footer-wrap">
@@ -359,7 +359,6 @@
             if($(this).hasClass('check')){
                 $(this).removeClass('check');
                 tags --;
-                console.log(tags)
             }else{
                 if(tags>=3){
                     layer.msg('标签至多选择3个！',{icon:5,time: 1000});
@@ -395,6 +394,90 @@
             }
         });
         // 标签添加   end
+
+        //封装一个限制字数方法
+        var checkStrLengths = function (str, maxLength) {
+            var maxLength = maxLength;
+            var result = 0;
+            if (str && str.length > maxLength) {
+                result = maxLength;
+            } else {
+                result = str.length;
+            }
+            return result;
+        }
+
+        //监听输入
+        $("#title-area").on('input propertychange', function () {
+
+            //获取输入内容
+            var userDesc = $(this).val();
+
+            //判断字数
+            var len;
+            if (userDesc) {
+                len = checkStrLengths(userDesc, 40);
+            } else {
+                len = 0
+            }
+
+            //显示字数
+            $("#title-count").html('<b>'+len+'</b>' + '/40');
+        });
+        // 提交
+        $("#submit").click(function () {
+            var title = $("#title-area").val();
+            var address = $("#address").val();
+            var content = $("#content-area").val();
+            var tags="";
+            $("body .interest-tags").find("span").each(function () {
+                if($(this).hasClass("check")){
+                    tags += "#"+$(this).html();
+                }
+                // 根据data-tag属性获取
+                if($(this).data("tag") != null && $(this).data("tag")!= ""){
+                    tags += "#"+$(this).data("tag");
+                }
+
+            });
+            var flag=true;
+            // 空值校验
+            if(title==null || title==""){flag=false;}
+            if(content == null || content==""){flag = false;}
+            if(tags == null || tags == ""){flag = false;}
+            if(flag){
+                var data={'title':title,'address':address,'content':content,'tags':tags}
+                //请求接口
+                $.ajax({
+                    type: "post",
+                    url: "/question/newquestion",
+                    data: data,
+                    success: function(res){
+                        if (res.code === 200) {
+                            layer.msg('发表成功', {
+                                offset: '15px'
+                                , icon: 1
+                                , time: 1000
+                            }, function () {
+                                // layer.msg(res.data);
+                            });
+                        } else {
+                            layer.msg(res.data);
+                        }
+                    },
+                    error: function (res) {
+                        layer.msg(res.message);
+                    }
+                });
+            }else{
+                layer.msg('必填项不能为空', {
+                    offset: '15px'
+                    , icon: 5
+                    , time: 1000
+                });
+            }
+        });
+
     });
 </script>
 </body>

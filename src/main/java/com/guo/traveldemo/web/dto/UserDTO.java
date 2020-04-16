@@ -31,9 +31,6 @@ public class UserDTO implements Serializable {
 
     private String remark;
 
-    public static long getSerialVersionUID() {
-        return serialVersionUID;
-    }
 
     public Integer getId() {
         return id;

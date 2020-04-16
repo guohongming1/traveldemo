@@ -18,7 +18,7 @@
         </javaModelGenerator>
         <sqlMapGenerator targetPackage="mapper" targetProject="src/main/resources" />
         <javaClientGenerator targetPackage="com.guo.traveldemo.web.mapper" targetProject="src/main/java" type="XMLMAPPER" />
-        <table schema="traveldemo"  tableName="user_notify" enableCountByExample="false" enableDeleteByExample="false"
+        <table schema="traveldemo"  tableName="topic" enableCountByExample="false" enableDeleteByExample="false"
                enableSelectByExample="false"
                enableUpdateByExample="false">
             <!--tableName= '%'表示数据库下所有表都生成-->

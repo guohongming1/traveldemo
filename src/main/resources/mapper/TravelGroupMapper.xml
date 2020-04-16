@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.guo.traveldemo.web.mapper.GroupMapper" >
-  <resultMap id="BaseResultMap" type="com.guo.traveldemo.web.pojo.Group" >
+<mapper namespace="com.guo.traveldemo.web.mapper.TravelGroupMapper" >
+  <resultMap id="BaseResultMap" type="com.guo.traveldemo.web.pojo.TravelGroup" >
     <id column="id" property="id" jdbcType="INTEGER" />
     <result column="type_id" property="typeId" jdbcType="INTEGER" />
     <result column="user_id" property="userId" jdbcType="INTEGER" />
@@ -10,33 +10,39 @@
     <result column="content" property="content" jdbcType="VARCHAR" />
     <result column="member" property="member" jdbcType="INTEGER" />
     <result column="topic_num" property="topicNum" jdbcType="INTEGER" />
+    <result column="head_img" property="headImg" jdbcType="VARCHAR" />
+    <result column="address" property="address" jdbcType="VARCHAR" />
+    <result column="flag" property="flag" jdbcType="TINYINT" />
     <result column="date" property="date" jdbcType="TIMESTAMP" />
   </resultMap>
   <sql id="Base_Column_List" >
-    id, type_id, user_id, title, tags, content, member, topic_num, date
+    id, type_id, user_id, title, tags, content, member, topic_num, head_img, address, 
+    flag, date
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
     select 
     <include refid="Base_Column_List" />
-    from group
+    from travel_group
     where id = #{id,jdbcType=INTEGER}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
-    delete from group
+    delete from travel_group
     where id = #{id,jdbcType=INTEGER}
   </delete>
-  <insert id="insert" parameterType="com.guo.traveldemo.web.pojo.Group" >
-    insert into group (id, type_id, user_id, 
+  <insert id="insert" parameterType="com.guo.traveldemo.web.pojo.TravelGroup" >
+    insert into travel_group (id, type_id, user_id, 
       title, tags, content, 
-      member, topic_num, date
+      member, topic_num, head_img, 
+      address, flag, date
       )
     values (#{id,jdbcType=INTEGER}, #{typeId,jdbcType=INTEGER}, #{userId,jdbcType=INTEGER}, 
       #{title,jdbcType=VARCHAR}, #{tags,jdbcType=VARCHAR}, #{content,jdbcType=VARCHAR}, 
-      #{member,jdbcType=INTEGER}, #{topicNum,jdbcType=INTEGER}, #{date,jdbcType=TIMESTAMP}
+      #{member,jdbcType=INTEGER}, #{topicNum,jdbcType=INTEGER}, #{headImg,jdbcType=VARCHAR}, 
+      #{address,jdbcType=VARCHAR}, #{flag,jdbcType=TINYINT}, #{date,jdbcType=TIMESTAMP}
       )
   </insert>
-  <insert id="insertSelective" parameterType="com.guo.traveldemo.web.pojo.Group" >
-    insert into group
+  <insert id="insertSelective" parameterType="com.guo.traveldemo.web.pojo.TravelGroup" >
+    insert into travel_group
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="id != null" >
         id,
@@ -61,6 +67,15 @@
       </if>
       <if test="topicNum != null" >
         topic_num,
+      </if>
+      <if test="headImg != null" >
+        head_img,
+      </if>
+      <if test="address != null" >
+        address,
+      </if>
+      <if test="flag != null" >
+        flag,
       </if>
       <if test="date != null" >
         date,
@@ -91,13 +106,22 @@
       <if test="topicNum != null" >
         #{topicNum,jdbcType=INTEGER},
       </if>
+      <if test="headImg != null" >
+        #{headImg,jdbcType=VARCHAR},
+      </if>
+      <if test="address != null" >
+        #{address,jdbcType=VARCHAR},
+      </if>
+      <if test="flag != null" >
+        #{flag,jdbcType=TINYINT},
+      </if>
       <if test="date != null" >
         #{date,jdbcType=TIMESTAMP},
       </if>
     </trim>
   </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.guo.traveldemo.web.pojo.Group" >
-    update group
+  <update id="updateByPrimaryKeySelective" parameterType="com.guo.traveldemo.web.pojo.TravelGroup" >
+    update travel_group
     <set >
       <if test="typeId != null" >
         type_id = #{typeId,jdbcType=INTEGER},
@@ -120,14 +144,23 @@
       <if test="topicNum != null" >
         topic_num = #{topicNum,jdbcType=INTEGER},
       </if>
+      <if test="headImg != null" >
+        head_img = #{headImg,jdbcType=VARCHAR},
+      </if>
+      <if test="address != null" >
+        address = #{address,jdbcType=VARCHAR},
+      </if>
+      <if test="flag != null" >
+        flag = #{flag,jdbcType=TINYINT},
+      </if>
       <if test="date != null" >
         date = #{date,jdbcType=TIMESTAMP},
       </if>
     </set>
     where id = #{id,jdbcType=INTEGER}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.guo.traveldemo.web.pojo.Group" >
-    update group
+  <update id="updateByPrimaryKey" parameterType="com.guo.traveldemo.web.pojo.TravelGroup" >
+    update travel_group
     set type_id = #{typeId,jdbcType=INTEGER},
       user_id = #{userId,jdbcType=INTEGER},
       title = #{title,jdbcType=VARCHAR},
@@ -135,6 +168,9 @@
       content = #{content,jdbcType=VARCHAR},
       member = #{member,jdbcType=INTEGER},
       topic_num = #{topicNum,jdbcType=INTEGER},
+      head_img = #{headImg,jdbcType=VARCHAR},
+      address = #{address,jdbcType=VARCHAR},
+      flag = #{flag,jdbcType=TINYINT},
       date = #{date,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=INTEGER}
   </update>

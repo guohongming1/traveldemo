@@ -27,7 +27,7 @@
     values (#{id,jdbcType=INTEGER}, #{nextdayId,jdbcType=INTEGER}, #{content,jdbcType=VARCHAR}, 
       #{straDeId,jdbcType=INTEGER}, #{headFlag,jdbcType=TINYINT})
   </insert>
-  <insert id="insertSelective" parameterType="com.guo.traveldemo.web.pojo.Route" >
+  <insert id="insertSelective" parameterType="com.guo.traveldemo.web.pojo.Route" useGeneratedKeys="true" keyProperty="id" >
     insert into route
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="id != null" >

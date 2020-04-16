@@ -215,6 +215,11 @@
         border-top: 1px solid #e8ecee;
     }
     .question-description .qd-plus-stuff.img {
+        display: inline-block;
+        margin-left: 5px;
+    }
+    .question-description .qd-img-list{
+        display: inline-block;
         margin-left: 5px;
     }
     .question-description .qd-plus-stuff.img i:hover{
@@ -267,7 +272,7 @@
         </div>
         <div class="question_des layui-form-item">
             <div class="layui-input-block" style="margin-left: 0px">
-                <input type="text" name="title" lay-verify="title" autocomplete="off" placeholder="小组相关地点" class="layui-input">
+                <input type="text" id="address" name="address" lay-verify="" autocomplete="off" placeholder="小组相关地点" class="layui-input">
             </div>
         </div>
         <div class="question_des qb-layout-tit">
@@ -292,9 +297,11 @@
                     <textarea id="content-area" placeholder="简要介绍自己的小组，可以（选填）" style="height: 126px;"></textarea>
                 </div>
                 <div class="qd-plus" id="qd-plus-btn">
-                    <ul id="qd-img-list" class="qd-img-list clearfix" style="display: none"></ul>
+                    <ul id="qd-img-list" class="qd-img-list clearfix" style="display: none">
+
+                    </ul>
                     <ul class="qd-plus-stuff img">
-                        <i class="layui-icon layui-icon-picture" style="font-size: 40px"></i>
+                        <i id="uploadHeadImgbtn" class="layui-icon layui-icon-picture" style="font-size: 40px"></i>
                         <span>小组大头贴，默认使用个人头像</span>
                     </ul>
                 </div>
@@ -302,7 +309,7 @@
         </div>
     </div>
     <div class="submitquestion">
-        <button type="button" class="layui-btn" style="margin: 0px auto">开始创建</button>
+        <button type="button" id="submit" class="layui-btn" style="margin: 0px auto">开始创建</button>
     </div>
 </div>
 <div class="micronews-footer-wrap">
@@ -323,9 +330,12 @@
             $(".questions").removeClass("fix")
         }
     });
-    layui.use(['element','layer'], function(){
+    layui.use(['element','layer','upload'], function(){
         var element = layui.element; //导航的hover效果、二级菜单等功能，需要依赖element模块
         var layer = layui.layer; // 轮播框设置
+        var upload = layui.upload;
+        // 小组地址
+        var groupHeadImgSrc="";
         /*旅游攻略页面*/
         /*left nav*/
         $('.nav-item').hover(function() {
@@ -396,6 +406,116 @@
             }
         });
         // 标签添加   end
+
+        /* 上传攻略头图*/
+        upload.render({
+            elem: '#uploadHeadImgbtn'
+            ,url: '/uploadImg/'
+            ,size: 50000
+            ,accept: 'file'
+            ,before:function(){
+                layer.load(); //上传loading
+            }
+            ,done: function(res){
+                layer.closeAll('loading'); //关闭loading
+                if(res.code == 1){
+                    groupHeadImgSrc= res.data.src;
+                    $(".qd-img-list").html('<li><img src="'+res.data.src + '" width="75px" height="75px"></li> ');
+                    $(".qd-img-list").show();
+                    layer.msg("上传成功")
+                } else {
+                    layer.msg(res.msg, {icon: 5});
+                }
+            }
+            ,error: function(index, upload){
+                layer.closeAll('loading'); //关闭loading
+                layer.msg("上传失败")
+            }
+        });
+        //封装一个限制字数方法
+        var checkStrLengths = function (str, maxLength) {
+            var maxLength = maxLength;
+            var result = 0;
+            if (str && str.length > maxLength) {
+                result = maxLength;
+            } else {
+                result = str.length;
+            }
+            return result;
+        }
+
+
+        //监听输入
+        $("#title-area").on('input propertychange', function () {
+
+            //获取输入内容
+            var userDesc = $(this).val();
+
+            //判断字数
+            var len;
+            if (userDesc) {
+                len = checkStrLengths(userDesc, 40);
+            } else {
+                len = 0
+            }
+
+            //显示字数
+            $("#title-count").html('<b>'+len+'</b>' + '/40');
+        });
+        // 提交
+        $("#submit").click(function () {
+            var title = $("#title-area").val();
+            var address = $("#address").val();
+            console.log(address)
+            var content = $("#content-area").val();
+            var tags="";
+            $("body .interest-tags").find("span").each(function () {
+                if($(this).hasClass("check")){
+                    tags += "#"+$(this).html();
+                }
+                // 根据data-tag属性获取
+                if($(this).data("tag") != null && $(this).data("tag")!= ""){
+                    tags += "#"+$(this).data("tag");
+                }
+
+            });
+            var flag=true;
+            // 空值校验
+            if(title==null || title==""){flag=false;}
+            if(content == null || content==""){flag = false;}
+            if(tags == null || tags == ""){flag = false;}
+            if(false){
+                var data={'title':title,'address':address,'content':content,'tags':tags,'headImg':groupHeadImgSrc}
+                //请求接口
+                $.ajax({
+                    type: "post",
+                    url: "/group/newgroup",
+                    data: data,
+                    success: function(res){
+                        if (res.code === 200) {
+                            layer.msg('创建成功', {
+                                offset: '15px'
+                                , icon: 1
+                                , time: 1000
+                            }, function () {
+                                // layer.msg(res.data);
+                            });
+                        } else {
+                            layer.msg(res.data);
+                        }
+                    },
+                    error: function (res) {
+                        layer.msg(res.message);
+                    }
+                });
+            }else{
+                layer.msg('必填项不能为空', {
+                    offset: '15px'
+                    , icon: 5
+                    , time: 1000
+                });
+            }
+        });
     });
 </script>
 </body>

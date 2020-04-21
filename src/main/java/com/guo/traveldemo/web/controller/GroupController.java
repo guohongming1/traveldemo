@@ -2,6 +2,7 @@ package com.guo.traveldemo.web.controller;
 
 import com.guo.traveldemo.constants.Constants;
 import com.guo.traveldemo.result.Response;
+import com.guo.traveldemo.web.dto.NewTopicDTO;
 import com.guo.traveldemo.web.pojo.TravelGroup;
 import com.guo.traveldemo.web.pojo.User;
 import com.guo.traveldemo.web.service.GroupService;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpSession;
 import java.util.Date;
+import java.util.Objects;
 
 /**
  * @author 郭红明
@@ -34,5 +36,14 @@ public class GroupController {
         User user = (User)session.getAttribute("userinfo");
         group.setUserId(user.getId());
         return groupService.createGroup(group);
+    }
+
+    @PostMapping("/newtopic")
+    @ResponseBody
+    public Response<String> createTopic(NewTopicDTO topicDTO) {
+        if(!Objects.isNull(topicDTO)){
+            return groupService.createTopic(topicDTO);
+        }
+        return Response.fail(100,"参数错误");
     }
 }

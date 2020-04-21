@@ -9,6 +9,7 @@
     <script type="text/javascript" th:src="@{/myfile/js/jquery.min.js}"></script>
     <link rel="stylesheet" type="text/css" th:href="@{/myfile/css/main.css}">
     <link rel="stylesheet" type="text/css" th:href="@{/myfile/css/global.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/myfile/css/autostyles.css}">
 </head>
 <body class="micronews">
 <div class="micronews-header-wrap">
@@ -71,6 +72,23 @@
     .wrap{
         margin: 10px auto;
     }
+    .fxAnswer{
+        min-height: 250px;
+        border: 1px solid #bdbfc2;
+        padding: 10px;
+    }
+    .fxAnswer img{
+        margin: 3px 3px;
+        max-width: 800px;
+        max-height: 400px;
+    }
+    .fxAnswer a{
+        text-decoration: underline;
+        color: #1E9FFF;
+    }
+    .fxAnswer a:hover{
+        cursor: pointer;
+    }
 </style>
 <div class="layui-container wrap">
     <div class="fly-panel" pad20 style="padding-top: 5px;">
@@ -86,7 +104,8 @@
                                 <div class="layui-col-md12">
                                     <label for="L_title" class="layui-form-label">标题</label>
                                     <div class="layui-input-block">
-                                        <input type="text" id="L_title" placeholder="字数小于20" name="title" required lay-verify="title" autocomplete="off" class="layui-input" maxlength="20"/>
+                                        <input type="text" id="groupid" name="groupid" style="display: none" value="1" autocomplete="off" class="layui-input"/>
+                                        <input type="text" id="L_title" placeholder="字数小于20" name="title" required lay-verify="title" autocomplete="off" class="layui-input autocomplete" maxlength="20"/>
                                     </div>
                                 </div>
                             </div>
@@ -94,23 +113,39 @@
                                 <div class="layui-inline">
                                 <label class="layui-form-label">选择标签</label>
                                 <div class="layui-input-block">
-                                    <input class="tag" lay-filter="tags" type="checkbox" name="like[write]" title="环球旅行">
-                                    <input class="tag" lay-filter="tags" type="checkbox" name="like[read]" title="独步">
-                                    <input class="tag" lay-filter="tags" type="checkbox" name="like[dai]" title="时尚">
-                                    <input class="tag" lay-filter="tags" type="checkbox" name="like[write]" title="自驾">
-                                    <input class="tag" lay-filter="tags" type="checkbox" name="like[read]" title="生活">
-                                    <input class="tag" lay-filter="tags" type="checkbox" name="like[dai]" title="旅行必备">
+                                    <input class="tag" lay-filter="tags" type="checkbox" name="like[travel]" title="环球旅行" value="环球旅行">
+                                    <input class="tag" lay-filter="tags" type="checkbox" name="like[walk]" title="独步" value="独步">
+                                    <input class="tag" lay-filter="tags" type="checkbox" name="like[pur]" title="时尚" value="时尚">
+                                    <input class="tag" lay-filter="tags" type="checkbox" name="like[drive]" title="自驾" value="自驾">
+                                    <input class="tag" lay-filter="tags" type="checkbox" name="like[live]" title="生活" value="生活">
+                                    <input class="tag" lay-filter="tags" type="checkbox" name="like[bibei]" title="旅行必备" value="旅行必备">
                                 </div>
                                     <div class="layui-form-mid layui-word-aux">标签来源于小组标签，选择合理的标签有助于话题讨论</div>
                                 </div>
                             </div>
                             <div class="layui-form-item layui-form-text">
+                                <span class="ask-title">详细</span><hr>
                                 <div class="layui-input-block">
-                                    <textarea id="L_content" name="content" required lay-verify="required" placeholder="详细描述" class="layui-textarea fly-editor" style="height: 260px;"></textarea>
+                                    <div class="layui-collapse">
+                                        <div class="layui-colla-item">
+                                            <h2 class="layui-colla-title editor-focus">点击开始</h2>
+                                            <!--弹出进度条-->
+                                            <div id="uploadLoadingDiv" style="display: none;">
+                                                <div class="layui-progress layui-progress-big" lay-showpercent="true" lay-filter="js_upload_progress" style="margin-top: 20px;">
+                                                    <div class="layui-progress-bar layui-bg-red" lay-percent="0%"></div>
+                                                </div>
+                                            </div>
+                                            <div class="layui-colla-content" style="margin: 0px;padding: 0px">
+                                                <div class="layui-colla-item">
+                                                    <div contenteditable="true" class="fxAnswer fly-editor"></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                             <div class="layui-form-item">
-                                <button class="layui-btn" lay-filter="*" lay-submit>立即发布</button>
+                                <button type="submit" class="layui-btn" lay-submit lay-filter="topic">立即发布</button>
                             </div>
                         </form>
                     </div>
@@ -120,24 +155,41 @@
     </div>
 </div>
 <script type="text/javascript" th:src="@{/layui/layui.js}"></script>
+<script type="text/javascript" th:src="@{/myfile/js/jquery.autocomplete.js}"></script>
 <script>
+    //TODO
+    // var countries = [
+    //     { value: 'Andorra', data: 'AD' },
+    //     // ...
+    //     { value: 'Zimbabwe', data: 'ZZ' }
+    // ];
+    //
+    // $('.autocomplete').autocomplete({
+    //     lookup: countries,
+    //     onSelect: function (suggestion) {
+    //
+    //     }
+    // });
+
     layui.cache.page = 'jie';
     layui.cache.user = {
         username: '游客'
-        ,uid: -1
+        ,uid: 4
         ,avatar: '../../res/images/avatar/00.jpg'
         ,experience: 83
         ,sex: '男'
     };
     layui.config({
         version: "3.0.0"
-        ,base: '/mods/'
+        ,base: '/mymods/'
     }).extend({
-        fly: 'index'
-    }).use(['fly','element','form'], function(){
-        var $ = layui.$
-            ,fly = layui.fly;
+        travel: 'index',
+    }).use(['travel','element','form'], function(){
+        var element = layui.element;
+        var travel = layui.travel;
         var form = layui.form;
+
+
         //自定义验证规则
         form.verify({
             title: function(value){
@@ -157,6 +209,67 @@
                 layer.msg('最多只能选3项！',{icon:5,time:1000});
                 return false;
             }
+        });
+
+        /*
+         * 监听表格提交
+         */
+        form.on('submit(topic)', function (data) {
+            var field={};
+            var arr_box = "";
+            $(".tag:checked").each(function() {
+                arr_box +="#" + $(this).val();
+            });
+            var title = $("#L_title").val();
+            if(title != null && title != ""){
+                field['title'] = title;
+            }
+            if(arr_box == ""){
+                layer.msg("请至少选择一个标签！", {icon: 5});
+                return false;
+            }else{
+                field['tags'] = arr_box;
+            }
+            var text = $(".fly-editor").html();
+            if(text == null || text == ""){
+                //layui-show
+                $(".layui-colla-content").attr("class","layui-show");
+                $(".fly-editor").focus();
+                layer.msg("请完成详情描述", {icon: 5});
+                return false;
+            }
+            field["content"]= text;
+            field["groupId"] = $("#groupid").val();
+            field["userId"] = layui.cache.user['uid'];
+            console.log(field)
+            var index = layer.load(1, {
+                shade: [0.5,'#fff'] //0.1透明度的白色背景
+            });
+            //请求接口
+            $.ajax({
+                type: "post",
+                url: "/group/newtopic",
+                data: field,
+                success: function(res){
+                    if (res.code === 200) {
+                        layer.close(index)
+                        layer.msg('发表成功', {
+                            offset: '15px'
+                            , icon: 1
+                            , time: 1000
+                        }, function () {
+                            //location.href = '/login'; //跳转到登入页
+                        });
+                    } else {
+                        layer.close(index)
+                        layer.msg(res.message);
+                    }
+                },
+                error: function (res) {
+                    layer.close(index)
+                    layer.msg("系统错误:"+res.message);
+                }});
+            return false; //TODO
         });
 
     });

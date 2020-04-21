@@ -182,15 +182,10 @@
                                 <div class="layui-inline">
                                     <label class="layui-form-label">地点</label>
                                     <div class="layui-input-inline">
-                                        <input type="text" name="address" lay-verify="required" autocomplete="off" class="layui-input">
+                                        <input type="text" id="address" name="address" lay-verify="required" autocomplete="off" class="layui-input" placeholder="至少精确到市级">
                                     </div>
                                 </div>
-                                <div class="layui-inline">
-                                    <label class="layui-form-label">出发时间</label>
-                                    <div class="layui-input-inline">
-                                        <input type="text" name="date" id="date" lay-verify="required|date" placeholder="yyyy-MM-dd" autocomplete="off" class="layui-input">
-                                    </div>
-                                </div>
+                                <span id="realaddress" style="font-size: 13px;color: red;margin-left: -15px;"></span>
                             </div>
                             <div class="layui-form-item">
                                 <div class="layui-inline">
@@ -205,10 +200,18 @@
                                         <input type="text" name="money" lay-verify="required" autocomplete="off" class="layui-input">
                                     </div>
                                 </div>
+                            </div>
+                            <div class="layui-form-item">
                                 <div class="layui-inline">
                                     <label class="layui-form-label">人物</label>
                                     <div class="layui-input-inline">
                                         <input type="text" name="people" lay-verify="required" autocomplete="off" class="layui-input">
+                                    </div>
+                                </div>
+                                <div class="layui-inline">
+                                    <label class="layui-form-label">出发时间</label>
+                                    <div class="layui-input-inline">
+                                        <input type="text" name="date" id="date" lay-verify="required|date" placeholder="yyyy-MM-dd" autocomplete="off" class="layui-input">
                                     </div>
                                 </div>
                             </div>
@@ -330,6 +333,28 @@
         }
     });
     var timerouteFlag = 1;// 初始增加的天数
+
+    // 地址自动请求
+    $( '#address' ).blur(function () {
+        if($("#address").val()!=null&&$("#address").val()!=""){
+            var scenic = {"scenic":$("#address").val()}
+            //请求接口
+            $.ajax({
+                type: "post",
+                url: "/comm/local",
+                data:scenic,
+                success: function(res){
+                    console.log(res);
+                    if(res.data != null && res.data != ""){
+                        $( '#realaddress' ).html(res.data);
+                    }
+                },
+                error: function (res) {
+                    layer.msg("请求错误");
+                }
+            });
+        }
+    });
     layui.config({
         version: "3.0.0"
         ,base: '/mymods/'
@@ -459,6 +484,8 @@
                 })
             });
             if(text == null || text == ""){
+                $(".layui-colla-content").attr("class","layui-show");
+                $(".fly-editor").focus();
                 layer.msg("请完成详情描述", {icon: 5});
                 return false;
             }
@@ -470,13 +497,17 @@
             field["content"]= text;
             field["route"]= str;
             field["pushFlag"] = true;
+            if($("#realaddress").text()!=null&&$("#realaddress").text()!="") {
+                // 加上系统定位数据
+                field["address"] =$("#realaddress").text()+"-"+field["address"]
+            }
             console.log(field)
             var flag = false;
             // TODO 使用ajax
             //请求接口
             $.ajax({
                 type: "post",
-                url: "/strategy/updateorsave",
+                url: "/strategy/post",
                 data: field,
                 success: function(res){
                     if (res.code === 200) {
@@ -490,7 +521,7 @@
                             location.href = '/login'; //跳转到登入页
                         });
                     } else {
-                        layer.msg(res.message);
+                        layer.msg("参数错误:检查是否含有特殊字符，或参数不合理");
                     }
                 },
                 error: function (res) {
@@ -520,6 +551,10 @@
             data["route"]= str;
             data["pushFlag"]= false;
             console.log(data);
+            if($("#realaddress").text()!=null&&$("#realaddress").text()!="") {
+                // 加上系统定位数据
+                data["address"] =$("#realaddress").text()+"-"+data["address"]
+            }
             //请求接口
             $.ajax({
                 type: "post",

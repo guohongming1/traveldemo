@@ -6,7 +6,7 @@ import com.baomidou.mybatisplus.annotation.TableId;
 
 import java.util.Date;
 
-public class Strategy {
+public class StrategyRecomd {
     @TableId(value = "id",type = IdType.AUTO)
     private Integer id;
 
@@ -28,9 +28,11 @@ public class Strategy {
     @JSONField(format = "yyyy-MM-dd HH:mm:ss")
     private Date date;
 
-    private Byte pushFlag;
+    private String reserve1;
 
-    private Byte delFlag;
+    private String reserve2;
+
+    private String reserve3;
 
     public Integer getId() {
         return id;
@@ -112,19 +114,27 @@ public class Strategy {
         this.date = date;
     }
 
-    public Byte getPushFlag() {
-        return pushFlag;
+    public String getReserve1() {
+        return reserve1;
     }
 
-    public void setPushFlag(Byte pushFlag) {
-        this.pushFlag = pushFlag;
+    public void setReserve1(String reserve1) {
+        this.reserve1 = reserve1;
     }
 
-    public Byte getDelFlag() {
-        return delFlag;
+    public String getReserve2() {
+        return reserve2;
     }
 
-    public void setDelFlag(Byte delFlag) {
-        this.delFlag = delFlag;
+    public void setReserve2(String reserve2) {
+        this.reserve2 = reserve2;
+    }
+
+    public String getReserve3() {
+        return reserve3;
+    }
+
+    public void setReserve3(String reserve3) {
+        this.reserve3 = reserve3;
     }
 }

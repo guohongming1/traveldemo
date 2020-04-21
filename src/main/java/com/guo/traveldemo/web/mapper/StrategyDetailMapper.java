@@ -1,5 +1,8 @@
 package com.guo.traveldemo.web.mapper;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.guo.traveldemo.web.pojo.Strategy;
 import com.guo.traveldemo.web.pojo.StrategyDetail;
 import org.apache.ibatis.annotations.Select;
 import org.springframework.stereotype.Repository;
@@ -22,4 +25,5 @@ public interface StrategyDetailMapper {
 
     @Select("update strategy_detail set content=#{content} where id = #{id}")
     Integer updateContentById(String content,int id);
+
 }

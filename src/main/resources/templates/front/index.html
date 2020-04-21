@@ -107,12 +107,12 @@
     .gonglve-nav .nav-title i{
         position: absolute;
         right: 15px;
-        top: 0px;
+        top: 15px;
     }
 
     .gonglve-nav .nav-panel {
         position: absolute;
-        left: 221px;
+        left: 247px;
         top: -1px;
         width: 350px;
         height: 338px;
@@ -305,6 +305,7 @@
 
     .feed-item .art dt img {
         width: 220px;
+        height: 150px;
     }
 
     .feed-item .art dd {
@@ -312,10 +313,14 @@
     }
 
     .feed-item .art dd .info {
-        height: 102px;
+        height: 100px;
         padding-top: 10px;
         margin-bottom: 16px;
         color: #666;
+        display: -webkit-box;  /*  display: -webkit-box; 必须结合的属性 ，将对象作为弹性伸缩盒子模型显示  */
+        -webkit-box-orient: vertical; /*  -webkit-box-orient 必须结合的属性 ，设置或检索伸缩盒对象的子元素的排列方式  */
+        -webkit-line-clamp: 4; /*  -webkit-line-clamp用来限制在一个块元素显示的文本的行数 */
+        overflow: hidden;
     }
     .hr {
         margin-top: 20px;
@@ -347,8 +352,8 @@
         text-decoration: none;
     }
     .nav-tab{
-        margin-left: 40px;
-        margin-top: 40px;
+        margin-left: 30px;
+        margin-top: 20px;
     }
     .tab{
         width:100%;
@@ -486,85 +491,56 @@
         -webkit-font-smoothing: antialiased;
     }
 </style>
-<div class="layui-container wrapper">
+<div class="layui-container" style="margin: 15px auto;max-width: 1100px;">
     <div class="layui-row">
         <!-- 攻略导航栏-left-->
         <div class="layui-col-xs3 layui-col-sm3 layui-col-md3">
             <div class="gonglve-nav">
                 <div class="nav-item">
                     <div class="nav-title">
-                            <h3><img th:src="@{/myfile/image/round.png}">&nbsp;&nbsp;&nbsp;&nbsp;周边(赣州)</h3>
-                        <div class="nav-top">
-                            <span>宁都</span><span>抚州</span><span>会昌</span>
-                        </div>
-                            <i class="layui-icon layui-icon-right"></i>
-                        </div>
+                        <h3 style="line-height: 65px"><img th:src="@{/myfile/image/round.png}">&nbsp;&nbsp;&nbsp;&nbsp;周边(<span th:text="${city}" style="font-size: 14px;color: #FFB800"></span>)</h3>
+                        <i class="layui-icon layui-icon-right"></i>
+                    </div>
                         <div class="nav-panel rank-panel">
-                            <ol>
-                                <li class="top">
-                                    <em class="rank-num">1</em>
-                                    <strong><a href="" title="">北海道</a></strong>
-                                    <a href="" title="">在皑皑白雪中泡温泉</a>
-                                </li>
-                                <li class="top">
-                                    <em class="rank-num">2</em>
-                                    <strong><a href="" title="">冰岛</a></strong>
-                                    <a href="" title="">亲近极北之地的莫测极光</a>
-                                </li>
-                                <li class="top">
-                                    <em class="rank-num">3</em>
-                                    <strong><a href="" title="">澳大利亚</a></strong>
-                                    <a href="" title="">在南半球过个暖洋洋的圣诞节</a>
-                                </li>
-                                <li>
-                                    <em class="rank-num">4</em>
-                                    <strong><a href="" title="">洛杉矶</a></strong>
-                                    <a href="" title="">阳光加州，避寒圣地</a>
-                                </li>
-                                <li>
-                                    <em class="rank-num">5</em>
-                                    <strong><a href="" title="">洛杉矶</a></strong>
-                                    <a href="" title="">阳光加州，避寒圣地</a>
-                                </li>
+                            <ol id="around">
+                                <!--<li class="top">-->
+                                    <!--<em class="rank-num">1</em>-->
+                                    <!--<strong><a href="" title="">北海道</a></strong>-->
+                                    <!--<a href="" title="">在皑皑白雪中泡温泉</a>-->
+                                <!--</li>-->
                             </ol>
                             <span></span>
                         </div>
                 </div>
                 <div class="nav-item">
                     <div class="nav-title">
-                        <h3><img th:src="@{/myfile/image/hot.png}">&nbsp;&nbsp;&nbsp;&nbsp;当季热门</h3>
+                        <h3 style="line-height: 65px"><img th:src="@{/myfile/image/hot.png}">&nbsp;&nbsp;&nbsp;&nbsp;当季热门</h3>
                         <i class="layui-icon layui-icon-right"></i>
-                        <div class="nav-top">
-                            <span>横滨</span><span>北京故宫</span><span>滕王阁</span>
-                        </div>
+                        <!--<div class="nav-top">-->
+                            <!--<span>横滨</span><span>北京故宫</span><span>滕王阁</span>-->
+                        <!--</div>-->
                     </div>
                     <div class="nav-panel rank-panel">
-                        <ol>
-                            <li class="top">
-                                <em class="rank-num">1</em>
-                                <strong><a href="" title="">小张</a></strong>
-                                <a href="" title="">在皑皑白雪中泡温泉</a>
-                            </li>
-
+                        <ol id="hottop">
                         </ol>
                         <span></span>
                     </div>
                 </div>
                 <div class="nav-item">
                     <div class="nav-title">
-                        <h3><img th:src="@{/myfile/image/earth.png}">&nbsp;&nbsp;&nbsp;&nbsp;国内/外游</h3>
+                        <h3 style="line-height: 65px"><img th:src="@{/myfile/image/earth.png}">&nbsp;&nbsp;&nbsp;&nbsp;最新攻略</h3>
                         <i class="layui-icon layui-icon-right"></i>
-                        <div class="nav-top">
-                            <span>日本</span><span>三亚</span><span>菲律宾</span>
-                        </div>
+                        <!--<div class="nav-top">-->
+                            <!--<span>日本</span><span>三亚</span><span>菲律宾</span>-->
+                        <!--</div>-->
                     </div>
                     <div class="nav-panel rank-panel">
-                        <ol>
-                            <li class="top">
-                                <em class="rank-num">1</em>
-                                <strong><a href="" title="">张三</a></strong>
-                                <a href="" title="">在皑皑白雪中泡温泉</a>
-                            </li>
+                        <ol id="besnew">
+                            <!--<li class="top">-->
+                                <!--<em class="rank-num">1</em>-->
+                                <!--<strong><a href="" title="">张三</a></strong>-->
+                                <!--<a href="" title="">在皑皑白雪中泡温泉</a>-->
+                            <!--</li>-->
 
                         </ol>
                         <span></span>
@@ -637,240 +613,91 @@
         <div class="layui-col-xs9 layui-col-sm9 layui-col-md9">
             <div class="intro">
             <h3 class="hd">攻略推荐</h3>
-            <div>
-            <div class="feed-item" data-type="3">
-                <a href="" title="">
-                    <div class="bar clearfix">
+            <div id="recommend">
+                <div th:each="elem:${recommend}">
+                    <div class="feed-item">
+                        <a th:href="'/strategydetail?id='+${elem.id}+'&detailId='+${elem.detailId}" title="">
+                            <div class="bar clearfix">
                                     <span class="stat">
                                         <i class="layui-icon layui-icon-star"></i>
-                                        <span class="num">8495</span>
+                                        <span class="num" th:text="${elem.collectnum}"></span>
+                                        <span style="display: none;" th:text="${elem.address}"></span>
                                     </span>
-                    </div>
-                    <div class="title">
-                        清亲宝贝，迈游小城---给你不一样的清迈、拜县亲子游
-                    </div>
-                    <dl class="art clearfix">
-                        <dt>
-                            <img th:src="@{/layuiadmin/myfile/images/test01.jpg}">
-                        </dt>
-                        <dd>
-                            <div class="info">
-                                终于，终于 又牵起了你的小手去看世界 那本是爸爸妈妈长草了很久的地方 却因你的到来 一拖再拖 浪漫二人世界变成了亲子欢乐游 放不下你的旅行 只因。。。 我们想给你的童年加点料 想让你的世界更加绚烂一点点 -----写给宝贝儿子 在身边的好朋友们十有...
                             </div>
-                            <div class="ext-b">
+                            <div class="title" th:text="${elem.title}">
+                            </div>
+                            <dl class="art clearfix">
+                                <dt>
+                                    <img th:src="${elem.headImgUrl}">
+                                </dt>
+                                <dd>
+                                    <div class="info" th:text="${elem.sketch}">
+                                    </div>
+                                    <div class="ext-b">
                                             <span class="author">
-                                                <img th:src="@{/layuiadmin/myfile/images/test01.jpg}">蝈蝈小姐
+                                                <img th:src="${elem.userHeadImg}"><span th:text="${elem.userName}"></span>
                                             </span>
-                                <span class="nums">142032浏览，1024评论</span>
-                            </div>
-                        </dd>
-                    </dl>
-                </a>
+                                        <span class="nums" th:text="${elem.viewNum}+'热度，'+${elem.commentnum}+'评论'"></span>
+                                    </div>
+                                </dd>
+                            </dl>
+                        </a>
+                    </div>
+                    <div class="hr"></div>
+                </div>
             </div>
-            <div class="hr"></div>
-            <div class="feed-item" data-type="3">
-                <a href="" title="">
-                    <div class="bar clearfix">
-                                    <span class="stat">
-                                        <i class="layui-icon layui-icon-star"></i>
-                                        <span class="num">8495</span>
-                                    </span>
-                    </div>
-                    <div class="title">
-                        清亲宝贝，迈游小城---给你不一样的清迈、拜县亲子游
-                    </div>
-                    <dl class="art clearfix">
-                        <dt>
-                            <img th:src="@{/layuiadmin/myfile/images/test01.jpg}">
-                        </dt>
-                        <dd>
-                            <div class="info">
-                                终于，终于 又牵起了你的小手去看世界 那本是爸爸妈妈长草了很久的地方 却因你的到来 一拖再拖 浪漫二人世界变成了亲子欢乐游 放不下你的旅行 只因。。。 我们想给你的童年加点料 想让你的世界更加绚烂一点点 -----写给宝贝儿子 在身边的好朋友们十有...
-                            </div>
-                            <div class="ext-b">
-                                            <span class="author">
-                                                <img th:src="@{/layuiadmin/myfile/images/test01.jpg}">蝈蝈小姐
-                                            </span>
-                                <span class="nums">142032浏览，1024评论</span>
-                            </div>
-                        </dd>
-                    </dl>
-                </a>
-            </div>
-            <div class="hr"></div>
-            <div class="feed-item" data-type="3">
-                <a href="" title="">
-                    <div class="bar clearfix">
-                                    <span class="stat">
-                                        <i class="layui-icon layui-icon-star"></i>
-                                        <span class="num">8495</span>
-                                    </span>
-                    </div>
-                    <div class="title">
-                        清亲宝贝，迈游小城---给你不一样的清迈、拜县亲子游
-                    </div>
-                    <dl class="art clearfix">
-                        <dt>
-                            <img th:src="@{/layuiadmin/myfile/images/test01.jpg}">
-                        </dt>
-                        <dd>
-                            <div class="info">
-                                终于，终于 又牵起了你的小手去看世界 那本是爸爸妈妈长草了很久的地方 却因你的到来 一拖再拖 浪漫二人世界变成了亲子欢乐游 放不下你的旅行 只因。。。 我们想给你的童年加点料 想让你的世界更加绚烂一点点 -----写给宝贝儿子 在身边的好朋友们十有...
-                            </div>
-                            <div class="ext-b">
-                                            <span class="author">
-                                                <img th:src="@{/layuiadmin/myfile/images/test01.jpg}">蝈蝈小姐
-                                            </span>
-                                <span class="nums">142032浏览，1024评论</span>
-                            </div>
-                        </dd>
-                    </dl>
-                </a>
-            </div>
-            <div class="hr"></div>
-            <div class="feed-item" data-type="3">
-                <a href="" title="">
-                    <div class="bar clearfix">
-                                    <span class="stat">
-                                        <i class="layui-icon layui-icon-star"></i>
-                                        <span class="num">8495</span>
-                                    </span>
-                    </div>
-                    <div class="title">
-                        清亲宝贝，迈游小城---给你不一样的清迈、拜县亲子游
-                    </div>
-                    <dl class="art clearfix">
-                        <dt>
-                            <img th:src="@{/layuiadmin/myfile/images/test01.jpg}">
-                        </dt>
-                        <dd>
-                            <div class="info">
-                                终于，终于 又牵起了你的小手去看世界 那本是爸爸妈妈长草了很久的地方 却因你的到来 一拖再拖 浪漫二人世界变成了亲子欢乐游 放不下你的旅行 只因。。。 我们想给你的童年加点料 想让你的世界更加绚烂一点点 -----写给宝贝儿子 在身边的好朋友们十有...
-                            </div>
-                            <div class="ext-b">
-                                            <span class="author">
-                                                <img th:src="@{/layuiadmin/myfile/images/test01.jpg}">蝈蝈小姐
-                                            </span>
-                                <span class="nums">142032浏览，1024评论</span>
-                            </div>
-                        </dd>
-                    </dl>
-                </a>
-            </div>
-            <div class="hr"></div>
-            <div class="feed-item" data-type="3">
-                <a href="" title="">
-                    <div class="bar clearfix">
-                                    <span class="stat">
-                                        <i class="layui-icon layui-icon-star"></i>
-                                        <span class="num">8495</span>
-                                    </span>
-                    </div>
-                    <div class="title">
-                        清亲宝贝，迈游小城---给你不一样的清迈、拜县亲子游
-                    </div>
-                    <dl class="art clearfix">
-                        <dt>
-                            <img th:src="@{/layuiadmin/myfile/images/test01.jpg}">
-                        </dt>
-                        <dd>
-                            <div class="info">
-                                终于，终于 又牵起了你的小手去看世界 那本是爸爸妈妈长草了很久的地方 却因你的到来 一拖再拖 浪漫二人世界变成了亲子欢乐游 放不下你的旅行 只因。。。 我们想给你的童年加点料 想让你的世界更加绚烂一点点 -----写给宝贝儿子 在身边的好朋友们十有...
-                            </div>
-                            <div class="ext-b">
-                                            <span class="author">
-                                                <img th:src="@{/layuiadmin/myfile/images/test01.jpg}">蝈蝈小姐
-                                            </span>
-                                <span class="nums">142032浏览，1024评论</span>
-                            </div>
-                        </dd>
-                    </dl>
-                </a>
-            </div>
-            <div class="hr"></div>
-            <div class="feed-item" data-type="3">
-                <a href="" title="">
-                    <div class="bar clearfix">
-                                    <span class="stat">
-                                        <i class="layui-icon layui-icon-star"></i>
-                                        <span class="num">8495</span>
-                                    </span>
-                    </div>
-                    <div class="title">
-                        清亲宝贝，迈游小城---给你不一样的清迈、拜县亲子游
-                    </div>
-                    <dl class="art clearfix">
-                        <dt>
-                            <img th:src="@{/layuiadmin/myfile/images/test01.jpg}">
-                        </dt>
-                        <dd>
-                            <div class="info">
-                                终于，终于 又牵起了你的小手去看世界 那本是爸爸妈妈长草了很久的地方 却因你的到来 一拖再拖 浪漫二人世界变成了亲子欢乐游 放不下你的旅行 只因。。。 我们想给你的童年加点料 想让你的世界更加绚烂一点点 -----写给宝贝儿子 在身边的好朋友们十有...
-                            </div>
-                            <div class="ext-b">
-                                            <span class="author">
-                                                <img th:src="@{/layuiadmin/myfile/images/test01.jpg}">蝈蝈小姐
-                                            </span>
-                                <span class="nums">142032浏览，1024评论</span>
-                            </div>
-                        </dd>
-                    </dl>
-                </a>
-            </div>
-            <div class="hr"></div>
-            </div>
-            <a data-page="3" class="page_loader" href="javascript:void(0)"><span>加载更多</span><i class="layui-icon layui-icon-down"></i></a>
+            <a data-page="2" class="page_loader" href="javascript:void(0)"><span>加载更多</span><i class="layui-icon layui-icon-down"></i></a>
             </div>
         </div>
         <!--  攻略推荐侧边栏-->
         <div class="layui-col-xs3 layui-col-sm3 layui-col-md3">
            <div class="nav-tab">
-               <div class="tab" id="lp_right_select">
+               <!--<div class="tab" id="lp_right_select">-->
                    <script>
-                       window.onload=function()
-                       {
-                           var oLi=document.getElementById("tb").getElementsByTagName("li");
-                           var oUl=document.getElementById("tb-main").getElementsByTagName("div");
-                           for(var i=0;i<oLi.length;i++)
-                           {
-                               oLi[i].index=i;
-                               oLi[i].onmouseover=function()
-                               {
-                                   for(var n=0;n<oLi.length;n++)
-                                       oLi[n].className="";
-                                   this.className="cur";
-                                   for(var n=0;n<oUl.length;n++)
-                                       oUl[n].style.display="none";
-                                   oUl[this.index].style.display="block";
-                               }
-                           }
-                       }
+                       // window.onload=function()
+                       // {
+                       //     var oLi=document.getElementById("tb").getElementsByTagName("li");
+                       //     var oUl=document.getElementById("tb-main").getElementsByTagName("div");
+                       //     for(var i=0;i<oLi.length;i++)
+                       //     {
+                       //         oLi[i].index=i;
+                       //         oLi[i].onmouseover=function()
+                       //         {
+                       //             for(var n=0;n<oLi.length;n++)
+                       //                 oLi[n].className="";
+                       //             this.className="cur";
+                       //             for(var n=0;n<oUl.length;n++)
+                       //                 oUl[n].style.display="none";
+                       //             oUl[this.index].style.display="block";
+                       //         }
+                       //     }
+                       // }
                    </script>
-                   <div class="tab-top">
-                       <ul class="nav-hd" id="tb">
-                           <li class="cur"><a href="/">最新&nbsp;<img th:src="@{/myfile/image/new.png}"></a></li>
-                           <li><a href="/">最热&nbsp;<img th:src="@{/myfile/image/hot-13.png}"></a></li>
-                       </ul>
-                   </div>
-                   <div class="tab-main" id="tb-main">
-                       <div class="bd bd-news" style="display:block;"><ul>
-                           <li><a href="/" target="_blank">住在手机里的朋友</a></li>
-                           <li><a href="/" target="_blank">教你怎样用欠费手机拨打电话</a></li>
-                           <li><a href="/" target="_blank">原来以为，一个人的勇敢是，删掉他的手机号码...</a></li>
-                           <li><a href="/" target="_blank">手机的16个惊人小秘密，据说99.999%的人都不知</a></li>
-                           <li><a href="/" target="_blank">你面对的是生活而不是手机</a></li>
-                           <li><a href="/" target="_blank">豪雅手机正式发布! 在法国全手工打造的奢侈品</a></li>
-                       </ul></div>
-                       <div class="bd bd-news" ><ul>
-                           <li><a href="/" target="_blank">原来以为，一个人的勇敢是，删掉他的手机号码...</a></li>
-                           <li><a href="/" target="_blank">手机的16个惊人小秘密，据说99.999%的人都不知</a></li>
-                           <li><a href="/" target="_blank">住在手机里的朋友</a></li>
-                           <li><a href="/" target="_blank">教你怎样用欠费手机拨打电话</a></li>
-                           <li><a href="/" target="_blank">你面对的是生活而不是手机</a></li>
-                           <li><a href="/" target="_blank">豪雅手机正式发布! 在法国全手工打造的奢侈品</a></li>
-                       </ul></div>
-                   </div>
-               </div>
+                   <!--<div class="tab-top">-->
+                       <!--<ul class="nav-hd" id="tb">-->
+                           <!--<li class="cur"><a href="/">最新&nbsp;<img th:src="@{/myfile/image/new.png}"></a></li>-->
+                           <!--<li><a href="/">最热&nbsp;<img th:src="@{/myfile/image/hot-13.png}"></a></li>-->
+                       <!--</ul>-->
+                   <!--</div>-->
+                   <!--<div class="tab-main" id="tb-main">-->
+                       <!--<div class="bd bd-news" style="display:block;"><ul>-->
+                           <!--<li><a href="/" target="_blank">住在手机里的朋友</a></li>-->
+                           <!--<li><a href="/" target="_blank">教你怎样用欠费手机拨打电话</a></li>-->
+                           <!--<li><a href="/" target="_blank">原来以为，一个人的勇敢是，删掉他的手机号码...</a></li>-->
+                           <!--<li><a href="/" target="_blank">手机的16个惊人小秘密，据说99.999%的人都不知</a></li>-->
+                           <!--<li><a href="/" target="_blank">你面对的是生活而不是手机</a></li>-->
+                           <!--<li><a href="/" target="_blank">豪雅手机正式发布! 在法国全手工打造的奢侈品</a></li>-->
+                       <!--</ul></div>-->
+                       <!--<div class="bd bd-news" ><ul>-->
+                           <!--<li><a href="/" target="_blank">原来以为，一个人的勇敢是，删掉他的手机号码...</a></li>-->
+                           <!--<li><a href="/" target="_blank">手机的16个惊人小秘密，据说99.999%的人都不知</a></li>-->
+                           <!--<li><a href="/" target="_blank">住在手机里的朋友</a></li>-->
+                           <!--<li><a href="/" target="_blank">教你怎样用欠费手机拨打电话</a></li>-->
+                           <!--<li><a href="/" target="_blank">你面对的是生活而不是手机</a></li>-->
+                           <!--<li><a href="/" target="_blank">豪雅手机正式发布! 在法国全手工打造的奢侈品</a></li>-->
+                       <!--</ul></div>-->
+                   <!--</div>-->
+               <!--</div>-->
                <div class="tuwen">
                    <h3>热门小组</h3>
                    <ul>
@@ -936,6 +763,59 @@
     <li class="layui-icon layui-fixbar-top" id="to_top" style="background-color: #6294b5;"
         title="返回顶部"></li>
 </ul>
+
+<script id="recom-mod" type="text/html">
+    {{#  layui.each(d, function(index, item){ }}
+    <div class="feed-item">
+        <a href="/strategydetail?id={{item.id}}&detailId={{item.detailId}}" title="">
+            <div class="bar clearfix">
+               <span class="stat">
+              <i class="layui-icon layui-icon-star"></i>
+             <span class="num">{{item.collectnum}}</span>
+            </span>
+            </div>
+            <div class="title">
+                {{item.title}}
+            </div>
+            <dl class="art clearfix">
+                <dt>
+                    <img src="{{item.headImgUrl}}">
+                </dt>
+                <dd>
+                    <div class="info">
+                        {{item.sketch}}
+                    </div>
+                    <div class="ext-b">
+                        <span class="author">
+                        <img src="{{item.userHeadImg}}">{{item.userName}}
+                        </span>
+                        <span class="nums">{{item.viewNum}}浏览，{{item.commentnum}}评论</span>
+                    </div>
+                </dd>
+            </dl>
+        </a>
+    </div>
+    <div class="hr"></div>
+    {{#  }); }}
+</script>
+<script id="leftnav-mod" type="text/html">
+    {{#  layui.each(d, function(index, item){ }}
+    <li class="top layui-elip">
+        <em class="rank-num">{{index+1}}</em>
+        {{#
+          if(item.address != undefined&&item.address.length > 6){
+             var i = item.address.lastIndexOf("-");
+             var address = item.address.substring(i+1);
+        }}
+        <strong><a href="/strategydetail?id={{item.id}}&detailId={{item.detailId}}" title="">{{address}}</a></strong>
+        {{#  }else{
+        }}
+        <strong><a href="/strategydetail?id={{item.id}}&detailId={{item.detailId}}" title="">{{item.address}}</a></strong>
+        {{#  } }}
+        <a href="" title="">{{item.title}}</a>
+        </li>
+    {{#  }); }}
+</script>
 <script type="text/javascript" th:src="@{/layui/layui.js}"></script>
 <script>
     $("#to_top").click(function () {
@@ -956,9 +836,12 @@
         base: '/layuiadmin/'
     }).extend({
         index: 'lib/index' //主入口模块
-    }).use(['index','element','carousel'], function(){
+    }).use(['index','news','element','carousel','laytpl'], function(){
         var element = layui.element; //导航的hover效果、二级菜单等功能，需要依赖element模块
         var carousel = layui.carousel; // 轮播框设置
+        var laytpl = layui.laytpl;
+        var admin = layui.admin,
+            index = layui.news;
         /*旅游攻略页面*/
         /*left nav*/
         $('.nav-item').hover(function() {
@@ -968,14 +851,88 @@
             $('.gonglve-nav').css('border-right-color', '#ddd');
             $('.nav-panel').css('display', 'none');
         });
-    //    轮播框
-        carousel.render({
-            elem: '#test1'
-            ,width: '100%' //设置容器宽度
-            ,height:'269px' //宽度
-            ,arrow: 'hover' //始终显示箭头
-            //,anim: 'updown' //切换动画方式
+        //轮播框
+        index.banner();
+        // 导航栏数据加载
+        loadData();
+        $(".page_loader").click(function () {
+            var _this = $(this);
+           var page = $(this).data('page');
+            var loadIndex = layer.load();
+            $.ajax({
+                type: "post",
+                url: "/comm/strategy-list",
+                data: {'limit':2,"page":page},
+                success: function(res){
+                    if (res.code === 200) {
+                        _this.data('page',page+1);
+                        if(res.data.length != 0){
+                            console.log(res.data)
+                            // 获取节点
+                            var getTpl = document.getElementById('recom-mod').innerHTML;
+                            // 执行tpl渲染
+                            laytpl(getTpl).render(res.data, function (html) {
+                                $("#recommend").append(html);
+                                // document.getElementById('recommend').append(html);// = html;
+                            });
+                            layer.close(loadIndex);
+                        }else{
+                            layer.close(loadIndex);
+                            layer.msg("没有更多了",{icon:6});
+                            _this.css('display','none');
+                        }
+                    } else {
+                        layer.close(loadIndex);
+                        layer.msg("参数错误");
+                    }
+                },
+                error: function (res) {
+                    layer.close(loadIndex);
+                    layer.msg(res.msg);
+                }
+            });
         });
+        function loadData() {
+             admin.req({
+                 url: '/comm/hotstra-list'
+                 , type: 'post'
+                 , async: false
+                 , success: function (res) {
+                     // 获取节点
+                     var getTpl = document.getElementById('leftnav-mod').innerHTML;
+                     // 执行tpl渲染
+                     laytpl(getTpl).render(res.data, function (html) {
+                         document.getElementById('hottop').innerHTML = html;
+                     });
+                 }
+             });
+            admin.req({
+                url: '/comm/around_strategy'
+                , type: 'post'
+                , async: false
+                , success: function (res) {
+                    // 获取节点
+                    var getTpl = document.getElementById('leftnav-mod').innerHTML;
+                    // 执行tpl渲染
+                    laytpl(getTpl).render(res.data, function (html) {
+                        document.getElementById('around').innerHTML = html;
+                    });
+                }
+            });
+            admin.req({
+                url: '/comm/besnew_strategy'
+                , type: 'post'
+                , async: false
+                , success: function (res) {
+                    // 获取节点
+                    var getTpl = document.getElementById('leftnav-mod').innerHTML;
+                    // 执行tpl渲染
+                    laytpl(getTpl).render(res.data, function (html) {
+                        document.getElementById('besnew').innerHTML = html;
+                    });
+                }
+            });
+        }
     });
 </script>
 <!--[if lt IE 9]>

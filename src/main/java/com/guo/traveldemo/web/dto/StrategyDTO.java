@@ -1,13 +1,18 @@
-package com.guo.traveldemo.web.pojo;
+package com.guo.traveldemo.web.dto;
 
 import com.alibaba.fastjson.annotation.JSONField;
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableId;
 
+import java.io.Serializable;
 import java.util.Date;
 
-public class Strategy {
-    @TableId(value = "id",type = IdType.AUTO)
+/**
+ * @author 郭红明
+ * @version 1.0
+ * @Date: 2020/4/20
+ */
+public class StrategyDTO implements Serializable {
+    private static final long serialVersionUID = 1777670671307148337L;
+
     private Integer id;
 
     private Integer detailId;
@@ -16,21 +21,30 @@ public class Strategy {
 
     private String headImgUrl;
 
-    private String address;
-
     private String sketch;
 
     private Integer collectnum;
 
     private Integer commentnum;
 
-    private Integer userId;
+    private Integer viewNum;
+
+    private String userName;
+
+    private String userHeadImg;
+
+    private String address;
+
+    public Integer getViewNum() {
+        return viewNum;
+    }
+
+    public void setViewNum(Integer viewNum) {
+        this.viewNum = viewNum;
+    }
+
     @JSONField(format = "yyyy-MM-dd HH:mm:ss")
     private Date date;
-
-    private Byte pushFlag;
-
-    private Byte delFlag;
 
     public Integer getId() {
         return id;
@@ -64,14 +78,6 @@ public class Strategy {
         this.headImgUrl = headImgUrl;
     }
 
-    public String getAddress() {
-        return address;
-    }
-
-    public void setAddress(String address) {
-        this.address = address;
-    }
-
     public String getSketch() {
         return sketch;
     }
@@ -96,12 +102,29 @@ public class Strategy {
         this.commentnum = commentnum;
     }
 
-    public Integer getUserId() {
-        return userId;
+
+    public String getUserName() {
+        return userName;
     }
 
-    public void setUserId(Integer userId) {
-        this.userId = userId;
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+
+    public String getUserHeadImg() {
+        return userHeadImg;
+    }
+
+    public void setUserHeadImg(String userHeadImg) {
+        this.userHeadImg = userHeadImg;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
     }
 
     public Date getDate() {
@@ -110,21 +133,5 @@ public class Strategy {
 
     public void setDate(Date date) {
         this.date = date;
-    }
-
-    public Byte getPushFlag() {
-        return pushFlag;
-    }
-
-    public void setPushFlag(Byte pushFlag) {
-        this.pushFlag = pushFlag;
-    }
-
-    public Byte getDelFlag() {
-        return delFlag;
-    }
-
-    public void setDelFlag(Byte delFlag) {
-        this.delFlag = delFlag;
     }
 }

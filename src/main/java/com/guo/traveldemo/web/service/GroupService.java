@@ -1,6 +1,7 @@
 package com.guo.traveldemo.web.service;
 
 import com.guo.traveldemo.result.Response;
+import com.guo.traveldemo.web.dto.NewTopicDTO;
 import com.guo.traveldemo.web.pojo.TravelGroup;
 
 /**
@@ -10,4 +11,8 @@ import com.guo.traveldemo.web.pojo.TravelGroup;
  */
 public interface GroupService {
     Response<String> createGroup(TravelGroup group);
+
+    Response<String> createTopic(NewTopicDTO topicDTO);
+
+    Boolean checkGroupMById(int groupId, int userId);
 }

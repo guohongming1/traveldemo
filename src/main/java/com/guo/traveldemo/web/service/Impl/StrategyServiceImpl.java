@@ -1,6 +1,8 @@
 package com.guo.traveldemo.web.service.Impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.guo.traveldemo.constants.Constants;
 import com.guo.traveldemo.result.CodeMsg;
 import com.guo.traveldemo.result.Response;
@@ -22,6 +24,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -122,6 +125,32 @@ public class StrategyServiceImpl implements StrategyService {
         }
         return Response.success("成功");
     }
+
+    /**
+     * 根据id获取攻略
+     * @param id
+     * @return
+     */
+    @Override
+    public Strategy selectStrategyById(int id) {
+        return strategyMapper.selectByPrimaryKey(id);
+    }
+
+    /**
+     * 分页获取攻略
+     * @param limit
+     * @param page
+     * @return
+     */
+    @Override
+    public List<Strategy> getList(int limit, int page,String address) {
+        Page<Strategy> pageHelper = new Page<>();
+        pageHelper.setCurrent(page);
+        pageHelper.setSize(limit);
+        IPage<Strategy> pageVo = strategyMapper.selectPageVo(pageHelper,address);
+        return pageVo.getRecords();
+    }
+
     /**
      * 获取未发表攻略
      * @param userId

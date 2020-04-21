@@ -268,6 +268,7 @@
         <div class="question_des layui-form-item">
             <div class="layui-input-block" style="margin-left: 0px">
                 <input type="text" id="address" name="address" lay-verify="" autocomplete="off" placeholder="问题相关地点" class="layui-input">
+                <span id="realaddress" style="font-size: 13px;color: red;"></span>
             </div>
         </div>
         <div class="question_des qb-layout-tit">
@@ -321,6 +322,26 @@
             $(".questions").addClass("fix")
         } else {
             $(".questions").removeClass("fix")
+        }
+    });
+
+    // 地址自动请求
+    $( '#address' ).blur(function () {
+        if ($("#address").val() != null && $("#address").val() != "") {
+            var scenic = {"scenic": $("#address").val()}
+            //请求接口
+            $.ajax({
+                type: "post",
+                url: "/comm/local",
+                data: scenic,
+                success: function (res) {
+                    console.log(res);
+                    $('#realaddress').html(res.data);
+                },
+                error: function (res) {
+                    layer.msg("请求错误");
+                }
+            });
         }
     });
     layui.use(['element','layer'], function(){
@@ -446,6 +467,10 @@
             if(content == null || content==""){flag = false;}
             if(tags == null || tags == ""){flag = false;}
             if(flag){
+                if($("#address").val()!=null&&$("#address").val()!="") {
+                    // 加上系统定位数据
+                    address +="-" + $("#address").val()
+                }
                 var data={'title':title,'address':address,'content':content,'tags':tags}
                 //请求接口
                 $.ajax({

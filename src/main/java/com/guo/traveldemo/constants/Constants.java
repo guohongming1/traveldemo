@@ -90,4 +90,8 @@ public class Constants {
      * 审核通过状态
      */
     public static final Byte PASS_YES = 2 ;
+
+    public static final String ESSAY_HOT_NAME = "strahot";
+    public static final String QUESTION_HOT_NAME = "queshot";
+    public static final String RECOMMEND_HOT_NAME = "topichot";
 }

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.guo.traveldemo.web.mapper.StrategyMapper" >
-  <resultMap id="BaseResultMap" type="com.guo.traveldemo.web.pojo.Strategy" >
+<mapper namespace="com.guo.traveldemo.web.mapper.StrategyRecomdMapper" >
+  <resultMap id="BaseResultMap" type="com.guo.traveldemo.web.pojo.StrategyRecomd" >
     <id column="id" property="id" jdbcType="INTEGER" />
     <result column="detail_id" property="detailId" jdbcType="INTEGER" />
     <result column="title" property="title" jdbcType="VARCHAR" />
@@ -12,37 +12,38 @@
     <result column="commentnum" property="commentnum" jdbcType="INTEGER" />
     <result column="user_id" property="userId" jdbcType="INTEGER" />
     <result column="date" property="date" jdbcType="TIMESTAMP" />
-    <result column="push_flag" property="pushFlag" jdbcType="TINYINT" />
-    <result column="del_flag" property="delFlag" jdbcType="TINYINT" />
+    <result column="reserve1" property="reserve1" jdbcType="VARCHAR" />
+    <result column="reserve2" property="reserve2" jdbcType="VARCHAR" />
+    <result column="reserve3" property="reserve3" jdbcType="VARCHAR" />
   </resultMap>
   <sql id="Base_Column_List" >
     id, detail_id, title, head_img_url, address, sketch, collectnum, commentnum, user_id, 
-    date, push_flag, del_flag
+    date, reserve1, reserve2, reserve3
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
     select 
     <include refid="Base_Column_List" />
-    from strategy
+    from strategy_recomd
     where id = #{id,jdbcType=INTEGER}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
-    delete from strategy
+    delete from strategy_recomd
     where id = #{id,jdbcType=INTEGER}
   </delete>
-  <insert id="insert" parameterType="com.guo.traveldemo.web.pojo.Strategy" >
-    insert into strategy (id, detail_id, title, 
+  <insert id="insert" parameterType="com.guo.traveldemo.web.pojo.StrategyRecomd" >
+    insert into strategy_recomd (id, detail_id, title, 
       head_img_url, address, sketch, 
       collectnum, commentnum, user_id, 
-      date, push_flag, del_flag
-      )
+      date, reserve1, reserve2, 
+      reserve3)
     values (#{id,jdbcType=INTEGER}, #{detailId,jdbcType=INTEGER}, #{title,jdbcType=VARCHAR}, 
       #{headImgUrl,jdbcType=VARCHAR}, #{address,jdbcType=VARCHAR}, #{sketch,jdbcType=VARCHAR}, 
       #{collectnum,jdbcType=INTEGER}, #{commentnum,jdbcType=INTEGER}, #{userId,jdbcType=INTEGER}, 
-      #{date,jdbcType=TIMESTAMP}, #{pushFlag,jdbcType=TINYINT}, #{delFlag,jdbcType=TINYINT}
-      )
+      #{date,jdbcType=TIMESTAMP}, #{reserve1,jdbcType=VARCHAR}, #{reserve2,jdbcType=VARCHAR}, 
+      #{reserve3,jdbcType=VARCHAR})
   </insert>
-  <insert id="insertSelective" parameterType="com.guo.traveldemo.web.pojo.Strategy" useGeneratedKeys="true" keyProperty="id" >
-    insert into strategy
+  <insert id="insertSelective" parameterType="com.guo.traveldemo.web.pojo.StrategyRecomd" useGeneratedKeys="true" keyProperty="id" >
+    insert into strategy_recomd
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="id != null" >
         id,
@@ -74,11 +75,14 @@
       <if test="date != null" >
         date,
       </if>
-      <if test="pushFlag != null" >
-        push_flag,
+      <if test="reserve1 != null" >
+        reserve1,
       </if>
-      <if test="delFlag != null" >
-        del_flag,
+      <if test="reserve2 != null" >
+        reserve2,
+      </if>
+      <if test="reserve3 != null" >
+        reserve3,
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
@@ -112,16 +116,19 @@
       <if test="date != null" >
         #{date,jdbcType=TIMESTAMP},
       </if>
-      <if test="pushFlag != null" >
-        #{pushFlag,jdbcType=TINYINT},
+      <if test="reserve1 != null" >
+        #{reserve1,jdbcType=VARCHAR},
       </if>
-      <if test="delFlag != null" >
-        #{delFlag,jdbcType=TINYINT},
+      <if test="reserve2 != null" >
+        #{reserve2,jdbcType=VARCHAR},
+      </if>
+      <if test="reserve3 != null" >
+        #{reserve3,jdbcType=VARCHAR},
       </if>
     </trim>
   </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.guo.traveldemo.web.pojo.Strategy" >
-    update strategy
+  <update id="updateByPrimaryKeySelective" parameterType="com.guo.traveldemo.web.pojo.StrategyRecomd" >
+    update strategy_recomd
     <set >
       <if test="detailId != null" >
         detail_id = #{detailId,jdbcType=INTEGER},
@@ -150,17 +157,20 @@
       <if test="date != null" >
         date = #{date,jdbcType=TIMESTAMP},
       </if>
-      <if test="pushFlag != null" >
-        push_flag = #{pushFlag,jdbcType=TINYINT},
+      <if test="reserve1 != null" >
+        reserve1 = #{reserve1,jdbcType=VARCHAR},
       </if>
-      <if test="delFlag != null" >
-        del_flag = #{delFlag,jdbcType=TINYINT},
+      <if test="reserve2 != null" >
+        reserve2 = #{reserve2,jdbcType=VARCHAR},
+      </if>
+      <if test="reserve3 != null" >
+        reserve3 = #{reserve3,jdbcType=VARCHAR},
       </if>
     </set>
     where id = #{id,jdbcType=INTEGER}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.guo.traveldemo.web.pojo.Strategy" >
-    update strategy
+  <update id="updateByPrimaryKey" parameterType="com.guo.traveldemo.web.pojo.StrategyRecomd" >
+    update strategy_recomd
     set detail_id = #{detailId,jdbcType=INTEGER},
       title = #{title,jdbcType=VARCHAR},
       head_img_url = #{headImgUrl,jdbcType=VARCHAR},
@@ -170,17 +180,13 @@
       commentnum = #{commentnum,jdbcType=INTEGER},
       user_id = #{userId,jdbcType=INTEGER},
       date = #{date,jdbcType=TIMESTAMP},
-      push_flag = #{pushFlag,jdbcType=TINYINT},
-      del_flag = #{delFlag,jdbcType=TINYINT}
+      reserve1 = #{reserve1,jdbcType=VARCHAR},
+      reserve2 = #{reserve2,jdbcType=VARCHAR},
+      reserve3 = #{reserve3,jdbcType=VARCHAR}
     where id = #{id,jdbcType=INTEGER}
   </update>
   <select id="selectPageVo" resultMap="BaseResultMap">
-    select * from strategy
-    <where>
-      <if test="address != null">
-          address like CONCAT(CONCAT('%',#{address}),'%')
-      </if>
-    </where>
+    select * from strategy_recomd
     order by date desc
   </select>
 </mapper>

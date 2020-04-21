@@ -35,11 +35,11 @@ layui.define(['carousel', 'jquery', 'element', 'flow', 'laytpl', 'element', 'lay
         // 首页轮播
         banner: function () {
             //轮播
-            var elemBanner = $('#micronews-carouse'), ins1 = carousel.render({
+            var elemBanner = $('#test1'), ins1 = carousel.render({
                 elem: elemBanner
-                , width: '100%'
-                , height: elemBanner.height() + 'px'
-                , arrow: 'none'
+                ,width: '100%' //设置容器宽度
+                ,height:'269px' //宽度
+                ,arrow: 'hover' //始终显示箭头
                 , interval: 3000
             });
             $(window).on('resize', function () {

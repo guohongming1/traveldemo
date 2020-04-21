@@ -10,6 +10,7 @@ import java.util.Date;
  * @Date: 2020/4/15
  */
 public class StrategyDTO implements Serializable {
+    private static final long serialVersionUID = 9142745612906850648L;
     private String title;
     private String headImgUrl;
     private String address;

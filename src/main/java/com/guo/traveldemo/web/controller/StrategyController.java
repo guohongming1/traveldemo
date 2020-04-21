@@ -107,7 +107,7 @@ public class StrategyController {
         SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd");
         try {
             //使用SimpleDateFormat的parse()方法生成Date
-            if(null == strategyDTO.getDate()){
+            if(null != strategyDTO.getDate()){
                 Date date = sf.parse(strategyDTO.getDate());
                 strategy.setDate(date);
             }
@@ -125,7 +125,7 @@ public class StrategyController {
         travelTable.setAdvice(strategyDTO.getAdvice());
         try {
             //使用SimpleDateFormat的parse()方法生成Date
-            if(null == strategyDTO.getDate()){
+            if(null != strategyDTO.getDate()){
                 Date date = sf.parse(strategyDTO.getDate());
                 strategy.setDate(date);
             }

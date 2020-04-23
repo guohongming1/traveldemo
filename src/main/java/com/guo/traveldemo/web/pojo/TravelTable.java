@@ -1,5 +1,7 @@
 package com.guo.traveldemo.web.pojo;
 
+import com.alibaba.fastjson.annotation.JSONField;
+
 import java.util.Date;
 
 public class TravelTable {
@@ -14,7 +16,7 @@ public class TravelTable {
     private String address;
 
     private String people;
-
+    @JSONField(format = "yyyy-MM-dd HH:mm:ss")
     private Date date;
 
     private String advice;

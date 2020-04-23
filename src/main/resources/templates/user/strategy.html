@@ -78,7 +78,7 @@
     <div class="layui-container fly-marginTop fly-user-main">
         <ul class="layui-nav layui-nav-tree layui-inline" lay-filter="user">
             <li class="layui-nav-item">
-                <a href="/user">
+                <a th:href="'/userInfo?id='+${session.userinfo.getId()}">
                     <i class="layui-icon">&#xe609;</i>
                     我的主页
                 </a>
@@ -134,81 +134,31 @@
             -->
             <div class="layui-tab layui-tab-brief" lay-filter="user">
                 <ul class="layui-tab-title" id="LAY_mine">
-                    <li data-type="mine-jie" lay-id="index" class="layui-this">我的攻略（<span>89</span>）</li>
-                    <li data-type="collection" lay-id="collection">收藏（<span>16</span>）</li>
+                    <li data-type="mine-jie" lay-id="index" class="layui-this">我的攻略（<span id="stra-num"></span>）</li>
+                    <li data-type="collection" lay-id="collection">收藏（<span id="col-num"></span>）</li>
                 </ul>
                 <div class="layui-tab-content" style="padding: 20px 0;">
                     <div class="layui-tab-item layui-show" id="mine-jie">
-                        <ul class="mine-view jie-row">
-                            <li>
-                                <a class="jie-title" href="../jie/detail.html" target="_blank">基于 layui 的极简社区页面模版</a>
-                                <i>2017/3/14 上午8:30:00</i>
-                                <a class="mine-look" href="/jie/edit/8116">查看</a>
-                                <a class="mine-edit" href="/jie/edit/8116">编辑</a>
-                                <em>661阅/10问</em>
-                            </li>
-                            <li>
-                                <a class="jie-title" href="../jie/detail.html" target="_blank">基于 layui 的极简社区页面模版</a>
-                                <i>2017/3/14 上午8:30:00</i>
-                                <a class="mine-look" href="/jie/edit/8116">查看</a>
-                                <a class="mine-edit" href="/jie/edit/8116">编辑</a>
-                                <em>661阅/10问</em>
-                            </li>
-                            <li>
-                                <a class="jie-title" href="../jie/detail.html" target="_blank">基于 layui 的极简社区页面模版</a>
-                                <i>2017/3/14 上午8:30:00</i>
-                                <a class="mine-look" href="/jie/edit/8116">查看</a>
-                                <a class="mine-edit" href="/jie/edit/8116">编辑</a>
-                                <em>661阅/10问</em>
-                            </li>
-                            <li>
-                                <a class="jie-title" href="../jie/detail.html" target="_blank">基于 layui 的极简社区页面模版</a>
-                                <i>2017/3/14 上午8:30:00</i>
-                                <a class="mine-look" href="/jie/edit/8116">查看</a>
-                                <a class="mine-edit" href="/jie/edit/8116">编辑</a>
-                                <em>661阅/10问</em>
-                            </li>
-                            <li>
-                                <a class="jie-title" href="../jie/detail.html" target="_blank">基于 layui 的极简社区页面模版</a>
-                                <i>2017/3/14 上午8:30:00</i>
-                                <a class="mine-look" href="/jie/edit/8116">查看</a>
-                                <a class="mine-edit" href="/jie/edit/8116">编辑</a>
-                                <em>661阅/10问</em>
-                            </li>
+                        <ul class="mine-view jie-row" id="TRA_mine">
+                            <!--<li>-->
+                                <!--<a class="jie-title" href="../jie/detail.html" target="_blank">基于 layui 的极简社区页面模版</a>-->
+                                <!--<i>2017/3/14 上午8:30:00</i>-->
+                                <!--<a class="mine-del" href="/jie/edit/8116">删除</a>-->
+                                <!--<a class="mine-edit" href="/jie/edit/8116">编辑</a>-->
+                                <!--<em>热度22</em>-->
+                            <!--</li>-->
                         </ul>
                         <div id="LAY_page"></div>
                     </div>
                     <div class="layui-tab-item" id="collection">
-                        <ul class="mine-view jie-row">
-                            <li>
-                                <a class="jie-title" href="../jie/detail.html" target="_blank">基于 layui 的极简社区页面模版</a>
-                                <i>收藏于23小时前</i>
-                                <a class="mine-look" href="/jie/edit/8116">查看</a>
-                                <a class="mine-del" href="/jie/edit/8116">删除</a>
-                                <em><img th:src="@{/myfile/image/new.png}"></em>
-                            </li>
-                            <li>
-                                <a class="jie-title" href="../jie/detail.html" target="_blank">基于 layui 的极简社区页面模版</a>
-                                <i>收藏于23小时前</i>
-                                <a class="mine-look" href="/jie/edit/8116">查看</a>
-                                <a class="mine-del" href="/jie/edit/8116">删除</a>
-                                <em><img th:src="@{/myfile/image/new.png}"></em>
-                            </li>
-                            <li>
-                                <a class="jie-title" href="../jie/detail.html" target="_blank">基于 layui 的极简社区页面模版</a>
-                                <i>收藏于23小时前</i>
-                                <a class="mine-look" href="/jie/edit/8116">查看</a>
-                                <a class="mine-del" href="/jie/edit/8116">删除</a>
-                                <em><img th:src="@{/myfile/image/new.png}"></em>
-                            </li>
-                            <li>
-                                <a class="jie-title" href="../jie/detail.html" target="_blank">基于 layui 的极简社区页面模版</a>
-                                <i>收藏于23小时前</i>
-                                <a class="mine-look" href="/jie/edit/8116">查看</a>
-                                <a class="mine-del" href="/jie/edit/8116">删除</a>
-                                <em><img th:src="@{/myfile/image/new.png}"></em>
-                            </li>
-
+                        <ul class="mine-view jie-row" id="COL_mine">
+                            <!--<li>-->
+                                <!--<a class="jie-title" href="../jie/detail.html" target="_blank">基于 layui 的极简社区页面模版</a>-->
+                                <!--<i>收藏于23小时前</i>-->
+                                <!--<a class="mine-look" href="/jie/edit/8116">查看</a>-->
+                                <!--<a class="mine-del" href="/jie/edit/8116">删除</a>-->
+                                <!--<em><img th:src="@{/myfile/image/new.png}"></em>-->
+                            <!--</li>-->
                         </ul>
                         <div id="LAY_page1"></div>
                     </div>
@@ -216,21 +166,66 @@
             </div>
         </div>
     </div>
+<script id="TRA-mod" type="text/html">
+    {{# layui.each(d,function(index,item){}}
+        <li>
+            <a href="/strategydetail?id={{item.id}}&detailId={{item.detailId}}" title="" target="_blank">{{item.title}}</a>
+            <i>{{item.date}}</i>
+            <a class="mine-del" href="javascript:" data-id="{{item.id}}">删除</a>
+            <a class="mine-edit" href="javascript:" data-id="{{item.id}}">编辑</a>
+            <em>{{item.viewNum}}热度/{{item.commentnum}}评论</em>
+        </li>
+    {{# }); }}
+</script>
     <script type="text/javascript" th:src="@{/layui/layui.js}"></script>
     <script>
-        layui.use(['element','laytpl'],function () {
+        layui.use(['element','laytpl','layer'],function () {
             var element = layui.element; //导航的hover效果、二级菜单等功能，需要依赖element模块
-            var taytpl = layui.laytpl;
+            var laytpl = layui.laytpl,
+                layer = layui.layer;
             element.on('tab(user)', function(data){
-                // console.log(this); //当前Tab标题所在的原始DOM元素
-                // console.log(data.index); //得到当前Tab的所在下标
-                // console.log(data.elem); //得到当前的Tab大容器
                 var id = '#' + $(this).attr('data-type');
-                setData(id);
             });
-            function setData(id) {
+            loadData();
+            function loadData() {
+               $.ajax({
+                   type:'post',
+                   url:'/user/getPerstrategy',
+                   success:function (res) {
+                       if(res.code == 200){
+                           if(res.data.strategy.length != 0){
+                              var straTpl = document.getElementById('TRA-mod').innerHTML;
+                              laytpl(straTpl).render(res.data.strategy,function (html) {
+                                  $("#TRA_mine").append(html);
+                              });
+                              $("#stra-num").text(res.data.strategy.length);
+                           }else{
+                               $("#TRA_mine").append('<div class="fly-none" style="min-height: 50px; padding:30px 0; height:auto;"><i style="font-size:14px;">空空如也</i></div>');
+                           }
+                           if(res.data.colstrategy.length != 0){
+                               var straTpl = document.getElementById('TRA-mod').innerHTML;
+                               laytpl(straTpl).render(res.data.colstrategy,function (html) {
+                                   $("#COL_mine").append(html);
+                               });
+                               $("#col-num").text(res.data.colstrategy.length);
+                           }else{
+                               $("#COL_mine").append('<div class="fly-none" style="min-height: 50px; padding:30px 0; height:auto;"><i style="font-size:14px;">空空如也</i></div>');
+                           }
+                       }
+                   },
+                   error:function (res) {
 
+                   }
+               });
             }
+            $("body").on('click','#TRA_mine li .mine-del',function () {
+                var id = $(this).data('id');
+                console.log(id);
+            });
+            $("body").on('click','#COL_mine li .mine-del',function () {
+                var id = $(this).data('id');
+                console.log(id);
+            });
         });
     </script>
 </body>

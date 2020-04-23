@@ -16,4 +16,6 @@ public interface MessageService {
      Response<String> sendMsg(int sender, int acpter, String content);
      List<Notify> queryUserAcptMsg(int userId);
      List<Notify> queryUserREJECTMsg(int userId);
+     int delOneMsgById(int userId,int msgId);
+     int delBatchMsgById(int userId);
 }

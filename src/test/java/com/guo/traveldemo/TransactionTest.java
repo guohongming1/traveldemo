@@ -9,6 +9,7 @@ import com.guo.traveldemo.constants.Constants;
 import com.guo.traveldemo.util.IPUtils;
 import com.guo.traveldemo.util.RedisUtil;
 import com.guo.traveldemo.util.ScenicApiUtil;
+import com.guo.traveldemo.web.dto.RouteDTO;
 import com.guo.traveldemo.web.mapper.RoleMapper;
 import com.guo.traveldemo.web.mapper.StrategyMapper;
 import com.guo.traveldemo.web.mapper.StrategyRecomdMapper;
@@ -25,6 +26,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Set;
@@ -171,5 +173,20 @@ public class TransactionTest {
         //System.out.println(redisUtil.sortSetAdd("test:zSet","keyword",30));
        // System.out.println(redisUtil.getHotScore(null,"keyword","test:zSet"));
         //System.out.println(redisUtil.sortSetZincrby("test:zSet",null,"keyword",3));
+    }
+
+    @Test
+    @Transactional
+    public void strTest(){
+//        String str = "{}2019.10.1大理：顺时针绕洱海}喜洲古镇}上关风}洱海}双廊{}2019.10.2 双廊 泸沽湖";
+//        RouteDTO routeDTO = new RouteDTO(str);
+//        routeDTO.getList().forEach(item->{
+//            item.forEach(ess->{
+//                System.out.println(ess);
+//            });
+//        });
+    //    redisService.addHot(10, "3",Constants.ESSAY_HOT_NAME);//增加热度
+        //收藏数量加一
+        redisService.setCollectNum(10,CollectionKey.ESSAY_KEY_COL_NUM);
     }
 }

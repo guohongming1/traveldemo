@@ -38,21 +38,22 @@
             </form>
         </div>
         <div class="login">
-            <!--<a th:if="${session.sessionUser == null}" href="/front/page/login">-->
-            <!--登录-->
-            <!--</a>-->
+            <a th:if="${session.userinfo == null}" href="/login">
+                登录
+            </a>
             <!--<img th:src="@{/layuiadmin/myfile/images/header.png}" style="width: 36px; height: 36px;">-->
-            <ul class="layui-nav" style="background-color: #fff;">
+            <ul th:if="${session.userinfo != null}" class="layui-nav" style="background-color: #fff;">
+                <span id="user-id" style="display:none" th:text="${session.userinfo.getId()}"></span>
                 <li class="layui-nav-item">
-                    <a href="" style="font-size: 16px;color: #222;">消息<span class="layui-badge">3</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</a>
+                    <a href="/usermsg" style="font-size: 16px;color: #222;">消息<span th:text="${session.msgnum}" class="layui-badge"></span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</a>
                 </li>
                 <li class="layui-nav-item" lay-unselect="">
-                    <a href="javascript:;" style="font-size: 16px;color: #222;"><img th:src="@{/layuiadmin/myfile/images/test01.jpg}" style="height: 30px; width: 30px;" class="layui-nav-img">&nbsp;&nbsp;</a>
+                    <a href="javascript:;" style="font-size: 16px;color: #222;"><img th:src="${session.userinfo.getImgUrl()}" style="height: 30px; width: 30px;" class="layui-nav-img" onerror="getdefaultImg(event)">&nbsp;&nbsp;</a>
                     <dl class="layui-nav-child">
                         <dd style="text-align: center"><a href="javascript:;"><i class="layui-icon layui-icon-user"></i>&nbsp;个人资料</a></dd>
                         <dd style="text-align: center"><a href="javascript:;"><i class="layui-icon layui-icon-note"></i>&nbsp;攻略/问答</a></dd>
                         <dd style="text-align: center"><a href="javascript:;"><i class="layui-icon layui-icon-rate"></i>&nbsp;收藏</a></dd>
-                        <dd style="text-align: center"><a href="javascript:;"><i class="layui-icon layui-icon-logout"></i>&nbsp;登出</a></dd>
+                        <dd layadmin-event="logout" style="text-align: center"><a href="javascript:;"><i class="layui-icon layui-icon-logout"></i>&nbsp;登出</a></dd>
                     </dl>
                 </li>
             </ul>
@@ -78,7 +79,7 @@
 <div class="layui-container fly-marginTop fly-user-main">
     <ul class="layui-nav layui-nav-tree layui-inline" lay-filter="user">
         <li class="layui-nav-item">
-            <a href="/user">
+            <a th:href="'/userInfo?id='+${session.userinfo.getId()}">
                 <i class="layui-icon">&#xe609;</i>
                 我的主页
             </a>
@@ -172,10 +173,15 @@
 </script>
 <script type="text/javascript" th:src="@{/layui/layui.js}"></script>
 <script>
-    layui.use(['element','laytpl','layer'],function () {
+    layui.config({
+        base: '/layuiadmin/'
+    }).extend({
+        index: 'lib/index' //主入口模块
+    }).use(['index','element','laytpl','layer'],function () {
         var element = layui.element; //导航的hover效果、二级菜单等功能，需要依赖element模块
         var laytpl = layui.laytpl;
-        var layer = layui.layer;
+        var layer = layui.layer,
+            index = layui.index;
         element.on('tab(user)', function(data){
             // console.log(this); //当前Tab标题所在的原始DOM元素
             // console.log(data.index); //得到当前Tab的所在下标
@@ -189,7 +195,6 @@
                 url:"/user/userReMsg",
                 type:"post",
                 success:function(res){
-                    console.log(res);
                     if (res.code === 200) {
                         // 获取节点
                         var getTpl = document.getElementById('msg-mod').innerHTML;
@@ -203,6 +208,57 @@
                     layer.msg("错误"+res);
                 }
             });
+        }
+        // 批量删除
+        $("#LAY_delallmsg").click(function () {
+            var userId = $("#user-id").text();
+            var _this = $(this);
+            console.log("test1")
+            layer.confirm('确定清空吗？', function(index){
+                console.log("test1")
+                $.ajax({
+                    url:"/user/delAllMsg",
+                    type:"post",
+                    success:function(res){
+                        if (res.code === 200) {
+                            layer.close(index);
+                            layer.msg("删除成功",{icon:6});
+                            $("#LAY_minemsg").html('<div class="fly-none">您暂时没有最新消息</div>');
+                        }
+                    },
+                    error:function(res){
+                        layer.msg("错误"+res);
+                    }
+                });
+            });
+        });
+        //单条删除
+
+        //单条删除
+        $("body").on('click','.mine-msg li .fly-delete',function(){
+            var othis = $(this).parents('li'), msgId = othis.data('id');
+            console.log("test1")
+            $.ajax({
+                url:"/user/delOneMsg",
+                type:"post",
+                data:{'msgId':msgId},
+                success:function(res){
+                    console.log(res);
+                    if (res.code === 200) {
+                        othis.remove();
+                        layer.msg("删除成功",{icon:6});
+                        delEnd();
+                    }
+                },
+                error:function(res){
+                    layer.msg("错误"+res.msg);
+                }
+            });
+       });
+        var delEnd = function(){
+            if($("#LAY_minemsg").find('.mine-msg li').length === 0){
+                $("#LAY_minemsg").html('<div class="fly-none">您暂时没有最新消息</div>');
+            }
         }
         function setData(id) {
 

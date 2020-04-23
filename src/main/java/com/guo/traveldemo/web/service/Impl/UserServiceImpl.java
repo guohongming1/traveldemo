@@ -73,7 +73,7 @@ public class UserServiceImpl implements UserService {
         query.eq("password",password);
         User userdata = userMapper.selectOne(query);
         if(Objects.isNull(userdata)){
-           return Response.fail(CodeMsg.USER_NULL);
+           return Response.fail(CodeMsg.USER_PASS_ERROR);
         }
         // 查询用户消息
         int msgnum = messageService.getMsgCountByUserId(userdata.getId());
@@ -83,6 +83,17 @@ public class UserServiceImpl implements UserService {
         session.setMaxInactiveInterval(60 * 60 * 2);
         return Response.success(userdata.getRole());
     }
+
+    /**
+     * 用户信息修改
+     * @param user
+     * @return
+     */
+    @Override
+    public int reuserinfo(User user){
+        return userMapper.updateByPrimaryKeySelective(user);
+    }
+    @Override
     public User queryUserById(int id){
         return userMapper.selectByPrimaryKey(id);
     }

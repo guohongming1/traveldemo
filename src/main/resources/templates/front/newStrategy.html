@@ -303,7 +303,7 @@
             <h3 class="layui-timeline-title layui-inline">DAY{{index+1}}</h3>
             <i class="dayoper layui-icon layui-icon-add-1" title="添加节点"></i>
             <ul class="time-route-li">
-                {{# var item = day.split('}');item.splice(0,1);console.log(item) }}
+                {{# var item = day.split('}');item.splice(0,1); }}
                 {{#  layui.each(item, function(inde, i){ }}
                 <li>
                     <input type="text" class="route-jie" maxlength="100" value='{{i}}' style="display: none;"/>
@@ -453,7 +453,6 @@
                 var days = route.split('{');
                 days.splice(0, 1);
                 timerouteFlag = days.length;
-                console.log(days);
                 // 获取节点
                 var getTpl = document.getElementById('route-mod').innerHTML;
                 // 执行tpl渲染

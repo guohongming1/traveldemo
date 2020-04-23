@@ -7,10 +7,7 @@ import com.guo.traveldemo.constants.Constants;
 import com.guo.traveldemo.result.CodeMsg;
 import com.guo.traveldemo.result.Response;
 import com.guo.traveldemo.result.StrategyDTO;
-import com.guo.traveldemo.web.mapper.RouteMapper;
-import com.guo.traveldemo.web.mapper.StrategyDetailMapper;
-import com.guo.traveldemo.web.mapper.StrategyMapper;
-import com.guo.traveldemo.web.mapper.TravelTableMapper;
+import com.guo.traveldemo.web.mapper.*;
 import com.guo.traveldemo.web.pojo.Route;
 import com.guo.traveldemo.web.pojo.Strategy;
 import com.guo.traveldemo.web.pojo.StrategyDetail;
@@ -46,6 +43,8 @@ public class StrategyServiceImpl implements StrategyService {
 
     @Autowired
     private StrategyDetailMapper strategyDetailMapper;
+    @Autowired
+    private CollectMapper collectMapper;
 
     /**
      * 发表游记
@@ -186,6 +185,26 @@ public class StrategyServiceImpl implements StrategyService {
         result.setPeople(travelTable.getPeople());
         result.setAdvice(travelTable.getAdvice());
         return Response.success(result);
+    }
+    public StrategyDetail getDetailById(int detailId){
+        return strategyDetailMapper.selectByPrimaryKey(detailId);
+    }
+
+    @Override
+    public TravelTable getTavelTableById(int tableId) {
+        return travelTableMapper.selectByPrimaryKey(tableId);
+    }
+
+    @Override
+    public Route getRouteById(int routeId) {
+        return routeMapper.selectByPrimaryKey(routeId);
+    }
+
+    @Override
+    public List<Strategy> getStrategyByUserId(int id){
+        QueryWrapper<Strategy> query = new QueryWrapper<>();
+        query.eq("user_id",id);
+        return strategyMapper.selectList(query);
     }
 
 }

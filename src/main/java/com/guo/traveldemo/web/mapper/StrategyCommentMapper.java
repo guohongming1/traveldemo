@@ -1,10 +1,13 @@
 package com.guo.traveldemo.web.mapper;
 
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.guo.traveldemo.web.pojo.StrategyComment;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface StrategyCommentMapper {
+public interface StrategyCommentMapper extends BaseMapper<StrategyComment> {
     int deleteByPrimaryKey(Integer id);
 
     int insert(StrategyComment record);
@@ -16,4 +19,6 @@ public interface StrategyCommentMapper {
     int updateByPrimaryKeySelective(StrategyComment record);
 
     int updateByPrimaryKey(StrategyComment record);
+
+    IPage<StrategyComment> selectPageVo(Page page,int detailId);
 }

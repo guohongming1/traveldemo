@@ -19,7 +19,7 @@ public class CollectionKey extends BasePrefix{
   public static final CollectionKey TOPIC_KEY_COM_NUM = new CollectionKey("type:topiccom");
 
   //收藏数目
-  public static final CollectionKey ESSAY_KEY_COL_NUM = new CollectionKey("type:topiccol");
-  public static final CollectionKey QUESTION_KEY_COL_NUM = new CollectionKey("type:topiccol");
+  public static final CollectionKey ESSAY_KEY_COL_NUM = new CollectionKey("type:stracol");
+  public static final CollectionKey QUESTION_KEY_COL_NUM = new CollectionKey("type:questioncol");
   public static final CollectionKey TOPIC_KEY_COL_NUM = new CollectionKey("type:topiccol");
 }

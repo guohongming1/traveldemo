@@ -17,4 +17,5 @@ public interface NotifyMapper extends BaseMapper<Notify> {
     int updateByPrimaryKeySelective(Notify record);
 
     int updateByPrimaryKey(Notify record);
+
 }

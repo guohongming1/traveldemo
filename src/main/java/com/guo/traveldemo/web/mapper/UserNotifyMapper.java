@@ -22,7 +22,7 @@ public interface UserNotifyMapper extends BaseMapper<UserNotify> {
 
     int updateByPrimaryKey(UserNotify record);
 
-    @Select("select count(*) from user_notify where user_id=#{user_id} and readflag=2")
+    @Select("select count(*) from user_notify where user_id=#{user_id} and readflag=1")
     int getMsgCountByUserId(@Param("user_id") int id);
 
     @Select("select user_notify.notify_id from user_notify where user_id=#{user_id} and readflag=#{readflag}")

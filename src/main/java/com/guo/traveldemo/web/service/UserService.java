@@ -16,4 +16,7 @@ public interface UserService {
     Response<Boolean> register(User user,String vercode);
 
     Response<String> login(UserDTO userDTO, HttpSession session);
+
+    User queryUserById(int id);
+    int reuserinfo(User user);
 }

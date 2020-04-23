@@ -1,17 +1,19 @@
-package com.guo.traveldemo.web.pojo;
+package com.guo.traveldemo.web.dto;
 
 import com.alibaba.fastjson.annotation.JSONField;
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableId;
 
+import java.io.Serializable;
 import java.util.Date;
 
-public class StrategyComment {
-    @TableId(value = "id",type = IdType.AUTO)
+/**
+ * @author 郭红明
+ * @version 1.0
+ * @Date: 2020/4/21
+ */
+public class CommentDTO implements Serializable {
+    private static final long serialVersionUID = 6341038118185312255L;
+
     private Integer id;
-
-    private Integer straDeId;
-
     private Integer userId;
 
     private String content;
@@ -19,6 +21,8 @@ public class StrategyComment {
     private String reply;
     @JSONField(format = "yyyy-MM-dd HH:mm:ss")
     private Date date;
+    private String userName;
+    private String userImg;
 
     public Integer getId() {
         return id;
@@ -26,14 +30,6 @@ public class StrategyComment {
 
     public void setId(Integer id) {
         this.id = id;
-    }
-
-    public Integer getStraDeId() {
-        return straDeId;
-    }
-
-    public void setStraDeId(Integer straDeId) {
-        this.straDeId = straDeId;
     }
 
     public Integer getUserId() {
@@ -66,5 +62,21 @@ public class StrategyComment {
 
     public void setDate(Date date) {
         this.date = date;
+    }
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+
+    public String getUserImg() {
+        return userImg;
+    }
+
+    public void setUserImg(String userImg) {
+        this.userImg = userImg;
     }
 }

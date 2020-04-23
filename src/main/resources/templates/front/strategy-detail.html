@@ -36,21 +36,22 @@
             </form>
         </div>
         <div class="login">
-            <!--<a th:if="${session.sessionUser == null}" href="/front/page/login">-->
-            <!--登录-->
-            <!--</a>-->
+            <a th:if="${session.userinfo == null}" href="/login">
+                登录
+            </a>
             <!--<img th:src="@{/layuiadmin/myfile/images/header.png}" style="width: 36px; height: 36px;">-->
-            <ul class="layui-nav" style="background-color: #fff;">
+            <ul th:if="${session.userinfo != null}" class="layui-nav" style="background-color: #fff;">
+                <span id="user-id" style="display:none" th:text="${session.userinfo.getId()}"></span>
                 <li class="layui-nav-item">
-                    <a href="" style="font-size: 16px;color: #222;">消息<span class="layui-badge">3</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</a>
+                    <a href="/usermsg" style="font-size: 16px;color: #222;">消息<span th:text="${session.msgnum}" class="layui-badge"></span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</a>
                 </li>
                 <li class="layui-nav-item" lay-unselect="">
-                    <a href="javascript:;" style="font-size: 16px;color: #222;"><img th:src="@{/layuiadmin/myfile/images/test01.jpg}" style="height: 30px; width: 30px;" class="layui-nav-img">&nbsp;&nbsp;</a>
+                    <a href="javascript:;" style="font-size: 16px;color: #222;"><img th:src="${session.userinfo.getImgUrl()}" style="height: 30px; width: 30px;" class="layui-nav-img" onerror="getdefaultImg(event)">&nbsp;&nbsp;</a>
                     <dl class="layui-nav-child">
                         <dd style="text-align: center"><a href="javascript:;"><i class="layui-icon layui-icon-user"></i>&nbsp;个人资料</a></dd>
                         <dd style="text-align: center"><a href="javascript:;"><i class="layui-icon layui-icon-note"></i>&nbsp;攻略/问答</a></dd>
                         <dd style="text-align: center"><a href="javascript:;"><i class="layui-icon layui-icon-rate"></i>&nbsp;收藏</a></dd>
-                        <dd style="text-align: center"><a href="javascript:;"><i class="layui-icon layui-icon-logout"></i>&nbsp;登出</a></dd>
+                        <dd layadmin-event="logout" style="text-align: center"><a href="javascript:;"><i class="layui-icon layui-icon-logout"></i>&nbsp;登出</a></dd>
                     </dl>
                 </li>
             </ul>
@@ -102,7 +103,7 @@
         position: relative;
     }
     .eht-top {
-        width: 443px;
+        width: 800px;
     }
     .eh-text {
         color: #333333;
@@ -147,6 +148,21 @@
     .eh-right p{
         margin-left: 3px;
     }
+    .eh-right-fill{
+        position: absolute;
+        right: 10px;
+        bottom: 1px;
+        color: #6294b5;
+        font-size: 12px;
+    }
+    .eh-right-fill i{
+        display: block;
+        color: #6294b5;
+        font-size: 30px;
+    }
+    .eh-right-fill p{
+        margin-left: 3px;
+    }
     .eh-right i:hover{
         cursor: pointer;
     }
@@ -186,7 +202,9 @@
     }
     .detail div{
         margin: 20px 0 0 20px;
-        overflow: auto;
+    }
+    .detail div img{
+        max-width: 668px;
     }
     /*  评论*/
     .detail-wrapper{
@@ -308,33 +326,44 @@
         color:#999;
         margin-right:10px;
     }
+    .author-reply:hover{
+        cursor: pointer;
+        color: #1E9FFF;
+    }
 </style>
 <div class="wrap_all">
     <div class="detail-header">
         <div class="e-top">
+            <span id="detailId" style="display: none" th:text="${detailId}"></span>
+            <span id="Id" style="display: none" th:text="${id}"></span>
             <div class="eh-head">
-                <img class="ehh-img" th:src="@{/myfile/temp/04.jpg}">
+                <img class="ehh-img" th:src="${authorImg}">
             </div>
             <div class="eh-title">
                 <div class="eht-top">
-                    <h1 class="eh-text">泰国七天之旅，攻略一网打尽</h1>
+                    <h1 class="eh-text" th:text="${title}"></h1>
                 </div>
                 <hr style="margin-bottom:20px;border:none;border-top:2px solid #E4E4E4;" />
                 <div class="eh-sundry">
-                    <a href="#">蝈蝈小姐</a>
-                    <a href="#"><img th:src="@{/myfile/image/sixin.png}" title="私信"></a>
+                    <span id="authorId" style="display: none" th:text="${authorId}"></span>
+                    <a th:href="'/userInfo?id='+${authorId}" th:text="${authorName}"></a>
+                    <!--&lt;!&ndash;<a href="#"><img th:src="@{/myfile/image/sixin.png}" title="私信"></a>&ndash;&gt;-->
                     <i class="layui-icon layui-icon-date" title="日期"></i>
-                    <span>2020-07-12</span>
+                    <span th:text="${#dates.format(table.date,'yyyy-MM-dd HH:mm:ss')}"></span>
                     <i class="layui-icon layui-icon-fire" title="热度"></i>
-                    <span>221</span>
+                    <span th:text="${hotnum}"></span>
                     <i class="layui-icon layui-icon-dialogue" title="评论"></i>
-                    <span>21</span>
+                    <span th:text="${comnum}"></span>
                     <i class="layui-icon layui-icon-star" title="被收藏"></i>
-                    <span>10</span>
+                    <span th:text="${colnum}"></span>
                 </div>
-                <div class="eh-right">
-                    <i class="layui-icon layui-icon-star"></i>
-                    <p>收藏</p>
+                <div class="eh-right collect" th:if="${colstate == false }">
+                <i class="layui-icon layui-icon-star"></i>
+                <p>收藏</p>
+                </div>
+                <div class="eh-right-fill collect" th:if="${colstate == true }">
+                    <i class="layui-icon layui-icon-star-fill"></i>
+                    <p>已收藏</p>
                 </div>
             </div>
         </div>
@@ -353,116 +382,127 @@
                         </colgroup>
                         <tr>
                             <th>地点:</th>
-                            <td>日本大阪</td>
+                            <td><span th:text="${table.address}"></span></td>
                             <th>出发时间:</th>
-                            <td>2020-04-12</td>
+                            <td><span th:text="${#dates.format(table.date,'yyyy-MM-dd')}"></span></td>
                         </tr>
                         <tr>
                             <th>出行天数:</th>
-                            <td>7</td>
+                            <td><span th:text="${table.days}"></span></td>
                             <th>人均费用:</th>
-                            <td>1000RMB</td>
+                            <td><span th:text="${table.fee}"></span></td>
                         </tr>
                         <tr>
                             <th>人物:</th>
-                            <td>同行好友</td>
-                            <th>交通工具:</th>
-                            <td>公交/单车</td>
+                            <td colspan="3"><span th:text="${table.people}"></span></td>
+                            <!--<th>交通工具:</th>-->
+                            <!--<td></td>-->
                         </tr>
                         <tr>
                             <th colspan="1" rowspan="4">建议<br/>(必需品、美食、文化差异等)</th>
-                            <td colspan="3" rowspan="4">同行好友</td>
+                            <td colspan="3" rowspan="4"><span th:text="${table.advice}"></span></td>
                         </tr>
                     </table>
                 </div>
                 <div class="route">
                     <h3 class="hd">路线</h3>
                     <div class="route-detail">
-                        <ul class="layui-timeline">
+                        <ul class="layui-timeline" th:each="day,userStat:${route}">
+                            <!--<li class="layui-timeline-item">-->
+                                <!--<i class="layui-icon layui-timeline-axis">&#xe63f;</i>-->
+                                <!--<div class="layui-timeline-content layui-text">-->
+                                    <!--<h3 class="layui-timeline-title">DAY1</h3>-->
+                                    <!--<ul>-->
+                                        <!--<li>《登高》</li>-->
+                                        <!--<li>《茅屋为秋风所破歌》</li>-->
+                                    <!--</ul>-->
+                                <!--</div>-->
+                            <!--</li>-->
                             <li class="layui-timeline-item">
                                 <i class="layui-icon layui-timeline-axis">&#xe63f;</i>
                                 <div class="layui-timeline-content layui-text">
-                                    <h3 class="layui-timeline-title">DAY1</h3>
-                                    <ul>
-                                        <li>《登高》</li>
-                                        <li>《茅屋为秋风所破歌》</li>
+                                    <h3 class="layui-timeline-title" th:text="'DAY'+${userStat.count}"></h3>
+                                    <ul th:each="elem:${day}">
+                                        <li th:text="${elem}"></li>
                                     </ul>
                                 </div>
                             </li>
-                            <li class="layui-timeline-item">
-                                <i class="layui-icon layui-timeline-axis">&#xe63f;</i>
-                                <div class="layui-timeline-content layui-text">
-                                    <h3 class="layui-timeline-title">DAY2</h3>
-                                    <ul>
-                                        <li>《登高》</li>
-                                        <li>《茅屋为秋风所破歌》</li>
-                                    </ul>
-                                </div>
-                            </li>
-                            <li class="layui-timeline-item">
-                            </li>
+                            <!--<li class="layui-timeline-item" th:if="${day.size}==${day.count}">-->
+                            <!--</li>-->
                         </ul>
                     </div>
                 </div>
                 <div class="detail">
                     <h3 class="hd">详细攻略</h3>
-                    <div>
-                        有不少其他答案说是因为JS太差。我下面的答案已经说了，这不是根本性的原因。但除此之外，我还要纠正一些对JS具体问题的误解。JS当初是被作为脚本语言设计的，所以某些问题并不是JS设计得差或者是JS设计者的失误。比如var的作用域问题，并不是“错误”，而是当时绝大部分脚本语言都是这样的，如perl/php/sh等。模块的问题也是，脚本语言几乎都没有模块/命名空间功能。弱类型、for-in之类的问题也是，只不过现在用那些老的脚本语言的人比较少，所以很多人都误以为是JS才有的坑。另外有人说JS是半残语言，满足不了开发需求，1999年就该死。半残这个嘛，就夸张了。JS虽然有很多问题，但是设计总体还是优秀的。——来自知乎@贺师俊
+                    <div th:utext="${content}">
                     </div>
                 </div>
                 <div class="detail-wrapper">
                     <blockquote class="layui-elem-quote" style="border-left: 5px solid #6294b5;font-size: 20px;color: #6294b5">用户评论</blockquote>
-                    <div class="rev-list">
-                        <ul>
-                            <li class="rev-item">
-                                <div class="user">
-                                            <span class="avatar">
-                                                <img th:src="@{/layuiadmin/myfile/images/test01.jpg}" width="32" height="32">
-                                            </span>
-                                    <span>雅芭***珏蜜</span>
+                    <!--// TODO-->
+                    <div>
+                        <div class="layui-collapse">
+                            <div class="layui-colla-item">
+                                <h3 class="layui-colla-title" style="text-align: center;font-size: 15px">回复</h3>
+                                <div class="layui-colla-content">
+                                    <textarea id="comment" name="content" required lay-verify="required" placeholder="请输入内容"  class="layui-textarea fly-editor" style="height: 150px;border: none"></textarea>
+                                    <button id="submit" type="button" class="layui-btn" style="margin: 3px 0px 0px 600px;">确认</button>
                                 </div>
-                                <p class="txt">比自己订票便宜，航班也很准时。一路顺畅。</p>
-                                <div class="img clearfix"></div>
-                                <span class="time">2月前</span>
-                                <div class="reply">
-                                    <strong>回复: </strong>谢谢亲的好评哦，巴厘岛是我们公司主推的产品之一哦，我们资源都比较强势，所以价格都比较优惠，鹰航和港航都是不错的航班，能让亲愉快出行是必须的哦，希望下次再次选择我们时光岛，期待为您再次服务！
-                                </div>
-                            </li>
-                        </ul>
+                            </div>
+                        </div>
                     </div>
-                    <div class="rev-list">
-                        <ul>
-                            <li class="rev-item">
-                                <div class="user">
-                                            <span class="avatar">
-                                                <img th:src="@{/layuiadmin/myfile/images/test01.jpg}" width="32" height="32">
-                                            </span>
-                                    <span>雅芭***珏蜜</span>
-                                </div>
-                                <p class="txt">比自己订票便宜，航班也很准时。一路顺畅。</p>
-                                <div class="img clearfix"></div>
-                                <span class="time">2月前</span>
-                            </li>
-                        </ul>
-                    </div>
-                    <div class="rev-list">
-                        <ul>
-                            <li class="rev-item">
-                                <div class="user">
-                                            <span class="avatar">
-                                                <img th:src="@{/layuiadmin/myfile/images/test01.jpg}" width="32" height="32">
-                                            </span>
-                                    <span>雅芭***珏蜜</span>
-                                </div>
-                                <p class="txt">比自己订票便宜，航班也很准时。一路顺畅。</p>
-                                <div class="img clearfix"></div>
-                                <span class="time">2月前</span>
-                                <div class="reply">
-                                    <strong>回复: </strong>谢谢亲的好评哦，巴厘岛是我们公司主推的产品之一哦，我们资源都比较强势，所以价格都比较优惠，鹰航和港航都是不错的航班，能让亲愉快出行是必须的哦，希望下次再次选择我们时光岛，期待为您再次服务！
-                                </div>
-                            </li>
-                        </ul>
-                    </div>
+                    <div id="reply"></div>
+                    <!--<div class="rev-list">-->
+                        <!--<ul>-->
+                            <!--<li class="rev-item">-->
+                                <!--<div class="user">-->
+                                            <!--<span class="avatar">-->
+                                                <!--<img th:src="@{/layuiadmin/myfile/images/test01.jpg}" width="32" height="32">-->
+                                            <!--</span>-->
+                                    <!--<span>雅芭***珏蜜</span>-->
+                                <!--</div>-->
+                                <!--<p class="txt">比自己订票便宜，航班也很准时。一路顺畅。</p>-->
+                                <!--<div class="img clearfix"></div>-->
+                                <!--<span class="time">2月前</span>-->
+                                <!--<div class="reply">-->
+                                    <!--<strong>回复: </strong>谢谢亲的好评哦，巴厘岛是我们公司主推的产品之一哦，我们资源都比较强势，所以价格都比较优惠，鹰航和港航都是不错的航班，能让亲愉快出行是必须的哦，希望下次再次选择我们时光岛，期待为您再次服务！-->
+                                <!--</div>-->
+                            <!--</li>-->
+                        <!--</ul>-->
+                    <!--</div>-->
+                    <!--<div class="rev-list">-->
+                        <!--<ul>-->
+                            <!--<li class="rev-item">-->
+                                <!--<div class="user">-->
+                                            <!--<span class="avatar">-->
+                                                <!--<img th:src="@{/layuiadmin/myfile/images/test01.jpg}" width="32" height="32">-->
+                                            <!--</span>-->
+                                    <!--<span>雅芭***珏蜜</span>-->
+                                <!--</div>-->
+                                <!--<p class="txt">比自己订票便宜，航班也很准时。一路顺畅。</p>-->
+                                <!--<div class="img clearfix"></div>-->
+                                <!--<span class="time">2月前</span>-->
+                            <!--</li>-->
+                        <!--</ul>-->
+                    <!--</div>-->
+                    <!--<div class="rev-list">-->
+                        <!--<ul>-->
+                            <!--<li class="rev-item">-->
+                                <!--<div class="user">-->
+                                            <!--<span class="avatar">-->
+                                                <!--<img th:src="@{/layuiadmin/myfile/images/test01.jpg}" width="32" height="32">-->
+                                            <!--</span>-->
+                                    <!--<span>雅芭***珏蜜</span>-->
+                                <!--</div>-->
+                                <!--<p class="txt">比自己订票便宜，航班也很准时。一路顺畅。</p>-->
+                                <!--<div class="img clearfix"></div>-->
+                                <!--<span class="time">2月前</span>-->
+                                <!--<div class="reply">-->
+                                    <!--<strong>回复: </strong>谢谢亲的好评哦，巴厘岛是我们公司主推的产品之一哦，我们资源都比较强势，所以价格都比较优惠，鹰航和港航都是不错的航班，能让亲愉快出行是必须的哦，希望下次再次选择我们时光岛，期待为您再次服务！-->
+                                <!--</div>-->
+                            <!--</li>-->
+                        <!--</ul>-->
+                    <!--</div>-->
                 </div>
             </div>
             <div class="layui-col-md3 relate">
@@ -500,19 +540,171 @@
             </div>
         </div>
     </div>
+    <script id="com-mod" type="text/html">
+    {{#  layui.each(d, function(index, item){ }}
+        <div class="rev-list">
+            <ul>
+                <li class="rev-item" id="rev{{index}}">
+                    <div class="user">
+                 <span class="avatar">
+                 <img src="{{item.userImg}}" width="32" height="32">
+                  </span>
+                        <span>{{item.userName}}</span>
+                    </div>
+                    <p class="txt">{{item.content}}</p>
+                    <div class="img clearfix"></div>
+                    <span class="time">{{item.date}}</span>
+                    {{# if(item.reply != null){ }}
+                    <div class="reply">
+                        <strong>回复: </strong>{{item.reply}}
+                    </div>
+                    {{#}else{}}
+                    <span class="author-reply" data-index="{{index}}" data-id="{{item.id}}" style="display: none;font-size: 12px;float: right">回复</span>
+                    {{#}}}
+                </li>
+            </ul>
+        </div>
+        {{# }); }}
+</script>
     <script type="text/javascript" th:src="@{/layui/layui.js}"></script>
     <script>
-        layui.use(['element','carousel'], function() {
+        var compage = 1;
+        layui.config({
+            base: '/layuiadmin/'
+        }).extend({
+            index: 'lib/index' //主入口模块
+        }).use(['index','element','carousel','layer','laytpl'], function() {
             var element = layui.element; //导航的hover效果、二级菜单等功能，需要依赖element模块
-
-            // 收藏按钮   实际开发时要先判断用户是否已经收藏
+            var laytpl = layui.laytpl,
+                layer = layui.layer,
+                index = layui.index;
+            $(function () {
+                var user_id = $("#user-id").text();// 攻略id
+                var author = $("#authorId").text();
+                if(user_id == author){
+                    $(".collect").css('display','none');
+                }
+            });
+            // 收藏按钮
             $(".eh-right i").hover(function () {
                 $(this).removeClass("layui-icon-star");
                 $(this).addClass("layui-icon-star-fill");
             },function () {
                 $(this).removeClass("layui-icon-star-fill");
                 $(this).addClass("layui-icon-star");
-            })
+            });
+            //点击收藏
+            if(!$(".eh-right i").hasClass('layui-icon-star-fill')){
+                $(".eh-right i").click(function () {
+                    var _this = $(this);
+                    var straid = $("#Id").text();// 攻略id
+                    console.log(straid)
+                    $.ajax({
+                        type: "post",
+                        url: "/comm/straCollect",
+                        data:{'straId':straid},
+                        success: function(res){
+                            console.log('collect');
+                            if(res.code == 200){
+                                console.log('collect');
+                                layer.msg("收藏成功");
+                                _this.unbind("mouseenter").unbind("mouseleave");
+                                _this.removeClass("layui-icon-star");
+                                _this.addClass("layui-icon-star-fill");
+                            }
+                        },
+                        error: function (res) {
+                            layer.msg("请求错误");
+                        }
+                    });
+                });
+            }
+            var detailId = $("#detailId").text();
+            loadComment();
+            function loadComment() {
+                //请求接口
+                $.ajax({
+                    type: "post",
+                    url: "/comm/strcomment",
+                    data:{'detailId':detailId,'page':compage},
+                    success: function(res){
+                        if(res.data != null && res.data != ""){
+                            compage++;
+                            // 获取节点
+                            var getTpl = document.getElementById('com-mod').innerHTML;
+                            // 执行tpl渲染
+                            laytpl(getTpl).render(res.data, function (html) {
+                                $("#reply").append(html);
+                            });
+                            // 检查是否是作者登录
+                            var author = $("#authorId").text();
+                            var user_id = $("#user-id").text();
+                            var reply = $(".author-reply");
+                            console.log(author+"userid"+user_id)
+                            if(user_id != undefined &&user_id != null){
+                                if(author == user_id){
+                                    reply.css("display",'inline-block');
+                                    reply.click(function () {
+                                        var _this = $(this);
+                                        var rep_id = $(this).data('id');
+                                        var straid = $("#Id").text();// 攻略id
+                                        layer.prompt({title: '填写回复', formType: 2}, function(rep_text, index){
+                                            layer.close(index);
+                                            $.ajax({
+                                                type: "post",
+                                                url: "/comm/repstracomment",
+                                                data:{'straId':straid,'id':rep_id,'content':rep_text},
+                                                success: function(res){
+                                                    if(res.code == 200){
+                                                        layer.msg("回复成功");
+                                                        _this.css("display",'none');
+                                                        var dataindex = 'rev'+_this.data("index");
+                                                        console.log(dataindex)
+                                                        $("#"+dataindex).append("<div class=\"reply\">\n" +
+                                                            "                        <strong>回复: </strong>\n" +rep_text+
+                                                            "                    </div>");
+                                                    }
+                                                },
+                                                error: function (res) {
+                                                    layer.msg("请求错误");
+                                                }
+                                            });
+                                        });
+                                    });
+                                }
+                            }
+                        }
+                    },
+                    error: function (res) {
+                        layer.msg("请求错误");
+                    }
+                });
+            }
+            $("#submit").click(function () {
+                var id = $("#Id").text();
+                var text = $("#comment").val();
+                console.log("id"+id+"text"+text)
+                if(text != null && text != ""){
+                    $.ajax({
+                        type: "post",
+                        url: "/comm/substracomment",
+                        data:{'id':id,'content':text},
+                        success: function(res){
+                            if(res.code == 200){
+                                data=[{}];
+                                layer.msg("评论成功")
+                                $("#comment").val("");
+                                $(".layui-colla-content").removeClass("layui-show");
+                            }
+                        },
+                        error: function (res) {
+                            layer.msg("请求错误");
+                        }
+                    });
+                }else{
+                    layer.msg("请输入内容",{icon:5});
+                }
+            });
         });
     </script>
 </div>

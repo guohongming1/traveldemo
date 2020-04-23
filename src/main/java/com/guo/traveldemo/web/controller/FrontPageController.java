@@ -3,13 +3,14 @@ package com.guo.traveldemo.web.controller;
 import com.guo.traveldemo.cache.CollectionKey;
 import com.guo.traveldemo.constants.Constants;
 import com.guo.traveldemo.util.IPUtils;
+import com.guo.traveldemo.web.dto.RouteDTO;
 import com.guo.traveldemo.web.dto.StrategyDTO;
 import com.guo.traveldemo.web.mapper.UserMapper;
-import com.guo.traveldemo.web.pojo.StrategyRecomd;
-import com.guo.traveldemo.web.pojo.User;
+import com.guo.traveldemo.web.pojo.*;
+import com.guo.traveldemo.web.service.Impl.CommonServiceImpl;
 import com.guo.traveldemo.web.service.Impl.RedisService;
 import com.guo.traveldemo.web.service.RecommentService;
-import org.checkerframework.checker.units.qual.A;
+import com.guo.traveldemo.web.service.StrategyService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -40,6 +41,12 @@ public class FrontPageController {
 
     @Autowired
     private RedisService redisService;
+
+    @Autowired
+    private CommonServiceImpl commonService;
+
+    @Autowired
+    private StrategyService strategyService;
 
     @RequestMapping("/index")
     public String index(Model model, HttpSession session, HttpServletRequest request)throws Exception{
@@ -80,7 +87,7 @@ public class FrontPageController {
                 strategyDTO.setCollectnum(0);
             }
             Number comNum = redisService.getViewNum(list.get(i).getId(), CollectionKey.ESSAY_KEY_COM_NUM);
-            if(!Objects.isNull(colNum)){
+            if(!Objects.isNull(comNum)){
                 strategyDTO.setCommentnum(comNum.intValue());
             }else{
                 strategyDTO.setCommentnum(0);
@@ -94,7 +101,52 @@ public class FrontPageController {
     @GetMapping("/strategydetail")
     public String detail(Model model,HttpSession session,int id,int detailId){
         User user = (User)session.getAttribute("userinfo");
+        if(user != null){
+            boolean colstate = commonService.queryCollect(user.getId(),(byte)1,id);
+            model.addAttribute("colstate",colstate);
+        }
+        // 热度增加
         redisService.addHot(id, "1",Constants.ESSAY_HOT_NAME);
+        // 页面数据封装
+        Strategy strategy = strategyService.selectStrategyById(id);
+        // 攻略明细ID，用于获取评论
+        model.addAttribute("id",strategy.getId());
+        model.addAttribute("detailId",detailId);
+        model.addAttribute("title",strategy.getTitle());
+        User author = userMapper.getUserInfoByPrimaryKey(strategy.getUserId());
+        model.addAttribute("authorId",author.getId());
+        model.addAttribute("authorName",author.getName());
+        model.addAttribute("authorImg",author.getImgUrl());
+        // 获取文章热度/评论数/收藏数目
+        Number hotNum = redisService.getScore(Constants.ESSAY_HOT_NAME, id);
+        if(!Objects.isNull(hotNum)){
+            model.addAttribute("hotnum",hotNum.intValue());
+        }else{
+            model.addAttribute("hotnum",0);
+        }
+        Number colNum = redisService.getViewNum(id, CollectionKey.ESSAY_KEY_COL_NUM);
+        if(!Objects.isNull(colNum)){
+            model.addAttribute("colnum",colNum.intValue());
+        }else{
+            model.addAttribute("colnum",0);
+        }
+        Number comNum = redisService.getViewNum(id, CollectionKey.ESSAY_KEY_COM_NUM);
+        if(!Objects.isNull(comNum)){
+            model.addAttribute("comnum",comNum.intValue());
+        }else{
+            model.addAttribute("comnum",0);
+        }
+        StrategyDetail detail = strategyService.getDetailById(detailId);
+        if(strategyService != null){
+            // 得到table
+            TravelTable travelTable = strategyService.getTavelTableById(detail.getTableId());
+            // 得到路线表
+            Route route = strategyService.getRouteById(detail.getRouteId());
+            RouteDTO routeDTO = new RouteDTO(route.getContent());
+            model.addAttribute("route",routeDTO.getList());
+            model.addAttribute("table",travelTable);
+            model.addAttribute("content",detail.getContent());
+        }
         return "front/strategy-detail";
     }
     @RequestMapping("/group")
@@ -135,8 +187,14 @@ public class FrontPageController {
     public String newstrategy(){
         return "front/newStrategy";
     }
-    @RequestMapping("/user")
-    public String user(){
+    @RequestMapping("/userInfo")
+    public String user(Model model,int id){
+        User user = null;
+        if(!Objects.isNull(id)){
+            user = userMapper.selectByPrimaryKey(id);
+        }
+        // TODO 可能不需要暴露整个用户信息
+        model.addAttribute("info",user);
         return "user/index";
     }
     @RequestMapping("/usergroup")
@@ -152,7 +210,7 @@ public class FrontPageController {
         return "user/strategy";
     }
     @RequestMapping("/userset")
-    public String userset(){
+    public String userset(HttpSession session,Model model){
         return "user/set";
     }
     @RequestMapping("/usermsg")

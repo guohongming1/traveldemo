@@ -327,7 +327,7 @@ layui.define(['laypage', 'fly', 'element', 'flow'], function(exports){
     });
     */
     
-    //阅读后删除
+    //阅读后删除minemsg
     dom.minemsg.on('click', '.mine-msg li .fly-delete', function(){
       var othis = $(this).parents('li'), id = othis.data('id');
       fly.json('/message/remove/', {

@@ -22,7 +22,11 @@ layui.define(['layer', 'laytpl', 'form', 'element', 'upload', 'util'],function(e
     if(device.ie && device.ie < 8){
         layer.alert('如果您非得使用 IE 浏览器访问Fly社区，那么请使用 IE8+');
     }
-
+    // 图片出错显示
+    $('img').error(function () {
+        $(this).attr('src',"/myfile/image/error.png");
+        img.onerror = null;// 控制不要一直跳动
+    });
     //失去焦点时获取光标的位置
     function getblur(){
         layui.sel = window.getSelection();
@@ -355,6 +359,43 @@ layui.define(['layer', 'laytpl', 'form', 'element', 'upload', 'util'],function(e
                 $(".head_img").html('<img src="'+res.data.src + '" width="200px" height="200px"> ');
                 $(".head_img").show();
                 layer.msg("上传成功")
+            } else {
+                layer.msg(res.msg, {icon: 5});
+            }
+        }
+        ,error: function(index, upload){
+            layer.closeAll('loading'); //关闭loading
+            layer.msg("上传失败")
+        }
+    });
+    /* 上传用户头像*/
+    upload.render({
+        elem: '#uploadUserHeadImgbtn'
+        ,url: '/uploadImg/'
+        ,size: 50000
+        ,accept: 'file'
+        ,before:function(){
+            layer.load(); //上传loading
+        }
+        ,done: function(res){
+            layer.closeAll('loading'); //关闭loading
+            if(res.code == 1){
+                var userHeadImgSrc = res.data.src;
+                $(".head_img").attr('src',userHeadImgSrc);
+                layer.msg("上传成功")
+                $.ajax({
+                    type:'post',
+                    url:'/user/reheadimg',
+                    data:{'userHeadImgSrc':userHeadImgSrc},
+                    success:function (ress) {
+                        if(ress.code == 200){
+                            layer.msg("修改成功");
+                        }
+                    },
+                    error:function (ress) {
+                        layer.msg(ress.msg)
+                    }
+                });
             } else {
                 layer.msg(res.msg, {icon: 5});
             }

@@ -23,6 +23,11 @@
     from user
     where id = #{id,jdbcType=INTEGER}
   </select>
+  <select id="getUserInfoByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select id, name,img_url
+    from user
+    where id = #{id,jdbcType=INTEGER}
+  </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
     delete from user
     where id = #{id,jdbcType=INTEGER}
@@ -37,7 +42,7 @@
       #{email,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR}, #{role,jdbcType=VARCHAR}, 
       #{remark,jdbcType=VARCHAR}, #{date,jdbcType=TIMESTAMP})
   </insert>
-  <insert id="insertSelective" parameterType="com.guo.traveldemo.web.pojo.User" >
+  <insert id="insertSelective" parameterType="com.guo.traveldemo.web.pojo.User"  useGeneratedKeys="true" keyProperty="id" >
     insert into user
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="id != null" >

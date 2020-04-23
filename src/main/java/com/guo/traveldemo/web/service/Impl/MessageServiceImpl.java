@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.servlet.http.HttpSession;
 import javax.swing.text.StyledEditorKit;
 import java.util.ArrayList;
 import java.util.Date;
@@ -67,10 +68,10 @@ public class MessageServiceImpl implements MessageService {
     }
 
     /**
-     *
-     * @param target
-     * @param targetType
-     * @param action
+     *发送提醒消息
+     * @param target 消息来源ID 如：攻略id
+     * @param targetType 消息类型：攻略消息、问答消息、等
+     * @param action 动作:评论、收藏
      * @param sender
      * @param content
      */
@@ -86,7 +87,7 @@ public class MessageServiceImpl implements MessageService {
            int acpt_id;
            acpt_id = strategyMapper.selectByPrimaryKey(target).getUserId();
            // 用户接收消息
-           if(this.queryMsgFlag(acpt_id,target,targetType,action)> 0){
+           if(this.queryMsgFlag(acpt_id,target,targetType,action)<= 0){
                list.add(acpt_id);
            }
         }
@@ -95,7 +96,7 @@ public class MessageServiceImpl implements MessageService {
             int acpt_id;
             acpt_id = topicMapper.selectByPrimaryKey(target).getId();
             // 用户接收消息
-            if(this.queryMsgFlag(acpt_id,target,targetType,action)> 0){
+            if(this.queryMsgFlag(acpt_id,target,targetType,action)<= 0){
                 list.add(acpt_id);
             }
         }
@@ -105,7 +106,7 @@ public class MessageServiceImpl implements MessageService {
             if(Constants.COM_MSG == action || Constants.COLLECT_MSG == action){
                 int author_id;//作者id
                 author_id = questionMapper.selectByPrimaryKey(target).getId();
-                if(this.queryMsgFlag(author_id,target,targetType,action)> 0){
+                if(!(this.queryMsgFlag(author_id,target,targetType,action)> 0)){
                     list.add(author_id);
                 }
                 // 查询关注的用户
@@ -154,7 +155,9 @@ public class MessageServiceImpl implements MessageService {
                     UserNotify userNotify = new UserNotify();
                     userNotify.setReadflag(Constants.ACPT);
                     userNotify.setUserId(i);
+                    userNotify.setNotifyId(notify_id);
                     userNotify.setCreateTime(new Date());
+                    // 发送消息
                     userNotifyMapper.insert(userNotify);
                 }
             }
@@ -179,7 +182,8 @@ public class MessageServiceImpl implements MessageService {
         if(notifyMapper.insertSelective(notify)> 0){
             UserNotify userNotify = new UserNotify();
             userNotify.setReadflag(Constants.ACPT);
-            userNotify.setUserId(notify.getId());
+            userNotify.setNotifyId(notify.getId());
+            userNotify.setUserId(acpter);
             userNotify.setCreateTime(new Date());
             if(userNotifyMapper.insert(userNotify)>0){
                 return Response.success("发送成功");
@@ -205,7 +209,7 @@ public class MessageServiceImpl implements MessageService {
        return msgResults;
     }
     /**
-     * 拉取未读读消息
+     * 拉取未读读消息 //TODO 暂时不做未读区分
      * @param userId
      * @return
      */
@@ -213,7 +217,7 @@ public class MessageServiceImpl implements MessageService {
     @Override
     public List<Notify> queryUserREJECTMsg(int userId){
         List<Notify> msgResults = new ArrayList<Notify>();
-        List<Integer> notifyList = userNotifyMapper.queryMsg(userId,Constants.REJECT);
+        List<Integer> notifyList = userNotifyMapper.queryMsg(userId,Constants.ACPT);
         for(int i:notifyList){
             Notify notify = notifyMapper.selectByPrimaryKey(i);
             notify.setId(i); // 将notify的id改为usernotify的id
@@ -221,25 +225,62 @@ public class MessageServiceImpl implements MessageService {
         }
         return msgResults;
     }
+
+    /**
+     * 删除单条信息 删除信息实际是将信息改为已读
+     * @param userId
+     * @param msgId
+     * @return
+     */
+    @Override
+    public int delOneMsgById(int userId, int msgId) {
+        UserNotify userNotify = userNotifyMapper.selectByPrimaryKey(msgId);
+        if(userNotify != null && userNotify.getUserId() == userId){
+            userNotify.setReadflag(Constants.REJECT);
+            return userNotifyMapper.updateByPrimaryKeySelective(userNotify);
+        }
+        return 0;
+    }
+
+    /**
+     * 批量删除信息
+     * @param userId
+     * @return
+     */
+    @Override
+    @Transactional
+    public int delBatchMsgById(int userId) {
+        QueryWrapper<UserNotify> query = new QueryWrapper<>();
+        query.eq("user_id",userId);
+        List<UserNotify> list = userNotifyMapper.selectList(query);
+        int i=0;
+        for(UserNotify u:list){
+            u.setReadflag(Constants.REJECT);
+            userNotifyMapper.updateByPrimaryKeySelective(u);
+            i++;
+        }
+        return i;
+    }
+
     /**
      * 查询消息是否被屏蔽,适用攻略、话题
      * @param acpt_id
      * @param target 文章id
-     * @param type
+     * @param type 类型问答、攻略、话题
      * @param action
      * @return
      */
     int queryMsgFlag(int acpt_id,int target,int type,int action){
         // 查询消息是否被屏蔽
         QueryWrapper<MsgConfig> query = new QueryWrapper<>();
-        query.eq("userId",acpt_id);
-        query.eq("targetId",target);
+        query.eq("user_id",acpt_id);
+        query.eq("target_id",target);
         query.eq("type",String.valueOf(type));
         // 评论消息
         if(Constants.COM_MSG == action){
-            query.eq("comment",Constants.ACPT);
+            query.eq("comment",Constants.REJECT);
         }else{
-            query.eq("collect",Constants.ACPT);
+            query.eq("collect",Constants.REJECT);
         }
         // 用户接收消息
         return msgConfigMapper.selectCount(query);

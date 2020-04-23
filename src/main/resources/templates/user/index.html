@@ -38,21 +38,22 @@
             </form>
         </div>
         <div class="login">
-            <a th:if="${session.userinfo == null}" href="/user/login">
-            登录
+            <a th:if="${session.userinfo == null}" href="/login">
+                登录
             </a>
             <!--<img th:src="@{/layuiadmin/myfile/images/header.png}" style="width: 36px; height: 36px;">-->
             <ul th:if="${session.userinfo != null}" class="layui-nav" style="background-color: #fff;">
+                <span id="user-id" style="display:none" th:text="${session.userinfo.getId()}"></span>
                 <li class="layui-nav-item">
-                    <a href="" style="font-size: 16px;color: #222;">消息<span class="layui-badge">3</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</a>
+                    <a href="/usermsg" style="font-size: 16px;color: #222;">消息<span th:text="${session.msgnum}" class="layui-badge"></span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</a>
                 </li>
                 <li class="layui-nav-item" lay-unselect="">
-                    <a href="javascript:;" style="font-size: 16px;color: #222;"><img th:src="@{/layuiadmin/myfile/images/test01.jpg}" style="height: 30px; width: 30px;" class="layui-nav-img">&nbsp;&nbsp;</a>
+                    <a href="javascript:;" style="font-size: 16px;color: #222;"><img th:src="${session.userinfo.getImgUrl()}" style="height: 30px; width: 30px;" class="layui-nav-img" onerror="getdefaultImg(event)">&nbsp;&nbsp;</a>
                     <dl class="layui-nav-child">
                         <dd style="text-align: center"><a href="javascript:;"><i class="layui-icon layui-icon-user"></i>&nbsp;个人资料</a></dd>
                         <dd style="text-align: center"><a href="javascript:;"><i class="layui-icon layui-icon-note"></i>&nbsp;攻略/问答</a></dd>
                         <dd style="text-align: center"><a href="javascript:;"><i class="layui-icon layui-icon-rate"></i>&nbsp;收藏</a></dd>
-                        <dd style="text-align: center"><a href="javascript:;"><i class="layui-icon layui-icon-logout"></i>&nbsp;登出</a></dd>
+                        <dd layadmin-event="logout" style="text-align: center"><a href="javascript:;"><i class="layui-icon layui-icon-logout"></i>&nbsp;登出</a></dd>
                     </dl>
                 </li>
             </ul>
@@ -75,14 +76,14 @@
     }
 
 </style>
-<div class="fly-home fly-panel" style="background-image: url(/myfile/temp/ex01.jpg);">
-    <img src="https://tva1.sinaimg.cn/crop.0.0.118.118.180/5db11ff4gw1e77d3nqrv8j203b03cweg.jpg" alt="贤心">
-    <i class="iconfont icon-renzheng" title="Fly社区认证"></i>
+  <div class="fly-home fly-panel"> <!-- style="background-image: url(/myfile/temp/ex01.jpg)";-->
+    <img th:src="${info.getImgUrl()}" alt="贤心">
+    <!--<i class="iconfont icon-renzheng" title="Fly社区认证"></i>-->
     <h1>
-        贤心
-        <i class="iconfont icon-nan"></i>
-        <!-- <i class="iconfont icon-nv"></i>  -->
-        <i class="layui-badge fly-badge-vip">VIP3</i>
+        <span th:text="${info.getName()}"></span>
+        <i th:if="${info.getSex()=='0'}" class="iconfont icon-nan"></i>
+        <i th:if="${info.getSex()=='1'}" class="iconfont icon-nv"></i>
+        <!--<i class="layui-badge fly-badge-vip">VIP3</i>-->
         <!--
         <span style="color:#c00;">（管理员）</span>
         <span style="color:#5FB878;">（社区之光）</span>
@@ -90,18 +91,18 @@
         -->
     </h1>
 
-    <p style="padding: 10px 0; color: #5FB878;">认证信息：layui 作者</p>
+    <!--<p style="padding: 10px 0; color: #5FB878;">认证信息：layui 作者</p>-->
 
     <p class="fly-home-info">
         <!--<i class="iconfont icon-kiss" title="飞吻"></i><span style="color: #FF7200;">66666 飞吻</span>-->
-        <i class="iconfont icon-shijian"></i><span>2015-6-17 加入</span>
-        <i class="iconfont icon-chengshi"></i><span>来自杭州</span>
+        <i class="iconfont icon-shijian"></i><span th:text="${#dates.format(info.date,'yyyy-MM-dd')}+'加入'"></span>
+        <i class="iconfont icon-chengshi"></i><span th:text="'来自'+((${info.getRemark()}==null)?'':${info.getRemark()})"></span>
     </p>
 
-    <p class="fly-home-sign">（人生仿若一场修行）</p>
+    <p class="fly-home-sign" th:text="'('+((${info.getTitle()}==null)?'':${info.getTitle()})+')'"></p>
 
     <div class="fly-sns" data-user="">
-        <a href="javascript:;" class="layui-btn layui-btn-normal fly-imActive" data-type="chat">发起会话</a>
+        <a href="javascript:" class="layui-btn layui-btn-normal fly-imActive" th:attr="data-id=${info.getId()}">发起会话</a>
     </div>
 
 </div>
@@ -110,100 +111,52 @@
     <div class="layui-row layui-col-space15">
         <div class="layui-col-md6 fly-home-jie">
             <div class="fly-panel">
-                <h3 class="fly-panel-title">他（她）的攻略</h3>
-                <ul class="jie-row">
-                    <li>
-                        <span class="fly-jing">精</span>
-                        <a href="" class="jie-title"> 基于 layui 的极简社区页面模版</a>
-                        <i>刚刚</i>
-                        <em class="layui-hide-xs">1136阅/27答</em>
-                    </li>
-                    <li>
-                        <a href="" class="jie-title"> 基于 layui 的极简社区页面模版</a>
-                        <i>1天前</i>
-                        <em class="layui-hide-xs">1136阅/27答</em>
-                    </li>
-                    <li>
-                        <a href="" class="jie-title"> 基于 layui 的极简社区页面模版</a>
-                        <i>2017-10-30</i>
-                        <em class="layui-hide-xs">1136阅/27答</em>
-                    </li>
-                    <li>
-                        <a href="" class="jie-title"> 基于 layui 的极简社区页面模版</a>
-                        <i>1天前</i>
-                        <em class="layui-hide-xs">1136阅/27答</em>
-                    </li>
-                    <li>
-                        <a href="" class="jie-title"> 基于 layui 的极简社区页面模版</a>
-                        <i>1天前</i>
-                        <em class="layui-hide-xs">1136阅/27答</em>
-                    </li>
-                    <li>
-                        <a href="" class="jie-title"> 基于 layui 的极简社区页面模版</a>
-                        <i>1天前</i>
-                        <em class="layui-hide-xs">1136阅/27答</em>
-                    </li>
-                    <li>
-                        <a href="" class="jie-title"> 基于 layui 的极简社区页面模版</a>
-                        <i>1天前</i>
-                        <em class="layui-hide-xs">1136阅/27答</em>
-                    </li>
-                    <!-- <div class="fly-none" style="min-height: 50px; padding:30px 0; height:auto;"><i style="font-size:14px;">没有发表任何求解</i></div> -->
+                <h3 class="fly-panel-title">攻略</h3>
+                <ul class="jie-row" id="strate">
+                    <!--<li>-->
+                        <!--<span class="fly-jing">精</span>-->
+                        <!--<a href="" class="jie-title"> 基于 layui 的极简社区页面模版</a>-->
+                        <!--<i>刚刚</i>-->
+                        <!--<em class="layui-hide-xs">1136阅/27答</em>-->
+                    <!--</li>-->
                 </ul>
             </div>
         </div>
 
         <div class="layui-col-md6 fly-home-jie">
             <div class="fly-panel">
-                <h3 class="fly-panel-title">他（她）的问答</h3>
-                <ul class="jie-row">
-                    <li>
-                        <span class="fly-jing">精</span>
-                        <a href="" class="jie-title"> 基于 layui 的极简社区页面模版</a>
-                        <i>刚刚</i>
-                        <em class="layui-hide-xs">1136阅/27答</em>
-                    </li>
-                    <li>
-                        <a href="" class="jie-title"> 基于 layui 的极简社区页面模版</a>
-                        <i>1天前</i>
-                        <em class="layui-hide-xs">1136阅/27答</em>
-                    </li>
-                    <li>
-                        <a href="" class="jie-title"> 基于 layui 的极简社区页面模版</a>
-                        <i>2017-10-30</i>
-                        <em class="layui-hide-xs">1136阅/27答</em>
-                    </li>
-                    <li>
-                        <a href="" class="jie-title"> 基于 layui 的极简社区页面模版</a>
-                        <i>1天前</i>
-                        <em class="layui-hide-xs">1136阅/27答</em>
-                    </li>
-                    <li>
-                        <a href="" class="jie-title"> 基于 layui 的极简社区页面模版</a>
-                        <i>1天前</i>
-                        <em class="layui-hide-xs">1136阅/27答</em>
-                    </li>
-                    <li>
-                        <a href="" class="jie-title"> 基于 layui 的极简社区页面模版</a>
-                        <i>1天前</i>
-                        <em class="layui-hide-xs">1136阅/27答</em>
-                    </li>
-                    <li>
-                        <a href="" class="jie-title"> 基于 layui 的极简社区页面模版</a>
-                        <i>1天前</i>
-                        <em class="layui-hide-xs">1136阅/27答</em>
-                    </li>
-                    <!-- <div class="fly-none" style="min-height: 50px; padding:30px 0; height:auto;"><i style="font-size:14px;">没有发表任何求解</i></div> -->
+                <h3 class="fly-panel-title">问答</h3>
+                <ul class="jie-row" id="question">
+                    <!--<li>-->
+                        <!--<span class="fly-jing">精</span>-->
+                        <!--<a href="" class="jie-title"> 基于 layui 的极简社区页面模版</a>-->
+                        <!--<i>刚刚</i>-->
+                        <!--<em class="layui-hide-xs">1136阅/27答</em>-->
+                    <!--</li>-->
                 </ul>
             </div>
         </div>
     </div>
 </div>
+<script id="strategy-mod" type="text/html">
+   {{# layui.each(d,function(index,item){}}
+       <li>
+           <a href="/strategydetail?id={{item.id}}&detailId={{item.detailId}}" title="" class="jie-title"> {{item.title}}</a>
+       <i>{{item.date}}</i>
+           {{#
+           var i = item.address.lastIndexOf("-");
+           var address = item.address.substring(i+1);
+           }}
+       <em class="layui-hide-xs">{{address}}</em>
+       </li>
+    {{# });}}
+</script>
 <script type="text/javascript" th:src="@{/layui/layui.js}"></script>
 <script>
-    layui.use(['element','laytpl'],function () {
+    layui.use(['element','laytpl','layer'],function () {
         var element = layui.element; //导航的hover效果、二级菜单等功能，需要依赖element模块
-        var taytpl = layui.laytpl;
+        var laytpl = layui.laytpl,
+            layer = layui.layer;
         element.on('tab(user)', function(data){
             // console.log(this); //当前Tab标题所在的原始DOM元素
             // console.log(data.index); //得到当前Tab的所在下标
@@ -211,8 +164,67 @@
             var id = '#' + $(this).attr('data-type');
             setData(id);
         });
-        function setData(id) {
-
+        $(".fly-imActive").click(function () {
+            // 发起私信
+            var id = $(this).data('id');
+            layer.prompt({title: '发送私信', formType: 2,anim: 4}, function(text, index){
+                $.ajax({
+                    type:'post',
+                    url:'/user/sendpermsg',
+                    data:{'acpter':id,'content':text},
+                    success:function (res) {
+                        if(res.code == 200){
+                            layer.msg("发送成功");
+                        }
+                        layer.close(index);
+                    },
+                    error:function (res) {
+                        layer.msg("发送失败");
+                        layer.close(index);
+                    }
+                });
+            });
+        });
+        loadData();
+        //加载数据
+        function loadData() {
+            var id = $(".fly-imActive").data('id');
+            var sessionuserid = $("#user-id").text();
+            if(id == sessionuserid){
+                $(".fly-sns").hide();
+            }
+            $.ajax({
+                type:'post',
+                url:'/comm/userslive',
+                data:{'id':id},
+                success:function (res) {
+                    if(res.code == 200){
+                        if(res.data !=null){
+                            var straTpl = document.getElementById('strategy-mod').innerHTML;
+                            if(res.data.length != 0){
+                                laytpl(straTpl).render(res.data.strategy, function (html) {
+                                    $("#strate").append(html);
+                                });
+                            }else{
+                                $("#strate").append('<div class="fly-none" style="min-height: 50px; padding:30px 0; height:auto;"><i style="font-size:14px;">没有发表任何攻略</i></div>');
+                            }
+                            if(res.data.question.length != 0){
+                                laytpl(straTpl).render(res.data.question, function (html) {
+                                    $("#question").append(html);
+                                });
+                            }else{
+                                $("#question").append('<div class="fly-none" style="min-height: 50px; padding:30px 0; height:auto;"><i style="font-size:14px;">没有发表任何问答</i></div>');
+                            }
+                        }else{
+                            layer.msg("空空如也！");}
+                    }else{
+                        layer.msg("出现一点小问题！");
+                    }
+                },
+                error:function (res) {
+                    layer.msg(res.msg);
+                }
+            });
         }
     });
 </script>

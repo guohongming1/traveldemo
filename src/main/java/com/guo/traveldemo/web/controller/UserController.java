@@ -217,6 +217,7 @@ public class UserController {
     public Response<String> sendPerMsg(HttpSession session,int acpter,String content){
         User user = (User)session.getAttribute("userinfo");
         if(user != null){
+            // 组装消息
             String msg = "<a href='/userinfo?id="+user.getId()+"'><cite>"+user.getName()+"</cite></a>"+"向您发送了一条信息:"+content;
            return messageService.sendMsg(user.getId(),acpter,msg);
         }

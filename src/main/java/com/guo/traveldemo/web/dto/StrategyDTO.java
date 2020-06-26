@@ -35,6 +35,16 @@ public class StrategyDTO implements Serializable {
 
     private String address;
 
+    private Byte pushFlag;
+
+    public Byte getPushFlag() {
+        return pushFlag;
+    }
+
+    public void setPushFlag(Byte pushFlag) {
+        this.pushFlag = pushFlag;
+    }
+
     public Integer getViewNum() {
         return viewNum;
     }

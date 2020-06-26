@@ -19,10 +19,10 @@
             </a>
         </h1>
         <p class="nav">
-            <a href="/front/page/index">首页</a>
-            <a href="/question/list-page" class="active">小组</a>
-            <a href="/travel-essay/list-page">问答</a>
-            <a href="/question/list-page">发表攻略</a>
+            <a href="/front/index" target="_blank">首页</a>
+            <a href="/front/group"  target="_blank" class="active">小组</a>
+            <a href="/front/question"  target="_blank">问答</a>
+            <a href="/strategy/newstrategy"  target="_blank">发表攻略</a>
         </p>
         <div class="search-bar">
             <form class="layui-form" action="">
@@ -36,21 +36,22 @@
             </form>
         </div>
         <div class="login">
-            <!--<a th:if="${session.sessionUser == null}" href="/front/page/login">-->
-            <!--登录-->
-            <!--</a>-->
+            <a th:if="${session.userinfo == null}" href="/front/login">
+                登录
+            </a>
             <!--<img th:src="@{/layuiadmin/myfile/images/header.png}" style="width: 36px; height: 36px;">-->
-            <ul class="layui-nav" style="background-color: #fff;">
+            <ul th:if="${session.userinfo != null}" class="layui-nav" style="background-color: #fff;">
+                <span id="user-id" style="display:none" th:text="${session.userinfo.getId()}"></span>
                 <li class="layui-nav-item">
-                    <a href="" style="font-size: 16px;color: #222;">消息<span class="layui-badge">3</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</a>
+                    <a href="/front/usermsg" style="font-size: 16px;color: #222;">消息<span th:text="${session.msgnum}" class="layui-badge"></span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</a>
                 </li>
                 <li class="layui-nav-item" lay-unselect="">
-                    <a href="javascript:;" style="font-size: 16px;color: #222;"><img th:src="@{/layuiadmin/myfile/images/test01.jpg}" style="height: 30px; width: 30px;" class="layui-nav-img">&nbsp;&nbsp;</a>
+                    <a href="javascript:;" style="font-size: 16px;color: #222;"><img th:src="${session.userinfo.getImgUrl()}" style="height: 30px; width: 30px;" class="layui-nav-img" onerror="getdefaultImg(event)">&nbsp;&nbsp;</a>
                     <dl class="layui-nav-child">
-                        <dd style="text-align: center"><a href="javascript:;"><i class="layui-icon layui-icon-user"></i>&nbsp;个人资料</a></dd>
-                        <dd style="text-align: center"><a href="javascript:;"><i class="layui-icon layui-icon-note"></i>&nbsp;攻略/问答</a></dd>
-                        <dd style="text-align: center"><a href="javascript:;"><i class="layui-icon layui-icon-rate"></i>&nbsp;收藏</a></dd>
-                        <dd style="text-align: center"><a href="javascript:;"><i class="layui-icon layui-icon-logout"></i>&nbsp;登出</a></dd>
+                        <dd style="text-align: center"><a href="/front/userset"><i class="layui-icon layui-icon-user"></i>&nbsp;个人资料</a></dd>
+                        <dd style="text-align: center"><a href="/front/userstrategy"><i class="layui-icon layui-icon-note"></i>&nbsp;攻略/问答</a></dd>
+                        <dd style="text-align: center"><a href="/front/usergroup"><i class="layui-icon layui-icon-rate"></i>&nbsp;小组</a></dd>
+                        <dd layadmin-event="logout" style="text-align: center"><a href="javascript:;"><i class="layui-icon layui-icon-logout"></i>&nbsp;登出</a></dd>
                     </dl>
                 </li>
             </ul>
@@ -197,17 +198,50 @@
     .choice .group_type a strong,.choice .group_type strong a{font-size:14px;}
     .choice .group_type a span,.choice .group_type span a{font-size:14px;}
 
-    /*右侧搜索框*/
-    .search_left{
-        margin-top: 58px;
-        margin-left: 10px;
+    .relate{
+        margin-left: 5px;
     }
-    /*热门搜索*/
-    .cloud{
-        margin-left: 25px;
-        width:100%;
-        clear:both;
+    .tuwen{width:100%;clear:both;overflow:hidden;margin:20px 0;}
+    .tuwen h3{
+        line-height:40px;
+        color:#38485A;
+        font-size:18px;
+        border-bottom:1px solid #E6E6E6;
+        height:40px;
+        margin-bottom:30px;
+    }
+    .tuwen li {
         overflow:hidden;
+        clear:both;
+        margin-bottom:10px;
+    }
+    .tuwen li img{
+        width:70px;
+        float:left;
+        margin-right:15px;
+    }
+    .tuwen li b{
+        overflow:hidden;
+        width:100%;
+        font-weight:normal;
+        color:#333;
+        font-size:14px;
+        line-height:30px;
+    }
+    .tuwen li a b:hover { text-decoration: underline; color: #F60 }
+    .tuwen p{
+        margin-top:5px;
+    }
+    .tulanum{
+        background: url(/myfile/image/lanmbq.png) no-repeat center left; padding-left: 17px
+    }
+    .tulanum a{color:#999;}
+    .tulanmu a:hover { color: #066 }
+    .tutime { background: url(/myfile/image/datepng.png) no-repeat left center; padding-left: 15px }
+    .tuwen li:hover { background: #f4f3f3 }
+    .tuwen li span{
+        color:#999;
+        margin-right:10px;
     }
     .cloud h3{
         line-height:40px;
@@ -238,8 +272,8 @@
          <div class="layui-col-md9">
              <div class="group-menu">
                  <ul class="menu_wrap clearfix">
-                     <li class="menu_item"><a href="#hot_topic">热门话题</a></li>
-                     <li class="menu_item"><a href="#hot-group">热门小组</a></li>
+                     <li class="menu_item"><a href="#hot_topic">最新话题</a></li>
+                     <!--<li class="menu_item"><a href="#hot-group">热门小组</a></li>-->
                      <li class="menu_item"><a href="#grouptype">小组分类</a></li>
                  </ul>
                  <div id="hot_topic">
@@ -250,317 +284,23 @@
                                  <tr>
                                      <th class="topic_tit">话题</th>
                                      <th class="group_tit">小组</th>
-                                     <th class="author">作者</th>
-                                     <th class="">回复/阅读</th>
-                                     <th class="">最后回复</th>
-                                     <th>&nbsp;</th>
+                                     <th class="">回复/热度</th>
+                                     <th class="">创建日期</th>
+                                     <!--<th>&nbsp;</th>-->
                                  </tr>
-                                 <tbody class="topic_new" id="new_article">
+                                 <tbody class="topic_new" id="topic">
                                  <!-- 最新发布 -->
+                                     <!--<td class="reply">-->
+																                  <!--<span class="avatar16">-->
+					<!--<a target="_blank"  href="/u/55262643.html" title="未知饭局组委会">-->
+						<!--<img src="http://n1-q.mafengwo.net/s12/M00/53/7D/wKgED1wkR2mAcwfnAAAsf9PG3Bk482.png?imageMogr2%2Fthumbnail%2F%2116x16r%2Fgravity%2FCenter%2Fcrop%2F%2116x16%2Fquality%2F90">-->
+					<!--</a>-->
+				  <!--</span>-->
+                        <!--</td>-->
+                        </tr>
+                     </tbody>
 
-
-                                 <tr>
-                                     <td class="topic_tit">
-                                         <img src="http://images.mafengwo.net/images/Z33.gif">
-                                         <h3><a target="_blank"  href="/g/i/18248224.html" title="【活动回顾】选个周末，偶遇这座“温润之洲”！">【活动回顾】选个周末，偶遇这座... </a></h3>
-                                     </td>
-                                     <td class="group_tit">
-                                         <strong><a target="_blank"  href="/g/479729.html" title="未知饭局">未知饭局</a></strong>
-                                     </td>
-                                     <td class="author">
-                                         <a target="_blank"  href="/u/55262643.html" title="未知饭局组委会">
-
-                                             <img src="http://n1-q.mafengwo.net/s12/M00/53/7D/wKgED1wkR2mAcwfnAAAsf9PG3Bk482.png?imageMogr2%2Fthumbnail%2F%2116x16r%2Fgravity%2FCenter%2Fcrop%2F%2116x16%2Fquality%2F90">
-                                             <span>未知饭局...</span>
-                                         </a>
-                                     </td>
-                                     <td class="view_num">
-                                         <span>0/1810</span>
-                                     </td>
-                                     <td class="date_time"><span>03-24 16:09</span></td>
-                                     <td class="reply">
-																                  <span class="avatar16">
-					<a target="_blank"  href="/u/55262643.html" title="未知饭局组委会">
-						<img src="http://n1-q.mafengwo.net/s12/M00/53/7D/wKgED1wkR2mAcwfnAAAsf9PG3Bk482.png?imageMogr2%2Fthumbnail%2F%2116x16r%2Fgravity%2FCenter%2Fcrop%2F%2116x16%2Fquality%2F90">
-					</a>
-				  </span>
-                                     </td>
-                                 </tr>
-
-
-
-                                 <tr>
-                                     <td class="topic_tit">
-                                         <img src="http://images.mafengwo.net/images/Z33.gif">
-                                         <h3><a target="_blank"  href="/g/i/6350861.html" title="怎样写出一篇“好游记”？">怎样写出一篇“好游记”？ </a></h3>
-                                     </td>
-                                     <td class="group_tit">
-                                         <strong><a target="_blank"  href="/g/10232.html" title="社区帮助中心">社区帮助中心</a></strong>
-                                     </td>
-                                     <td class="author">
-                                         <a target="_blank"  href="/u/114259.html" title="蜂窝机器人">
-
-                                             <img src="http://n1-q.mafengwo.net/s9/M00/0D/F5/wKgBs1hPb8WAEruUAAGXKCGfy4U06.jpeg?imageMogr2%2Fthumbnail%2F%2116x16r%2Fgravity%2FCenter%2Fcrop%2F%2116x16%2Fquality%2F90">
-                                             <span>蜂窝机器人</span>
-                                         </a>
-                                     </td>
-                                     <td class="view_num">
-                                         <span>1158/319628</span>
-                                     </td>
-                                     <td class="date_time"><span>03-24 14:44</span></td>
-                                     <td class="reply">
-																                  <span class="avatar16">
-					<a target="_blank"  href="/u/89202525.html" title="马蜂窝用户">
-						<img src="http://p1-q.mafengwo.net/s12/M00/35/CD/wKgED1uqIt-AG3w5AAAbM62rsh0384.png?imageMogr2%2Fthumbnail%2F%2116x16r%2Fgravity%2FCenter%2Fcrop%2F%2116x16%2Fquality%2F90">
-					</a>
-				  </span>
-                                     </td>
-                                 </tr>
-
-
-
-                                 <tr>
-                                     <td class="topic_tit">
-                                         <img src="http://images.mafengwo.net/images/group/icon_bao.gif">
-                                         <h3><a target="_blank"  href="/g/i/10413914.html" title="【星级游记】是什么？">【星级游记】是什么？ </a></h3>
-                                     </td>
-                                     <td class="group_tit">
-                                         <strong><a target="_blank"  href="/g/479733.html" title="游记广场">游记广场</a></strong>
-                                     </td>
-                                     <td class="author">
-                                         <a target="_blank"  href="/u/166011.html" title="游记总编辑">
-
-                                             <img src="http://b1-q.mafengwo.net/s10/M00/73/96/wKgBZ1kSsyKAa_91AACgQYkA64o659.png?imageMogr2%2Fthumbnail%2F%2116x16r%2Fgravity%2FCenter%2Fcrop%2F%2116x16%2Fquality%2F90">
-                                             <span>游记总编辑</span>
-                                         </a>
-                                     </td>
-                                     <td class="view_num">
-                                         <span>1407/105189</span>
-                                     </td>
-                                     <td class="date_time"><span>03-24 13:07</span></td>
-                                     <td class="reply">
-																                  <span class="avatar16">
-					<a target="_blank"  href="/u/166011.html" title="游记总编辑">
-						<img src="http://b1-q.mafengwo.net/s10/M00/73/96/wKgBZ1kSsyKAa_91AACgQYkA64o659.png?imageMogr2%2Fthumbnail%2F%2116x16r%2Fgravity%2FCenter%2Fcrop%2F%2116x16%2Fquality%2F90">
-					</a>
-				  </span>
-                                     </td>
-                                 </tr>
-
-
-
-                                 <tr>
-                                     <td class="topic_tit">
-                                         <img src="http://images.mafengwo.net/images/group/icon_uptit.gif">
-                                         <h3><a target="_blank"  href="/g/i/3099705.html" title="【宝藏申请】目的地宝藏唯一官方申请通道！">【宝藏申请】目的地宝藏唯一官方... </a></h3>
-                                     </td>
-                                     <td class="group_tit">
-                                         <strong><a target="_blank"  href="/g/13597.html" title="宝藏办公室">宝藏办公室</a></strong>
-                                     </td>
-                                     <td class="author">
-                                         <a target="_blank"  href="/u/166011.html" title="游记总编辑">
-
-                                             <img src="http://b1-q.mafengwo.net/s10/M00/73/96/wKgBZ1kSsyKAa_91AACgQYkA64o659.png?imageMogr2%2Fthumbnail%2F%2116x16r%2Fgravity%2FCenter%2Fcrop%2F%2116x16%2Fquality%2F90">
-                                             <span>游记总编辑</span>
-                                         </a>
-                                     </td>
-                                     <td class="view_num">
-                                         <span>17117/197799</span>
-                                     </td>
-                                     <td class="date_time"><span>03-24 13:07</span></td>
-                                     <td class="reply">
-																                  <span class="avatar16">
-					<a target="_blank"  href="/u/19878119.html" title="清荷紫漪">
-						<img src="http://n1-q.mafengwo.net/s6/M00/A7/81/wKgB4l2LgASAEXdXAAb_OIXEdWo02.jpeg?imageMogr2%2Fthumbnail%2F%2116x16r%2Fgravity%2FCenter%2Fcrop%2F%2116x16%2Fquality%2F90">
-					</a>
-				  </span>
-                                     </td>
-                                 </tr>
-
-
-
-                                 <tr>
-                                     <td class="topic_tit">
-                                         <img src="http://images.mafengwo.net/images/group/icon_act.gif">
-                                         <h3><a target="_blank"  href="/g/i/18245299.html" title="【地球发现计划NO.1】曼谷AB面的探秘之旅">【地球发现计划NO.1】曼谷AB面的... </a></h3>
-                                     </td>
-                                     <td class="group_tit">
-                                         <strong><a target="_blank"  href="/g/481617.html" title="地球发现者联盟">地球发现...</a></strong>
-                                     </td>
-                                     <td class="author">
-                                         <a target="_blank"  href="/u/46154914.html" title="马蜂窝星探">
-
-                                             <img src="http://n1-q.mafengwo.net/s13/M00/BC/7A/wKgEaVyLueKAMmEoAA-oCoRUai0894.png?imageMogr2%2Fthumbnail%2F%2116x16r%2Fgravity%2FCenter%2Fcrop%2F%2116x16%2Fquality%2F90">
-                                             <span>马蜂窝星探</span>
-                                         </a>
-                                     </td>
-                                     <td class="view_num">
-                                         <span>0/20810</span>
-                                     </td>
-                                     <td class="date_time"><span>03-24 12:27</span></td>
-                                     <td class="reply">
-																                  <span class="avatar16">
-					<a target="_blank"  href="/u/46154914.html" title="马蜂窝星探">
-						<img src="http://n1-q.mafengwo.net/s13/M00/BC/7A/wKgEaVyLueKAMmEoAA-oCoRUai0894.png?imageMogr2%2Fthumbnail%2F%2116x16r%2Fgravity%2FCenter%2Fcrop%2F%2116x16%2Fquality%2F90">
-					</a>
-				  </span>
-                                     </td>
-                                 </tr>
-
-
-
-                                 <tr>
-                                     <td class="topic_tit">
-                                         <img src="http://images.mafengwo.net/images/Z33.gif">
-                                         <h3><a target="_blank"  href="/g/i/6443573.html" title="什么是Lv等级？">什么是Lv等级？ </a></h3>
-                                     </td>
-                                     <td class="group_tit">
-                                         <strong><a target="_blank"  href="/g/10232.html" title="社区帮助中心">社区帮助中心</a></strong>
-                                     </td>
-                                     <td class="author">
-                                         <a target="_blank"  href="/u/114259.html" title="蜂窝机器人">
-
-                                             <img src="http://n1-q.mafengwo.net/s9/M00/0D/F5/wKgBs1hPb8WAEruUAAGXKCGfy4U06.jpeg?imageMogr2%2Fthumbnail%2F%2116x16r%2Fgravity%2FCenter%2Fcrop%2F%2116x16%2Fquality%2F90">
-                                             <span>蜂窝机器人</span>
-                                         </a>
-                                     </td>
-                                     <td class="view_num">
-                                         <span>13728/727932</span>
-                                     </td>
-                                     <td class="date_time"><span>03-23 23:31</span></td>
-                                     <td class="reply">
-																                  <span class="avatar16">
-					<a target="_blank"  href="/u/89202525.html" title="马蜂窝用户">
-						<img src="http://p1-q.mafengwo.net/s12/M00/35/CD/wKgED1uqIt-AG3w5AAAbM62rsh0384.png?imageMogr2%2Fthumbnail%2F%2116x16r%2Fgravity%2FCenter%2Fcrop%2F%2116x16%2Fquality%2F90">
-					</a>
-				  </span>
-                                     </td>
-                                 </tr>
-
-
-
-                                 <tr>
-                                     <td class="topic_tit">
-                                         <img src="http://images.mafengwo.net/images/Z33.gif">
-                                         <h3><a target="_blank"  href="/g/i/11259818.html" title="〖马蜂窝勋章〗玩法介绍">〖马蜂窝勋章〗玩法介绍 </a></h3>
-                                     </td>
-                                     <td class="group_tit">
-                                         <strong><a target="_blank"  href="/g/10196.html" title="蜂窝杂谈">蜂窝杂谈</a></strong>
-                                     </td>
-                                     <td class="author">
-                                         <a target="_blank"  href="/u/461006.html" title="小蚂">
-
-                                             <img src="http://p1-q.mafengwo.net/s12/M00/9C/59/wKgED1v7pZ6AIlXKAAOM2KwjrY870.jpeg?imageMogr2%2Fthumbnail%2F%2116x16r%2Fgravity%2FCenter%2Fcrop%2F%2116x16%2Fquality%2F90">
-                                             <span>小蚂</span>
-                                         </a>
-                                     </td>
-                                     <td class="view_num">
-                                         <span>475/91074</span>
-                                     </td>
-                                     <td class="date_time"><span>03-23 20:52</span></td>
-                                     <td class="reply">
-																                  <span class="avatar16">
-					<a target="_blank"  href="/u/461006.html" title="小蚂">
-						<img src="http://p1-q.mafengwo.net/s12/M00/9C/59/wKgED1v7pZ6AIlXKAAOM2KwjrY870.jpeg?imageMogr2%2Fthumbnail%2F%2116x16r%2Fgravity%2FCenter%2Fcrop%2F%2116x16%2Fquality%2F90">
-					</a>
-				  </span>
-                                     </td>
-                                 </tr>
-
-
-
-                                 <tr>
-                                     <td class="topic_tit">
-                                         <img src="http://images.mafengwo.net/images/Z33.gif">
-                                         <h3><a target="_blank"  href="/g/i/6735680.html" title="如何成为指路人并成功续任&amp;高质量回答秘籍">如何成为指路人并成功续任&amp;高... </a></h3>
-                                     </td>
-                                     <td class="group_tit">
-                                         <strong><a target="_blank"  href="/g/13956.html" title="指路人俱乐部">指路人俱乐部</a></strong>
-                                     </td>
-                                     <td class="author">
-                                         <a target="_blank"  href="/u/66033691.html" title="马蜂窝问答君">
-
-                                             <img src="http://b1-q.mafengwo.net/s12/M00/B8/4B/wKgED1wXVBOAUKOoAAEV3wx0umw93.jpeg?imageMogr2%2Fthumbnail%2F%2116x16r%2Fgravity%2FCenter%2Fcrop%2F%2116x16%2Fquality%2F90">
-                                             <span>马蜂窝问答君</span>
-                                         </a>
-                                     </td>
-                                     <td class="view_num">
-                                         <span>39/44164</span>
-                                     </td>
-                                     <td class="date_time"><span>03-23 09:45</span></td>
-                                     <td class="reply">
-																                  <span class="avatar16">
-					<a target="_blank"  href="/u/89202525.html" title="马蜂窝用户">
-						<img src="http://p1-q.mafengwo.net/s12/M00/35/CD/wKgED1uqIt-AG3w5AAAbM62rsh0384.png?imageMogr2%2Fthumbnail%2F%2116x16r%2Fgravity%2FCenter%2Fcrop%2F%2116x16%2Fquality%2F90">
-					</a>
-				  </span>
-                                     </td>
-                                 </tr>
-
-
-
-                                 <tr>
-                                     <td class="topic_tit">
-                                         <img src="http://images.mafengwo.net/images/group/icon_bao.gif">
-                                         <h3><a target="_blank"  href="/g/i/11289526.html" title="『马蜂窝问答』使用手册">『马蜂窝问答』使用手册 </a></h3>
-                                     </td>
-                                     <td class="group_tit">
-                                         <strong><a target="_blank"  href="/g/13356.html" title="马蜂窝问答">马蜂窝问答</a></strong>
-                                     </td>
-                                     <td class="author">
-                                         <a target="_blank"  href="/u/66033691.html" title="马蜂窝问答君">
-
-                                             <img src="http://b1-q.mafengwo.net/s12/M00/B8/4B/wKgED1wXVBOAUKOoAAEV3wx0umw93.jpeg?imageMogr2%2Fthumbnail%2F%2116x16r%2Fgravity%2FCenter%2Fcrop%2F%2116x16%2Fquality%2F90">
-                                             <span>马蜂窝问答君</span>
-                                         </a>
-                                     </td>
-                                     <td class="view_num">
-                                         <span>263/42952</span>
-                                     </td>
-                                     <td class="date_time"><span>03-23 09:10</span></td>
-                                     <td class="reply">
-																                  <span class="avatar16">
-					<a target="_blank"  href="/u/56228214.html" title="不爱静静就爱折腾">
-						<img src="http://b1-q.mafengwo.net/s12/M00/78/57/wKgED1uu4J-AV8wLAAEEmkCrQyM282.png?imageMogr2%2Fthumbnail%2F%2116x16r%2Fgravity%2FCenter%2Fcrop%2F%2116x16%2Fquality%2F90">
-					</a>
-				  </span>
-                                     </td>
-                                 </tr>
-
-
-
-                                 <tr>
-                                     <td class="topic_tit">
-                                         <img src="http://images.mafengwo.net/images/group/icon_bao.gif">
-                                         <h3><a target="_blank"  href="/g/i/6733226.html" title="什么是指路人&amp;指路人必读小锦囊">什么是指路人&amp;指路人必读小锦囊 </a></h3>
-                                     </td>
-                                     <td class="group_tit">
-                                         <strong><a target="_blank"  href="/g/13956.html" title="指路人俱乐部">指路人俱乐部</a></strong>
-                                     </td>
-                                     <td class="author">
-                                         <a target="_blank"  href="/u/66033691.html" title="马蜂窝问答君">
-
-                                             <img src="http://b1-q.mafengwo.net/s12/M00/B8/4B/wKgED1wXVBOAUKOoAAEV3wx0umw93.jpeg?imageMogr2%2Fthumbnail%2F%2116x16r%2Fgravity%2FCenter%2Fcrop%2F%2116x16%2Fquality%2F90">
-                                             <span>马蜂窝问答君</span>
-                                         </a>
-                                     </td>
-                                     <td class="view_num">
-                                         <span>106/39896</span>
-                                     </td>
-                                     <td class="date_time"><span>03-23 08:22</span></td>
-                                     <td class="reply">
-																                  <span class="avatar16">
-					<a target="_blank"  href="/u/89202525.html" title="马蜂窝用户">
-						<img src="http://p1-q.mafengwo.net/s12/M00/35/CD/wKgED1uqIt-AG3w5AAAbM62rsh0384.png?imageMogr2%2Fthumbnail%2F%2116x16r%2Fgravity%2FCenter%2Fcrop%2F%2116x16%2Fquality%2F90">
-					</a>
-				  </span>
-                                     </td>
-                                 </tr>
-
-
-                                 </tbody>
-
-                                 <tbody id="hot_article_by_reply" class="topic_hot hide">
+                     <tbody id="hot_article_by_reply" class="topic_hot hide">
 
                                  <!-- 热门话题 -->
                                  </tbody>
@@ -568,597 +308,72 @@
                          </div>
                          <div id="topic1"></div>
                      </div>
-                     <div class="hot-group" id="hot-group">
-                         <blockquote class="layui-elem-quote" style="border-left: 3px solid #6294b5;font-size: 16px;color: #6294b5;line-height: 10px">小组</blockquote>
-                         <div class="gm1">
-                             <ul class="clearfix">
-                                 <li class="item">
-                                     <span class="pic"><a target="_blank"  href="/g/11786.html" title="旅行摄影"><img src="http://p1-q.mafengwo.net/s4/M00/13/D4/wKgByU_1RJuSFhHrAAAlOzbut5E67.jpeg?imageView2%2F2%2Fw%2F100%2Fh%2F100%2Fq%2F90"></a></span>
-                                     <h3><a target="_blank"  href="/g/11786.html">旅行摄影</a></h3>
-                                     <p class="group_tag">类别：摄影，旅游，出行...</p>
-                                     <p>成员：15623</p>
-                                     <p>帖子数：6568</p>
-                                 </li>
-                                 <li class="item">
-                                     <span class="pic"><a target="_blank"  href="/g/10720.html" title="很爱住旅馆"><img src="http://p1-q.mafengwo.net/s1/M00/9C/8B/wKgBsU_1R9CNGLkTAAAy2_B9yNk57.jpeg?imageView2%2F2%2Fw%2F100%2Fh%2F100%2Fq%2F90"></a></span>
-                                     <h3><a target="_blank"  href="/g/10720.html">很爱住旅馆</a></h3>
-                                     <p class="group_tag">类别：青年旅舍、客栈、...</p>
-                                     <p>成员：308039</p>
-                                     <p>帖子数：2362</p>
-                                 </li>
-                                 <li class="item">
-                                     <span class="pic"><a target="_blank"  href="/g/10720.html" title="很爱住旅馆"><img src="http://p1-q.mafengwo.net/s1/M00/9C/8B/wKgBsU_1R9CNGLkTAAAy2_B9yNk57.jpeg?imageView2%2F2%2Fw%2F100%2Fh%2F100%2Fq%2F90"></a></span>
-                                     <h3><a target="_blank"  href="/g/10720.html">很爱住旅馆</a></h3>
-                                     <p class="group_tag">类别：青年旅舍、客栈、...</p>
-                                     <p>成员：308039</p>
-                                     <p>帖子数：2362</p>
-                                 </li>
-                                 <li class="item">
-                                     <span class="pic"><a target="_blank"  href="/g/10720.html" title="很爱住旅馆"><img src="http://p1-q.mafengwo.net/s1/M00/9C/8B/wKgBsU_1R9CNGLkTAAAy2_B9yNk57.jpeg?imageView2%2F2%2Fw%2F100%2Fh%2F100%2Fq%2F90"></a></span>
-                                     <h3><a target="_blank"  href="/g/10720.html">很爱住旅馆</a></h3>
-                                     <p class="group_tag">类别：青年旅舍、客栈、...</p>
-                                     <p>成员：308039</p>
-                                     <p>帖子数：2362</p>
-                                 </li>
-                             </ul>
-                         </div>
-                     </div>
+                     <!--<div class="hot-group" id="hot-group">-->
+                         <!--<blockquote class="layui-elem-quote" style="border-left: 3px solid #6294b5;font-size: 16px;color: #6294b5;line-height: 10px">小组</blockquote>-->
+                         <!--<div class="gm1">-->
+                             <!--<ul class="clearfix">-->
+                                 <!--<li class="item">-->
+                                     <!--<span class="pic"><a target="_blank"  href="/g/11786.html" title="旅行摄影"><img src="http://p1-q.mafengwo.net/s4/M00/13/D4/wKgByU_1RJuSFhHrAAAlOzbut5E67.jpeg?imageView2%2F2%2Fw%2F100%2Fh%2F100%2Fq%2F90"></a></span>-->
+                                     <!--<h3><a target="_blank"  href="/g/11786.html">旅行摄影</a></h3>-->
+                                     <!--<p class="group_tag">类别：摄影，旅游，出行...</p>-->
+                                     <!--<p>成员：15623</p>-->
+                                     <!--<p>帖子数：6568</p>-->
+                                 <!--</li>-->
+                                 <!--<li class="item">-->
+                                     <!--<span class="pic"><a target="_blank"  href="/g/10720.html" title="很爱住旅馆"><img src="http://p1-q.mafengwo.net/s1/M00/9C/8B/wKgBsU_1R9CNGLkTAAAy2_B9yNk57.jpeg?imageView2%2F2%2Fw%2F100%2Fh%2F100%2Fq%2F90"></a></span>-->
+                                     <!--<h3><a target="_blank"  href="/g/10720.html">很爱住旅馆</a></h3>-->
+                                     <!--<p class="group_tag">类别：青年旅舍、客栈、...</p>-->
+                                     <!--<p>成员：308039</p>-->
+                                     <!--<p>帖子数：2362</p>-->
+                                 <!--</li>-->
+                                 <!--<li class="item">-->
+                                     <!--<span class="pic"><a target="_blank"  href="/g/10720.html" title="很爱住旅馆"><img src="http://p1-q.mafengwo.net/s1/M00/9C/8B/wKgBsU_1R9CNGLkTAAAy2_B9yNk57.jpeg?imageView2%2F2%2Fw%2F100%2Fh%2F100%2Fq%2F90"></a></span>-->
+                                     <!--<h3><a target="_blank"  href="/g/10720.html">很爱住旅馆</a></h3>-->
+                                     <!--<p class="group_tag">类别：青年旅舍、客栈、...</p>-->
+                                     <!--<p>成员：308039</p>-->
+                                     <!--<p>帖子数：2362</p>-->
+                                 <!--</li>-->
+                                 <!--<li class="item">-->
+                                     <!--<span class="pic"><a target="_blank"  href="/g/10720.html" title="很爱住旅馆"><img src="http://p1-q.mafengwo.net/s1/M00/9C/8B/wKgBsU_1R9CNGLkTAAAy2_B9yNk57.jpeg?imageView2%2F2%2Fw%2F100%2Fh%2F100%2Fq%2F90"></a></span>-->
+                                     <!--<h3><a target="_blank"  href="/g/10720.html">很爱住旅馆</a></h3>-->
+                                     <!--<p class="group_tag">类别：青年旅舍、客栈、...</p>-->
+                                     <!--<p>成员：308039</p>-->
+                                     <!--<p>帖子数：2362</p>-->
+                                 <!--</li>-->
+                             <!--</ul>-->
+                         <!--</div>-->
+                     <!--</div>-->
                      <div id="grouptype">
                          <blockquote class="layui-elem-quote" style="border-left: 3px solid #6294b5;font-size: 16px;color: #6294b5;line-height: 10px">小组分类</blockquote>
-                         <div class="title">
-                             <ul>
-                                 <li class="title_item"><a href="#archor_1">旅行主义</a></li>
-                                 <li class="title_item"><a href="#archor_2">户外运动</a></li>
-                                 <li class="title_item"><a href="#archor_3">摄影</a></li>
-                                 <li class="title_item"><a href="#archor_4">美食-吃货</a></li>
-                                 <li class="title_item"><a href="#archor_5">书-影-音</a></li>
-                                 <li class="title_item"><a href="#archor_6">装备收藏</a></li>
-                                 <li class="title_item"><a href="#archor_7">情感生活</a></li>
-                                 <li class="title_item"><a href="#archor_8">MFW官方</a></li>
-                                 <li class="title_item"><a href="#archor_10">分舵同城</a></li>
-                             </ul>
-                         </div>
-                         <div class="choice">
-                             <div class="gm2 clearfix">
-                                 <h2 class="group_type">
-                                     <strong><a href="/group/glist.php?pid=1" target="_blank" name="archor_1" id="archor_1">旅行主义
-                                         <span>(1795).</span></a></strong>
-                                 </h2>
-                                 <ul class="clearfix">
-                                     <li>
-                                         <div class="pic"><a target="_blank"  href="/g/11428.html" title="【京舵】四海之内皆兄弟"><img src="http://b1-q.mafengwo.net/s5/M00/10/02/wKgB3FGCcmeASsEKAAEVEBS87DA77.jpeg?imageView2%2F2%2Fw%2F68%2Fh%2F68%2Fq%2F90"></a></div>
-                                         <h3><a target="_blank"  href="/g/11428.html">【京舵】四海之内皆兄弟</a></h3>
-                                         <p class="gray">9046个帖子</p>
-                                     </li>
-                                     <li>
-                                         <div class="pic"><a target="_blank"  href="/g/11232.html" title="一个人旅行"><img src="http://b1-q.mafengwo.net/s3/M00/C4/3B/wKgBt0-CWgyP7hv8AAANDmGUV5o05.jpeg?imageView2%2F2%2Fw%2F68%2Fh%2F68%2Fq%2F90"></a></div>
-                                         <h3><a target="_blank"  href="/g/11232.html">一个人旅行</a></h3>
-                                         <p class="gray">7581个帖子</p>
-                                     </li>
-                                     <li>
-                                         <div class="pic"><a target="_blank"  href="/g/10720.html" title="很爱住旅馆"><img src="http://p1-q.mafengwo.net/s1/M00/9C/8B/wKgBsU_1R9CNGLkTAAAy2_B9yNk57.jpeg?imageView2%2F2%2Fw%2F68%2Fh%2F68%2Fq%2F90"></a></div>
-                                         <h3><a target="_blank"  href="/g/10720.html">很爱住旅馆</a></h3>
-                                         <p class="gray">2362个帖子</p>
-                                     </li>
-                                     <li>
-                                         <div class="pic"><a target="_blank"  href="/g/11840.html" title="Gapyear间隔年旅行"><img src="http://n1-q.mafengwo.net/s3/M00/5D/11/cnHhjE9TDdP-h481AAAPzlx5l7422.jpeg?imageView2%2F2%2Fw%2F68%2Fh%2F68%2Fq%2F90"></a></div>
-                                         <h3><a target="_blank"  href="/g/11840.html">Gapyear间隔年旅行</a></h3>
-                                         <p class="gray">169个帖子</p>
-                                     </li>
-                                     <li>
-                                         <div class="pic"><a target="_blank"  href="/g/11738.html" title="搭车去旅行"><img src="http://n1-q.mafengwo.net/s1/M00/93/76/wKgBm07xmlqbtCS9AACDxdwGJXk82.jpeg?imageView2%2F2%2Fw%2F68%2Fh%2F68%2Fq%2F90"></a></div>
-                                         <h3><a target="_blank"  href="/g/11738.html">搭车去旅行</a></h3>
-                                         <p class="gray">1286个帖子</p>
-                                     </li>
-                                     <li>
-                                         <div class="pic"><a target="_blank"  href="/g/11295.html" title="背包去旅行"><img src="http://b1-q.mafengwo.net/s1/M00/9E/2A/wKgBsU_1VKv1p1MOAAAomhHsG1g33.jpeg?imageView2%2F2%2Fw%2F68%2Fh%2F68%2Fq%2F90"></a></div>
-                                         <h3><a target="_blank"  href="/g/11295.html">背包去旅行</a></h3>
-                                         <p class="gray">1745个帖子</p>
-                                     </li>
-                                     <li>
-                                         <div class="pic"><a target="_blank"  href="/g/11513.html" title="最爱旅行明信片"><img src="http://b1-q.mafengwo.net/s5/M00/F6/B6/wKgB3FGQYZGABCDLAABTJL45AhE51.jpeg?imageView2%2F2%2Fw%2F68%2Fh%2F68%2Fq%2F90"></a></div>
-                                         <h3><a target="_blank"  href="/g/11513.html">最爱旅行明信片</a></h3>
-                                         <p class="gray">2090个帖子</p>
-                                     </li>
-                                 </ul>
-                             </div>
-                             <div class="gm2 clearfix">
-                                 <h2 class="group_type">
-                                     <strong><a href="/group/glist.php?pid=2" target="_blank" name="archor_2" id="archor_2">户外运动
-                                         <span>(311).</span></a></strong>
-                                 </h2>
-                                 <ul class="clearfix">
-
-
-                                     <li>
-                                         <div class="pic"><a target="_blank"  href="/g/10850.html" title="杂踏单车"><img src="http://b1-q.mafengwo.net/s2/M00/8D/F3/wKgBtE_1PtrCeEuGAAApmdbk9Do58.jpeg?imageView2%2F2%2Fw%2F68%2Fh%2F68%2Fq%2F90"></a></div>
-                                         <h3><a target="_blank"  href="/g/10850.html">杂踏单车</a></h3>
-                                         <p class="gray">285个帖子</p>
-                                     </li>
-
-
-
-                                     <li>
-                                         <div class="pic"><a target="_blank"  href="/g/11680.html" title="MFW滑雪俱乐部"><img src="http://b1-q.mafengwo.net/s12/M00/46/FF/wKgED1wA_PCADbpLAABNmiq1e2Q817.png"></a></div>
-                                         <h3><a target="_blank"  href="/g/11680.html">MFW滑雪俱乐部</a></h3>
-                                         <p class="gray">16个帖子</p>
-                                     </li>
-
-
-
-                                     <li>
-                                         <div class="pic"><a target="_blank"  href="/g/11694.html" title="最爱攀岩"><img src="http://b1-q.mafengwo.net/s1/M00/BA/BF/wKgBm07TiDvHT4kUAAAQ0zXtURY50.jpeg?imageView2%2F2%2Fw%2F68%2Fh%2F68%2Fq%2F90"></a></div>
-                                         <h3><a target="_blank"  href="/g/11694.html">最爱攀岩</a></h3>
-                                         <p class="gray">71个帖子</p>
-                                     </li>
-
-
-
-                                     <li>
-                                         <div class="pic"><a target="_blank"  href="/g/10476.html" title="天下足球"><img src="http://n1-q.mafengwo.net/s6/M00/A8/CC/wKgB4lOC1X2AHAkIAAExNsiSqqI41.jpeg?imageView2%2F2%2Fw%2F68%2Fh%2F68%2Fq%2F90"></a></div>
-                                         <h3><a target="_blank"  href="/g/10476.html">天下足球</a></h3>
-                                         <p class="gray">571个帖子</p>
-                                     </li>
-
-
-
-                                     <li>
-                                         <div class="pic"><a target="_blank"  href="/g/11459.html" title="单车旅行故事"><img src="http://p1-q.mafengwo.net/s1/M00/16/FF/wKgBm07XHM75twv8AAAXRB0jDNA37.jpeg?imageView2%2F2%2Fw%2F68%2Fh%2F68%2Fq%2F90"></a></div>
-                                         <h3><a target="_blank"  href="/g/11459.html">单车旅行故事</a></h3>
-                                         <p class="gray">1623个帖子</p>
-                                     </li>
-
-
-
-                                     <li>
-                                         <div class="pic"><a target="_blank"  href="/g/11701.html" title="我为自驾狂"><img src="http://b1-q.mafengwo.net/s1/M00/31/EA/wKgBm07YRb2Ic3aiAAAXA3cKQa824.jpeg?imageView2%2F2%2Fw%2F68%2Fh%2F68%2Fq%2F90"></a></div>
-                                         <h3><a target="_blank"  href="/g/11701.html">我为自驾狂</a></h3>
-                                         <p class="gray">2921个帖子</p>
-                                     </li>
-
-                                 </ul>
-                             </div>
-                             <div class="gm2 clearfix">
-                                 <h2 class="group_type">
-                                     <strong><a href="/group/glist.php?pid=3" target="_blank" name="archor_3" id="archor_3">摄影
-                                         <span>(194).</span></a></strong>
-                                 </h2>
-                                 <ul class="clearfix">
-
-
-                                     <li>
-                                         <div class="pic"><a target="_blank"  href="/g/11405.html" title="水中影"><img src="http://b1-q.mafengwo.net/s1/M00/9B/5C/wKgBsU_1QLvLfGfiAAAwPzEPeys92.jpeg?imageView2%2F2%2Fw%2F68%2Fh%2F68%2Fq%2F90"></a></div>
-                                         <h3><a target="_blank"  href="/g/11405.html">水中影</a></h3>
-                                         <p class="gray">578个帖子</p>
-                                     </li>
-
-
-
-                                     <li>
-                                         <div class="pic"><a target="_blank"  href="/g/11537.html" title="《随手拍》"><img src="http://n1-q.mafengwo.net/s4/M00/D0/32/wKgByU_hpjn5_sYWAABMOpP_l8k78.jpeg?imageView2%2F2%2Fw%2F68%2Fh%2F68%2Fq%2F90"></a></div>
-                                         <h3><a target="_blank"  href="/g/11537.html">《随手拍》</a></h3>
-                                         <p class="gray">1780个帖子</p>
-                                     </li>
-
-
-
-                                     <li>
-                                         <div class="pic"><a target="_blank"  href="/g/11531.html" title="以图会友"><img src="http://p1-q.mafengwo.net/s4/M00/D0/20/wKgByU_hpiPAX1XgAABM4SVWOAg63.jpeg?imageView2%2F2%2Fw%2F68%2Fh%2F68%2Fq%2F90"></a></div>
-                                         <h3><a target="_blank"  href="/g/11531.html">以图会友</a></h3>
-                                         <p class="gray">1308个帖子</p>
-                                     </li>
-
-
-
-                                     <li>
-                                         <div class="pic"><a target="_blank"  href="/g/11786.html" title="旅行摄影"><img src="http://p1-q.mafengwo.net/s4/M00/13/D4/wKgByU_1RJuSFhHrAAAlOzbut5E67.jpeg?imageView2%2F2%2Fw%2F68%2Fh%2F68%2Fq%2F90"></a></div>
-                                         <h3><a target="_blank"  href="/g/11786.html">旅行摄影</a></h3>
-                                         <p class="gray">6568个帖子</p>
-                                     </li>
-
-
-
-                                     <li>
-                                         <div class="pic"><a target="_blank"  href="/g/11938.html" title="【原画册】旅行画册分享"><img src="http://n1-q.mafengwo.net/s4/M00/5C/1C/wKgByU-rhU-0M2EUAABYY2TKeFM65.jpeg?imageView2%2F2%2Fw%2F68%2Fh%2F68%2Fq%2F90"></a></div>
-                                         <h3><a target="_blank"  href="/g/11938.html">【原画册】旅行画册分享</a></h3>
-                                         <p class="gray">3916个帖子</p>
-                                     </li>
-
-
-
-                                     <li>
-                                         <div class="pic"><a target="_blank"  href="/g/10064.html" title="色色蚂蜂"><img src="http://b1-q.mafengwo.net/s2/M00/B4/81/wKgBpU76rczTKlI9AAPs163k5yE07.jpeg?imageView2%2F2%2Fw%2F68%2Fh%2F68%2Fq%2F90"></a></div>
-                                         <h3><a target="_blank"  href="/g/10064.html">色色蚂蜂</a></h3>
-                                         <p class="gray">11796个帖子</p>
-                                     </li>
-
-                                 </ul>
-                             </div>
-                             <div class="gm2 clearfix">
-                                 <h2 class="group_type">
-                                     <strong><a href="/group/glist.php?pid=4" target="_blank" name="archor_4" id="archor_4">美食-吃货
-                                         <span>(114).</span></a></strong>
-                                 </h2>
-                                 <ul class="clearfix">
-
-
-                                     <li>
-                                         <div class="pic"><a target="_blank"  href="/g/11134.html" title="走哪吃哪"><img src="http://b1-q.mafengwo.net/s1/M00/1D/14/wKgBm02ek6Dp0TEfAAAVoyAo79810.jpeg?imageView2%2F2%2Fw%2F68%2Fh%2F68%2Fq%2F90"></a></div>
-                                         <h3><a target="_blank"  href="/g/11134.html">走哪吃哪</a></h3>
-                                         <p class="gray">178个帖子</p>
-                                     </li>
-
-
-
-                                     <li>
-                                         <div class="pic"><a target="_blank"  href="/g/11162.html" title="美食地图"><img src="http://n1-q.mafengwo.net/s4/M00/CF/12/wKgByU_ho4Xm0sQWAABQzyNU0sQ28.jpeg?imageView2%2F2%2Fw%2F68%2Fh%2F68%2Fq%2F90"></a></div>
-                                         <h3><a target="_blank"  href="/g/11162.html">美食地图</a></h3>
-                                         <p class="gray">747个帖子</p>
-                                     </li>
-
-
-
-                                     <li>
-                                         <div class="pic"><a target="_blank"  href="/g/10231.html" title="我爱厨房"><img src="http://b1-q.mafengwo.net/s1/M00/1D/04/wKgBm02ejxOfPH3OAAClwRSAFiQ71.jpeg?imageView2%2F2%2Fw%2F68%2Fh%2F68%2Fq%2F90"></a></div>
-                                         <h3><a target="_blank"  href="/g/10231.html">我爱厨房</a></h3>
-                                         <p class="gray">552个帖子</p>
-                                     </li>
-
-
-
-                                     <li>
-                                         <div class="pic"><a target="_blank"  href="/g/11070.html" title="小吃零食~吃货一族"><img src="http://n1-q.mafengwo.net/s3/M00/8D/F8/wKgBt0_2nQyIisOwAAAPCVYyQ3851.jpeg?imageView2%2F2%2Fw%2F68%2Fh%2F68%2Fq%2F90"></a></div>
-                                         <h3><a target="_blank"  href="/g/11070.html">小吃零食~吃货一族</a></h3>
-                                         <p class="gray">128个帖子</p>
-                                     </li>
-
-
-
-                                     <li>
-                                         <div class="pic"><a target="_blank"  href="/g/11700.html" title="Love美食"><img src="http://b1-q.mafengwo.net/s6/M00/5C/A5/wKgB4lOjxKuALPnKAABJv9ntst411.jpeg?imageView2%2F2%2Fw%2F68%2Fh%2F68%2Fq%2F90"></a></div>
-                                         <h3><a target="_blank"  href="/g/11700.html">Love美食</a></h3>
-                                         <p class="gray">2192个帖子</p>
-                                     </li>
-
-
-
-                                     <li>
-                                         <div class="pic"><a target="_blank"  href="/g/11655.html" title="美食总动员"><img src="http://n1-q.mafengwo.net/s15/M00/6B/E1/CoUBGV5Y0WCAFz9dAAcaW1fG9nk08.jpeg"></a></div>
-                                         <h3><a target="_blank"  href="/g/11655.html">美食总动员</a></h3>
-                                         <p class="gray">2701个帖子</p>
-                                     </li>
-
-                                 </ul>
-                             </div>
-                             <div class="gm2 clearfix">
-                                 <h2 class="group_type">
-                                     <strong><a href="/group/glist.php?pid=5" target="_blank" name="archor_5" id="archor_5">书-影-音
-                                         <span>(138).</span></a></strong>
-                                 </h2>
-                                 <ul class="clearfix">
-
-
-                                     <li>
-                                         <div class="pic"><a target="_blank"  href="/g/11572.html" title="经典阅读"><img src="http://n1-q.mafengwo.net/s4/M00/D1/7C/wKgByU_hqebt8EnTAABQDAi-5uE20.jpeg?imageView2%2F2%2Fw%2F68%2Fh%2F68%2Fq%2F90"></a></div>
-                                         <h3><a target="_blank"  href="/g/11572.html">经典阅读</a></h3>
-                                         <p class="gray">999个帖子</p>
-                                     </li>
-
-
-
-                                     <li>
-                                         <div class="pic"><a target="_blank"  href="/g/11441.html" title="我们都是文艺好青年"><img src="http://b1-q.mafengwo.net/s1/M00/B2/41/wKgBm04RLpqGCHd6AAAegd0OYsg38.jpeg?imageView2%2F2%2Fw%2F68%2Fh%2F68%2Fq%2F90"></a></div>
-                                         <h3><a target="_blank"  href="/g/11441.html">我们都是文艺好青年</a></h3>
-                                         <p class="gray">501个帖子</p>
-                                     </li>
-
-
-
-                                     <li>
-                                         <div class="pic"><a target="_blank"  href="/g/11567.html" title="跟着电影去旅行"><img src="http://p1-q.mafengwo.net/s4/M00/A0/C1/wKgByU_hVmnfVtfZAAAN2yPo9ck14.jpeg?imageView2%2F2%2Fw%2F68%2Fh%2F68%2Fq%2F90"></a></div>
-                                         <h3><a target="_blank"  href="/g/11567.html">跟着电影去旅行</a></h3>
-                                         <p class="gray">684个帖子</p>
-                                     </li>
-
-
-
-                                     <li>
-                                         <div class="pic"><a target="_blank"  href="/g/10038.html" title="马蜂窝旅行电台"><img src="http://n1-q.mafengwo.net/s5/M00/2C/C3/wKgB3FILGY6Aa5d6AABAczfBfO492.jpeg?imageView2%2F2%2Fw%2F68%2Fh%2F68%2Fq%2F90"></a></div>
-                                         <h3><a target="_blank"  href="/g/10038.html">马蜂窝旅行电台</a></h3>
-                                         <p class="gray">948个帖子</p>
-                                     </li>
-
-
-
-                                     <li>
-                                         <div class="pic"><a target="_blank"  href="/g/11589.html" title="走走，听听……"><img src="http://b1-q.mafengwo.net/s4/M00/CF/FC/wKgByU_hpdD4NcB0AAALg78nYP839.jpeg?imageView2%2F2%2Fw%2F68%2Fh%2F68%2Fq%2F90"></a></div>
-                                         <h3><a target="_blank"  href="/g/11589.html">走走，听听……</a></h3>
-                                         <p class="gray">859个帖子</p>
-                                     </li>
-
-
-
-                                     <li>
-                                         <div class="pic"><a target="_blank"  href="/g/10013.html" title="电影世界"><img src="http://p1-q.mafengwo.net/s4/M00/CF/C9/wKgByU_hpV38_2aLAAANr8ndTK884.jpeg?imageView2%2F2%2Fw%2F68%2Fh%2F68%2Fq%2F90"></a></div>
-                                         <h3><a target="_blank"  href="/g/10013.html">电影世界</a></h3>
-                                         <p class="gray">407个帖子</p>
-                                     </li>
-
-                                 </ul>
-                             </div>
-                             <div class="gm2 clearfix">
-                                 <h2 class="group_type">
-                                     <strong><a href="/group/glist.php?pid=6" target="_blank" name="archor_6" id="archor_6">装备收藏
-                                         <span>(58).</span></a></strong>
-                                 </h2>
-                                 <ul class="clearfix">
-
-
-                                     <li>
-                                         <div class="pic"><a target="_blank"  href="/g/11616.html" title="佳能单反"><img src="http://b1-q.mafengwo.net/s4/M00/D0/37/wKgByU_hpkjfCxOtAABWX893G3I03.jpeg?imageView2%2F2%2Fw%2F68%2Fh%2F68%2Fq%2F90"></a></div>
-                                         <h3><a target="_blank"  href="/g/11616.html">佳能单反</a></h3>
-                                         <p class="gray">280个帖子</p>
-                                     </li>
-
-
-
-                                     <li>
-                                         <div class="pic"><a target="_blank"  href="/g/11726.html" title="单电，微电转接交流"><img src="http://n1-q.mafengwo.net/s1/M00/9C/44/wKgBsU_1Rc_310VyAAAljg4IZHI67.jpeg?imageView2%2F2%2Fw%2F68%2Fh%2F68%2Fq%2F90"></a></div>
-                                         <h3><a target="_blank"  href="/g/11726.html">单电，微电转接交流</a></h3>
-                                         <p class="gray">46个帖子</p>
-                                     </li>
-
-
-
-                                     <li>
-                                         <div class="pic"><a target="_blank"  href="/g/10891.html" title="卡片机俱乐部"><img src="http://n1-q.mafengwo.net/s1/M00/9C/63/wKgBsU_1RpWxdZatAAAjWUsc4ZM53.jpeg?imageView2%2F2%2Fw%2F68%2Fh%2F68%2Fq%2F90"></a></div>
-                                         <h3><a target="_blank"  href="/g/10891.html">卡片机俱乐部</a></h3>
-                                         <p class="gray">200个帖子</p>
-                                     </li>
-
-
-
-                                     <li>
-                                         <div class="pic"><a target="_blank"  href="/g/10283.html" title="旅行与装备"><img src="http://p1-q.mafengwo.net/s4/M00/14/57/wKgByU_1R1DAeUt2AAAvOLOmptg51.jpeg?imageView2%2F2%2Fw%2F68%2Fh%2F68%2Fq%2F90"></a></div>
-                                         <h3><a target="_blank"  href="/g/10283.html">旅行与装备</a></h3>
-                                         <p class="gray">488个帖子</p>
-                                     </li>
-
-
-
-                                     <li>
-                                         <div class="pic"><a target="_blank"  href="/g/11652.html" title="玩转装备"><img src="http://b1-q.mafengwo.net/s2/M00/54/97/wKgBpU6573Gba4f9AACnHa7Qkxs43.jpeg?imageView2%2F2%2Fw%2F68%2Fh%2F68%2Fq%2F90"></a></div>
-                                         <h3><a target="_blank"  href="/g/11652.html">玩转装备</a></h3>
-                                         <p class="gray">194个帖子</p>
-                                     </li>
-
-
-
-                                     <li>
-                                         <div class="pic"><a target="_blank"  href="/g/11471.html" title="户外装备"><img src="http://p1-q.mafengwo.net/s2/M00/A6/81/wKgBpU4o5C60KkVzAAAWynqQ2q439.jpeg?imageView2%2F2%2Fw%2F68%2Fh%2F68%2Fq%2F90"></a></div>
-                                         <h3><a target="_blank"  href="/g/11471.html">户外装备</a></h3>
-                                         <p class="gray">163个帖子</p>
-                                     </li>
-
-                                 </ul>
-                             </div>
-                             <div class="gm2 clearfix">
-                                 <h2 class="group_type">
-                                     <strong><a href="/group/glist.php?pid=7" target="_blank" name="archor_7" id="archor_7">情感生活
-                                         <span>(206).</span></a></strong>
-                                 </h2>
-                                 <ul class="clearfix">
-
-
-                                     <li>
-                                         <div class="pic"><a target="_blank"  href="/g/11400.html" title="单身男女"><img src="http://b1-q.mafengwo.net/s2/M00/10/52/wKgBpU6Y0yWzy5jnAAFUYd4EOG858.jpeg?imageView2%2F2%2Fw%2F68%2Fh%2F68%2Fq%2F90"></a></div>
-                                         <h3><a target="_blank"  href="/g/11400.html">单身男女</a></h3>
-                                         <p class="gray">1390个帖子</p>
-                                     </li>
-
-
-
-                                     <li>
-                                         <div class="pic"><a target="_blank"  href="/g/11579.html" title="大家来讲冷笑话"><img src="http://b1-q.mafengwo.net/s5/M00/91/D5/wKgB3FGMjqOAIJPGAAAJ-LSnlGA42.jpeg?imageView2%2F2%2Fw%2F68%2Fh%2F68%2Fq%2F90"></a></div>
-                                         <h3><a target="_blank"  href="/g/11579.html">大家来讲冷笑话</a></h3>
-                                         <p class="gray">3296个帖子</p>
-                                     </li>
-
-
-
-                                     <li>
-                                         <div class="pic"><a target="_blank"  href="/g/11740.html" title="微公益"><img src="http://n1-q.mafengwo.net/s2/M00/BA/29/wKgBpU76y-zxd5hMAAASTFgqTmE05.jpeg?imageView2%2F2%2Fw%2F68%2Fh%2F68%2Fq%2F90"></a></div>
-                                         <h3><a target="_blank"  href="/g/11740.html">微公益</a></h3>
-                                         <p class="gray">96个帖子</p>
-                                     </li>
-
-
-
-                                     <li>
-                                         <div class="pic"><a target="_blank"  href="/g/11621.html" title="花花世界"><img src="http://p1-q.mafengwo.net/s2/M00/71/06/wKgBpU6oIki7PhhtAAAixsy2XC023.jpeg?imageView2%2F2%2Fw%2F68%2Fh%2F68%2Fq%2F90"></a></div>
-                                         <h3><a target="_blank"  href="/g/11621.html">花花世界</a></h3>
-                                         <p class="gray">2593个帖子</p>
-                                     </li>
-
-
-
-                                     <li>
-                                         <div class="pic"><a target="_blank"  href="/g/11653.html" title="日光倾城"><img src="http://n1-q.mafengwo.net/s3/M00/12/20/wKgBjE8S7Q_Mw4ILAADZSjhcW9862.jpeg?imageView2%2F2%2Fw%2F68%2Fh%2F68%2Fq%2F90"></a></div>
-                                         <h3><a target="_blank"  href="/g/11653.html">日光倾城</a></h3>
-                                         <p class="gray">4415个帖子</p>
-                                     </li>
-
-
-
-                                     <li>
-                                         <div class="pic"><a target="_blank"  href="/g/11810.html" title="生活方式决定健康!"><img src="http://n1-q.mafengwo.net/s3/M00/6C/F7/wKgBt0_1SEjk95WhAAAyxFzXUZ448.jpeg?imageView2%2F2%2Fw%2F68%2Fh%2F68%2Fq%2F90"></a></div>
-                                         <h3><a target="_blank"  href="/g/11810.html">生活方式决定健康!</a></h3>
-                                         <p class="gray">2165个帖子</p>
-                                     </li>
-
-                                 </ul>
-                             </div>
-                             <div class="gm2 clearfix">
-                                 <h2 class="group_type">
-                                     <strong><a href="/group/glist.php?pid=8" target="_blank" name="archor_8" id="archor_8">MFW官方
-                                         <span>(56).</span></a></strong>
-                                 </h2>
-                                 <ul class="clearfix">
-
-
-                                     <li>
-                                         <div class="pic"><a target="_blank"  href="/g/13356.html" title="马蜂窝问答"><img src="http://p1-q.mafengwo.net/s6/M00/2F/EB/wKgB4lK5T-yAB6rdAADha-lmTSM225.png?imageView2%2F2%2Fw%2F68%2Fh%2F68%2Fq%2F90"></a></div>
-                                         <h3><a target="_blank"  href="/g/13356.html">马蜂窝问答</a></h3>
-                                         <p class="gray">6871个帖子</p>
-                                     </li>
-
-
-
-                                     <li>
-                                         <div class="pic"><a target="_blank"  href="/g/10939.html" title="照片PK讨论组"><img src="http://b1-q.mafengwo.net/s5/M00/1F/CB/wKgB3FDS0vKAa2IKAAAlsBp0AFQ325.png?imageView2%2F2%2Fw%2F68%2Fh%2F68%2Fq%2F90"></a></div>
-                                         <h3><a target="_blank"  href="/g/10939.html">照片PK讨论组</a></h3>
-                                         <p class="gray">2465个帖子</p>
-                                     </li>
-
-
-
-                                     <li>
-                                         <div class="pic"><a target="_blank"  href="/g/11682.html" title="蜂窝客栈"><img src="http://b1-q.mafengwo.net/s1/M00/0E/A6/wKgBm07MquXbdePXAAASbal43sM10.jpeg?imageView2%2F2%2Fw%2F68%2Fh%2F68%2Fq%2F90"></a></div>
-                                         <h3><a target="_blank"  href="/g/11682.html">蜂窝客栈</a></h3>
-                                         <p class="gray">126个帖子</p>
-                                     </li>
-
-
-
-                                     <li>
-                                         <div class="pic"><a target="_blank"  href="/g/10232.html" title="社区帮助中心"><img src="http://b1-q.mafengwo.net/s4/M00/CD/F3/wKgByU_hoJnDYyK9AABE9DmSrj468.jpeg?imageView2%2F2%2Fw%2F68%2Fh%2F68%2Fq%2F90"></a></div>
-                                         <h3><a target="_blank"  href="/g/10232.html">社区帮助中心</a></h3>
-                                         <p class="gray">1266个帖子</p>
-                                     </li>
-
-
-
-                                     <li>
-                                         <div class="pic"><a target="_blank"  href="/g/11096.html" title="TT旅行"><img src="http://p1-q.mafengwo.net/s4/M00/CE/E6/wKgByU_hovqo4nXDAABEaif-NVE79.jpeg?imageView2%2F2%2Fw%2F68%2Fh%2F68%2Fq%2F90"></a></div>
-                                         <h3><a target="_blank"  href="/g/11096.html">TT旅行</a></h3>
-                                         <p class="gray">856个帖子</p>
-                                     </li>
-
-
-
-                                     <li>
-                                         <div class="pic"><a target="_blank"  href="/g/11996.html" title="旅行制片厂"><img src="http://b1-q.mafengwo.net/s4/M00/79/CF/wKgBwU_EySmXZYebAAAdrLWlNgQ57.jpeg?imageView2%2F2%2Fw%2F68%2Fh%2F68%2Fq%2F90"></a></div>
-                                         <h3><a target="_blank"  href="/g/11996.html">旅行制片厂</a></h3>
-                                         <p class="gray">86个帖子</p>
-                                     </li>
-
-
-
-                                     <li>
-                                         <div class="pic"><a target="_blank"  href="/g/11988.html" title="主题攻略组"><img src="http://p1-q.mafengwo.net/s5/M00/D7/0C/wKgB3FFRYV6APcQZAABoO1LwPXo84.jpeg?imageView2%2F2%2Fw%2F68%2Fh%2F68%2Fq%2F90"></a></div>
-                                         <h3><a target="_blank"  href="/g/11988.html">主题攻略组</a></h3>
-                                         <p class="gray">110个帖子</p>
-                                     </li>
-
-                                 </ul>
-                             </div>
-                             <div class="gm2 clearfix">
-                                 <h2 class="group_type">
-                                     <strong><a href="/group/glist.php?pid=10" target="_blank" name="archor_10" id="archor_10">分舵同城
-                                         <span>(269).</span></a></strong>
-                                 </h2>
-                                 <ul class="clearfix">
-
-
-                                     <li>
-                                         <div class="pic"><a target="_blank"  href="/g/11635.html" title="【深圳舵】东方之珠"><img src="http://n1-q.mafengwo.net/s5/M00/B9/35/wKgB3FGMtoiAfOkHAABr44eEdxQ13.jpeg?imageView2%2F2%2Fw%2F68%2Fh%2F68%2Fq%2F90"></a></div>
-                                         <h3><a target="_blank"  href="/g/11635.html">【深圳舵】东方之珠</a></h3>
-                                         <p class="gray">1514个帖子</p>
-                                     </li>
-
-
-
-                                     <li>
-                                         <div class="pic"><a target="_blank"  href="/g/11642.html" title="【沪舵】上善若水，海纳百川"><img src="http://n1-q.mafengwo.net/s5/M00/C7/B1/wKgB3FGiGVuAOzxnAAFoVjfto3406.jpeg?imageView2%2F2%2Fw%2F68%2Fh%2F68%2Fq%2F90"></a></div>
-                                         <h3><a target="_blank"  href="/g/11642.html">【沪舵】上善若水，海纳百川</a></h3>
-                                         <p class="gray">2337个帖子</p>
-                                     </li>
-
-
-
-                                     <li>
-                                         <div class="pic"><a target="_blank"  href="/g/11630.html" title="【武汉舵】带给你最“汉味”的体验"><img src="http://n1-q.mafengwo.net/s2/M00/DE/1A/wKgBpU6yboX-Ru2nAAAQbCAljZQ69.jpeg?imageView2%2F2%2Fw%2F68%2Fh%2F68%2Fq%2F90"></a></div>
-                                         <h3><a target="_blank"  href="/g/11630.html">【武汉舵】带给你最“汉味”的体验</a></h3>
-                                         <p class="gray">914个帖子</p>
-                                     </li>
-
-
-
-                                     <li>
-                                         <div class="pic"><a target="_blank"  href="/g/11629.html" title="【苏州舵】 清风明月本无价，近水遥山皆有情"><img src="http://n1-q.mafengwo.net/s2/M00/EC/05/wKgBpU6ylOKgmOpKAAF9z3YcRTo99.jpeg?imageView2%2F2%2Fw%2F68%2Fh%2F68%2Fq%2F90"></a></div>
-                                         <h3><a target="_blank"  href="/g/11629.html">【苏州舵】 清风明月本无价，近水遥山皆有情</a></h3>
-                                         <p class="gray">721个帖子</p>
-                                     </li>
-
-
-
-                                     <li>
-                                         <div class="pic"><a target="_blank"  href="/g/11628.html" title="【川舵】一个来了就不想走的地方"><img src="http://n1-q.mafengwo.net/s14/M00/ED/58/wKgE2l0KmqCAGalXAACR2Wf17pY19.jpeg"></a></div>
-                                         <h3><a target="_blank"  href="/g/11628.html">【川舵】一个来了就不想走的地方</a></h3>
-                                         <p class="gray">2724个帖子</p>
-                                     </li>
-
-
-
-                                     <li>
-                                         <div class="pic"><a target="_blank"  href="/g/11428.html" title="【京舵】四海之内皆兄弟"><img src="http://b1-q.mafengwo.net/s5/M00/10/02/wKgB3FGCcmeASsEKAAEVEBS87DA77.jpeg?imageView2%2F2%2Fw%2F68%2Fh%2F68%2Fq%2F90"></a></div>
-                                         <h3><a target="_blank"  href="/g/11428.html">【京舵】四海之内皆兄弟</a></h3>
-                                         <p class="gray">9046个帖子</p>
-                                     </li>
-
-                                 </ul>
-                             </div>
-
-                         </div>
+                         <!--<div class="title">-->
+                             <!--<ul>-->
+                                 <!--<li class="title_item"><a href="#archor_1">旅行主义</a></li>-->
+                             <!--</ul>-->
+                         <!--</div>-->
+                         <!--<div class="choice">-->
+                             <!--<div class="gm2 clearfix">-->
+                                 <!--<h2 class="group_type">-->
+                                     <!--<strong><a href="/group/glist.php?pid=1" target="_blank" name="archor_1" id="archor_1">旅行主义-->
+                                         <!--<span>(1795).</span></a></strong>-->
+                                 <!--</h2>-->
+                                 <!--<ul class="clearfix">-->
+                                     <!--<li>-->
+                                         <!--<div class="pic"><a target="_blank"  href="/g/11428.html" title="【京舵】四海之内皆兄弟"><img src="http://b1-q.mafengwo.net/s5/M00/10/02/wKgB3FGCcmeASsEKAAEVEBS87DA77.jpeg?imageView2%2F2%2Fw%2F68%2Fh%2F68%2Fq%2F90"></a></div>-->
+                                         <!--<h3><a target="_blank"  href="/g/11428.html">【京舵】四海之内皆兄弟</a></h3>-->
+                                         <!--<p class="gray">9046个帖子</p>-->
+                                     <!--</li>-->
+                                 <!--</ul>-->
+                             <!--</div>-->
+                         <!--</div>-->
                      </div>
                  </div>
              </div>
          </div>
-         <div class="layui-col-md3">
-             <div class="search_left">
-                 <form class="layui-form" action="">
-                     <div class="layui-form-item">
-                         <div class="layui-input-inline" style="width: 67px;font-size: 12px;margin: 0px;">
-                             <select name="type" lay-verify="">
-                                 <option value="1">小组</option>
-                                 <option value="2" selected>话题</option>
-                             </select>
-                         </div>
-                         <div class="layui-input-inline" style="width: 120px;margin: 0px;">
-                             <input style="margin: 0px;" type="text" name="type" placeholder="搜索你要的内容" autocomplete="off" class="layui-input">
-                         </div>
-                         <div class="layui-input-inline" style="width: 40px;margin: 0px;"><button class="layui-btn search-btn" formnovalidate><i class="layui-icon layui-icon-search" style="font-size: 15px;"></i>
-                         </button></div>
-                     </div>
-                 </form>
-             </div>
-             <div class="cloud">
-                 <h3>热门搜索</h3>
-                 <ul>
-                     <li><a href="/">网红打卡</a></li>
-                     <li><a href="/">清迈</a></li>
-                     <li><a href="/">生活</a></li>
-                     <li><a href="/">游玩必备</a></li>
-                     <li><a href="/">一日游</a></li>
-                     <li><a href="/">景点生活</a></li>
-                     <li><a href="/">经济</a></li>
-                     <li><a href="/">实惠</a></li>
-                     <li><a href="/">跟团游</a></li>
-                     <li><a href="/">驾车游</a></li>
-                     <li><a href="/">青山绿水</a></li>
-                     <li><a href="/">空气清新</a></li>
-                     <li><a href="/">梁山</a></li>
-                     <li><a href="/">雾霾</a></li>
+         <div class="layui-col-md3 relate" >
+             <div class="tuwen">
+                 <h3>小组排行</h3>
+                 <ul id="ordergroup">
+
                  </ul>
              </div>
          </div>
@@ -1168,8 +383,76 @@
     <li class="layui-icon layui-fixbar-top" id="to_top" style="background-color: #6294b5;"
         title="返回顶部"></li>
 </ul>
+<script id="topic-mod" type="text/html">
+    {{#layui.each(d,function(index,item){ }}
+    <tr>
+        <td class="topic_tit">
+            <!--<img src="http://images.mafengwo.net/images/Z33.gif">-->
+            <h3><a target="_blank"  href="/front/topic_detail?id={{item.id}}" title="">{{item.title}} </a></h3>
+        </td>
+        <td class="group_tit">
+            <strong><a target="_blank"  href="/front/group_detail?id={{item.groupId}}" title="">{{item.groupName}}</a></strong>
+        </td>
+        <td class="view_num">
+            <span>{{item.replyNum}}/{{item.readNum}}</span>
+        </td>
+        <td class="date_time"><span>{{item.date}}</span></td>
+        {{# });}}
+</script>
+<script id="group-mod" type="text/html">
+    {{# var i= 1;var arr = Object.keys(d);var j = arr.length+1;}}
+    <div class="title">
+        <ul>
+            {{#layui.each(d,function(index,item){ }}
+            <li class="title_item"><a href="#group-data{{i}}">{{index}}</a></li>
+            {{#i++;j--;}}
+            {{# });}}
+        </ul>
+    </div>
+    <div class="choice">
+        {{#layui.each(d,function(index,item){ }}
+        <div class="gm2 clearfix">
+            <h2 class="group_type">
+                <strong><a href="javascript" target="_blank" name="archor_1" id="group-data{{j}}">{{index}}
+                    {{#j++;}}
+                    <span>({{item.length}})</span></a></strong>
+            </h2>
+            <ul class="clearfix">
+                {{#layui.each(item,function(ing,g){ }}
+                <li>
+                    <div class="pic"><a target="_blank"  href="/front/group_detail?id={{g.id}}" title=""><img src="{{g.headImg}}"></a></div>
+                    <h3><a target="_blank"  href="/front/group_detail?id={{g.id}}">{{g.title}}</a></h3>
+                    <p class="gray">{{g.topicNum}}个话题</p>
+                </li>
+                {{# });}}
+            </ul>
+        </div>
+        {{# });}}
+    </div>
+</script>
+<script id="ordergroup-mod" type="text/html">
+    {{#  layui.each(d, function(index, item){ }}
+    <li><a href="/front/group_detail?id={{item.id}}"><b class="layui-elip">{{item.title}}</b></a>
+        <p>
+            <span class="tulanum">{{item.topicNum}}个话题</span>
+            <span class="tutime">标签:{{item.tags}}</span>
+        </p>
+    </li>
+    {{# }); }}
+</script>
 <script type="text/javascript" th:src="@{/layui/layui.js}"></script>
 <script>
+    $('.search-btn').on('click', function () {
+        var inpVal = $(this).siblings('input').val();
+        // 搜索条件不为空串
+        if (inpVal !== '') {
+            var url = "/front/search-page";
+            // window.open(encodeURI(url + "?pattern=" + inpVal));
+            window.location.href = encodeURI(url + "?pattern=" + inpVal);
+            // window.location.href = "/front/page/search-page?pattern=" + inpVal;
+        }
+        return false;
+    });
     $("#to_top").click(function () {
         $("html,body").animate({ scrollTop: 0 }, 200);
     });
@@ -1183,10 +466,15 @@
             $("#to_top").hide();
         }
     });
-    layui.use(['element','form','carousel','laypage', 'layer'], function(){
+    layui.config({
+        base: '/layuiadmin/'
+    }).extend({
+        index: 'lib/index' //主入口模块
+    }).use(['index','element','form','carousel','group', 'layer'], function(){
         var element = layui.element; //导航的hover效果、二级菜单等功能，需要依赖element模块
         var carousel = layui.carousel; // 轮播框设置
-        var laypage = layui.laypage
+        var group = layui.group
+            ,laytpl = layui.laytpl
             ,layer = layui.layer;
         /*旅游攻略页面*/
         /*left nav*/
@@ -1197,15 +485,30 @@
             $('.gonglve-nav').css('border-right-color', '#ddd');
             $('.nav-panel').css('display', 'none');
         });
-        //总页数大于页码总数
-        laypage.render({
-            elem: 'topic1'
-            ,count: 70 //数据总数
-            ,theme: '#6294b5'
-            ,jump: function(obj){
-                console.log(obj)
-            }
-        });
+        group.groupdata();
+        group.getnewTopic();
+        loadTopGroup();
+        function loadTopGroup() {
+            $.ajax({
+                type:'post',
+                url:'/comm/topGroup',
+                success:function (res) {
+                    var layhot = document.getElementById('ordergroup-mod').innerHTML;
+                    laytpl(layhot).render(res.data,function (html) {
+                        $("body #ordergroup").append(html);
+                    });
+                }
+            });
+        }
+        // //总页数大于页码总数
+        // laypage.render({
+        //     elem: 'topic1'
+        //     ,count: 70 //数据总数
+        //     ,theme: '#6294b5'
+        //     ,jump: function(obj){
+        //         console.log(obj)
+        //     }
+        // });
     });
 </script>
 <!--[if lt IE 9]>

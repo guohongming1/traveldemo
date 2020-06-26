@@ -9,6 +9,7 @@ import java.util.Date;
  * @Date: 2020/4/14
  */
 public class MsgResult implements Serializable {
+    private static final long serialVersionUID = 5950257893872100115L;
     private int userNotifyId;
     private int id; // notify的id
     private String content;

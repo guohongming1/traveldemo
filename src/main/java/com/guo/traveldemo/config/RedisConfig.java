@@ -29,12 +29,12 @@ public class RedisConfig extends CachingConfigurerSupport {
     /**
      * 缓存管理，默认使用redis
      *
-     * @param connectionFactory
+     * @param redisTemplate
      * @return
      */
     @Bean
-    public CacheManager cacheManager(RedisConnectionFactory connectionFactory) {
-        CacheManager cacheManager = RedisCacheManager.create(connectionFactory);
+    public CacheManager cacheManager(RedisTemplate redisTemplate) {
+        CacheManager cacheManager = new RedisCacheManager(redisTemplate);
         return cacheManager;
     }
 
@@ -65,7 +65,7 @@ public class RedisConfig extends CachingConfigurerSupport {
         // 设置redis key 序列化方式（一般为String）
         template.setKeySerializer(new StringRedisSerializer());
         // 设置事务支持
-        template.setEnableTransactionSupport(true);
+       // template.setEnableTransactionSupport(true);
         template.afterPropertiesSet();
         return template;
     }

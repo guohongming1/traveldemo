@@ -34,11 +34,12 @@ layui.define(['carousel', 'jquery', 'element', 'flow', 'laytpl', 'element', 'lay
 
         // 首页轮播
         banner: function () {
+            console.log("testst");
             //轮播
             var elemBanner = $('#test1'), ins1 = carousel.render({
                 elem: elemBanner
                 ,width: '100%' //设置容器宽度
-                ,height:'269px' //宽度
+                ,height:'300px' //宽度
                 ,arrow: 'hover' //始终显示箭头
                 , interval: 3000
             });
@@ -318,7 +319,7 @@ layui.define(['carousel', 'jquery', 'element', 'flow', 'laytpl', 'element', 'lay
                 var inpVal = $(this).siblings('input').val();
                 // 搜索条件不为空串
                 if (inpVal !== '') {
-                    var url = "/front/page/search-page";
+                    var url = "/front/search-page";
                     // window.open(encodeURI(url + "?pattern=" + inpVal));
                     window.location.href = encodeURI(url + "?pattern=" + inpVal);
                     // window.location.href = "/front/page/search-page?pattern=" + inpVal;

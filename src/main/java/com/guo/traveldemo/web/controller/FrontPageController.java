@@ -1,14 +1,19 @@
 package com.guo.traveldemo.web.controller;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.guo.traveldemo.cache.CollectionKey;
 import com.guo.traveldemo.constants.Constants;
 import com.guo.traveldemo.util.IPUtils;
+import com.guo.traveldemo.web.dto.QuestionDTO;
 import com.guo.traveldemo.web.dto.RouteDTO;
 import com.guo.traveldemo.web.dto.StrategyDTO;
+import com.guo.traveldemo.web.mapper.CollectMapper;
 import com.guo.traveldemo.web.mapper.UserMapper;
 import com.guo.traveldemo.web.pojo.*;
+import com.guo.traveldemo.web.service.GroupService;
 import com.guo.traveldemo.web.service.Impl.CommonServiceImpl;
 import com.guo.traveldemo.web.service.Impl.RedisService;
+import com.guo.traveldemo.web.service.QuestionService;
 import com.guo.traveldemo.web.service.RecommentService;
 import com.guo.traveldemo.web.service.StrategyService;
 import org.springframework.beans.BeanUtils;
@@ -20,9 +25,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 /**
  * 前台控制页面
@@ -31,6 +34,7 @@ import java.util.Objects;
  * @Date: 2020/3/20
  */
 @Controller
+@RequestMapping("/front")
 public class FrontPageController {
 
     @Autowired
@@ -47,6 +51,13 @@ public class FrontPageController {
 
     @Autowired
     private StrategyService strategyService;
+
+    @Autowired
+    private GroupService groupService;
+    @Autowired
+    private QuestionService questionService;
+    @Autowired
+    private CollectMapper collectMapper;
 
     @RequestMapping("/index")
     public String index(Model model, HttpSession session, HttpServletRequest request)throws Exception{
@@ -98,6 +109,11 @@ public class FrontPageController {
         model.addAttribute("recommend",result);
         return "front/index";
     }
+    @GetMapping("/search-page")
+    public String searchPage(HttpServletRequest request, String title){
+        request.setAttribute("pattern", title);
+        return "front/search";
+    }
     @GetMapping("/strategydetail")
     public String detail(Model model,HttpSession session,int id,int detailId){
         User user = (User)session.getAttribute("userinfo");
@@ -111,7 +127,7 @@ public class FrontPageController {
         Strategy strategy = strategyService.selectStrategyById(id);
         // 攻略明细ID，用于获取评论
         model.addAttribute("id",strategy.getId());
-        model.addAttribute("detailId",detailId);
+        model.addAttribute("detailId",strategy.getDetailId());
         model.addAttribute("title",strategy.getTitle());
         User author = userMapper.getUserInfoByPrimaryKey(strategy.getUserId());
         model.addAttribute("authorId",author.getId());
@@ -136,7 +152,7 @@ public class FrontPageController {
         }else{
             model.addAttribute("comnum",0);
         }
-        StrategyDetail detail = strategyService.getDetailById(detailId);
+        StrategyDetail detail = strategyService.getDetailById(strategy.getDetailId());
         if(strategyService != null){
             // 得到table
             TravelTable travelTable = strategyService.getTavelTableById(detail.getTableId());
@@ -153,40 +169,117 @@ public class FrontPageController {
     public String group(){
         return "front/group";
     }
+
+    /**
+     * 小组id
+     * @param model
+     * @param id
+     * @return
+     */
     @RequestMapping("/group_detail")
-    public String group_detail(){
+    public String group_detail(HttpSession session,Model model,int id){
+        User user = (User)session.getAttribute("userinfo");
+        QueryWrapper<TravelGroup> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("id",id);
+        queryWrapper.eq("flag",Constants.PASS_YES);
+        TravelGroup travelGroup = groupService.selectTravelGroup(queryWrapper).size()==0?null:groupService.selectTravelGroup(queryWrapper).get(0);
+        if(travelGroup!=null)
+         model.addAttribute("authorName",userMapper.getUserInfoByPrimaryKey(travelGroup.getUserId()).getName());
+        if(user != null){
+            // 查询用户是否加入了该小组
+            QueryWrapper<GroupMember> query = new QueryWrapper<>();
+            query.eq("group_id",id);
+            query.eq("user_id",user.getId());
+            if(groupService.getCountMember(query)>0 || travelGroup.getUserId() == user.getId()){
+                model.addAttribute("gflag","1");
+            }else{
+                model.addAttribute("gflag","2");
+            }
+        }else{
+            model.addAttribute("gflag","2");
+        }
+        model.addAttribute("travelGroup",travelGroup);
         return "front/group-detail";
     }
+
+    /**
+     * 问题详情
+     * @param session
+     * @param model
+     * @param id
+     * @return
+     */
+    @RequestMapping("/questionDetail")
+    public String question_detail(HttpSession session,Model model, int id){
+        User user = (User)session.getAttribute("userinfo");
+        Question question = questionService.selectById(id);
+        if(user != null){
+            QueryWrapper<Collect> query = new QueryWrapper<>();
+            query.eq("user_id",user.getId());
+            query.eq("type",(byte)2);
+            query.eq("pro_id",id);
+            if(collectMapper.selectCount(query)>0){
+                model.addAttribute("colstate","2");
+            }else if(question.getUserId()==user.getId()){//作者本人不需要显示收藏按钮
+                model.addAttribute("colstate","3");
+            }else{
+                model.addAttribute("colstate","1");
+            }
+        }else{
+            model.addAttribute("colstate","1");
+        }
+        if(question != null){
+            List<Question> list = new ArrayList<>();
+            list.add(question);
+            model.addAttribute("question",this.setQuestionDTOList(list).get(0));
+            redisService.addHot(id,"1",Constants.QUESTION_HOT_NAME);
+        }
+        return "front/question_detail";
+    }
+
+    /**
+     * 话题明细页面
+     * @param session
+     * @param model
+     * @param id topic表的id
+     * @return
+     */
     @RequestMapping("/topic_detail")
-    public String topic(){
+    public String topic(HttpSession session,Model model,int id){
+        Topic topic = groupService.queryTopicById(id);
+        if(topic != null){
+            TopicDetail topicDetail = groupService.queryTopicDetail(topic.getGrDeId());
+            // 查询用户收藏 和是否是用户本人操作
+            User user = (User)session.getAttribute("userinfo");
+            if(user != null){
+                if(commonService.queryCollect(user.getId(),(byte)3,id) || user.getId() == topic.getUserId()){
+                    model.addAttribute("colflag","1");
+                }else{
+                    model.addAttribute("colflag","2");
+                }
+            }else{
+                model.addAttribute("colflag","2");
+            }
+            // 查询作者 tags字段存储用户名
+            User author = userMapper.getUserInfoByPrimaryKey(topic.getUserId());
+            topic.setTags(author.getName());
+            // title字段存储用户头像url
+            topicDetail.setTitle(author.getImgUrl());
+            model.addAttribute("topicDetail",topicDetail);
+        }
+        model.addAttribute("topic",topic);
         return "front/topic-detail";
     }
     @RequestMapping("/question")
     public String question(){
         return "front/question";
     }
-    @RequestMapping("/question_detail")
-    public String question_detail(){
-        return "front/question_detail";
-    }
-    @RequestMapping("/newquestion")
-    public String newquestion(){
-        return "front/newQuestion";
-    }
+
     @RequestMapping("/newgroup")
     public String newgroup(){
         return "front/newGroup";
     }
-    @RequestMapping("/newtopic")
-    public String newtopic(){
 
-
-        return "front/newTopic";
-    }
-    @RequestMapping("/newstrategy")
-    public String newstrategy(){
-        return "front/newStrategy";
-    }
     @RequestMapping("/userInfo")
     public String user(Model model,int id){
         User user = null;
@@ -217,6 +310,10 @@ public class FrontPageController {
     public String usermsg(){
         return "user/message";
     }
+    @RequestMapping("/forget")
+    public String forget(){
+        return "forget";
+    }
     @RequestMapping("/reg")
     public String reg(){
         return "reg";
@@ -225,5 +322,38 @@ public class FrontPageController {
     public String login(){
         return "login";
     }
-
+    /**
+     * 组装前端数据
+     * @param list
+     * @return
+     */
+    public List<QuestionDTO> setQuestionDTOList(List<Question> list){
+        List<QuestionDTO> result = new ArrayList<>();
+        list.forEach(item->{
+            User user = userMapper.getUserInfoByPrimaryKey(item.getUserId());
+            QuestionDTO dto = new QuestionDTO();
+            BeanUtils.copyProperties(item,dto);
+            if(dto.getImgUrl() == null || dto.getImgUrl() == ""){
+                // 如果没有问题图像就使用用户头像
+                dto.setImgUrl(user.getImgUrl());
+            }
+            dto.setUserName(user.getName());
+            // 获取热度
+            Number hotNum = redisService.getScore(Constants.QUESTION_HOT_NAME, item.getId());
+            if(!Objects.isNull(hotNum)){
+                dto.setHotNum(hotNum.intValue());
+            }else{
+                dto.setHotNum(0);
+            }
+            // 获取评论数目
+            Number comNum = redisService.getViewNum(item.getId(), CollectionKey.QUESTION_KEY_COM_NUM);
+            if(!Objects.isNull(comNum)){
+                dto.setCommentNum(comNum.intValue());
+            }else{
+                dto.setCommentNum(0);
+            }
+            result.add(dto);
+        });
+        return result;
+    }
 }

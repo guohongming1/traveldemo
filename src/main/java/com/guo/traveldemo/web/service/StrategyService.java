@@ -1,5 +1,6 @@
 package com.guo.traveldemo.web.service;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.guo.traveldemo.result.Response;
 import com.guo.traveldemo.result.StrategyDTO;
@@ -22,8 +23,13 @@ public interface StrategyService {
     Response<String> updateStrategy(Strategy strategy, TravelTable travelTable, String route, String content);
     Strategy selectStrategyById(int id);
     List<Strategy> getList(int limit,int page,String address);
+    List<Strategy> adminGetList(int limit,int page,String title);
+    int getCount();
     StrategyDetail getDetailById(int detailId);
     TravelTable getTavelTableById(int tableId);
     Route getRouteById(int routeId);
     List<Strategy> getStrategyByUserId(int id);
+    List<Strategy> queryStrategy(QueryWrapper<Strategy> query);
+    int updateStrategy(Strategy strategy);
+    int delBatchStrategy(List<Integer> ids);
 }

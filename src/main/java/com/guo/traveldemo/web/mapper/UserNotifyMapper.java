@@ -25,6 +25,6 @@ public interface UserNotifyMapper extends BaseMapper<UserNotify> {
     @Select("select count(*) from user_notify where user_id=#{user_id} and readflag=1")
     int getMsgCountByUserId(@Param("user_id") int id);
 
-    @Select("select user_notify.notify_id from user_notify where user_id=#{user_id} and readflag=#{readflag}")
-    List<Integer> queryMsg(@Param("user_id") int id,@Param("readflag")Byte readflag);
+    @Select("select * from user_notify where user_id=#{user_id} and readflag=#{readflag} order by create_time desc")
+    List<UserNotify> queryMsg(@Param("user_id") int id,@Param("readflag")Byte readflag);
 }

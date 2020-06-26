@@ -1,7 +1,7 @@
 /**
 
  @Name：layuiAdmin 内容系统
- @Author：star1029
+ @Author：guohongming
  @Site：http://www.layui.com/admin/
  @License：LPPL
 
@@ -13,17 +13,17 @@ layui.define(['table', 'form'], function (exports) {
         , admin = layui.admin;
 
 
-    //文章管理
+    //攻略管理
     table.render({
         elem: '#LAY-app-content-list'
-        , url: '/recommend/table-data?role=administrator' //模拟接口
+        , url: '/admin/strategy-data' //模拟接口
         , cols: [[
             {type: 'checkbox', fixed: 'left'}
             , {field: 'id', width: 100, title: '文章ID', sort: true}
             // ,{field: 'label', title: '文章标签', minWidth: 100}
             , {field: 'title', title: '文章标题'}
-            // ,{field: 'author', title: '作者'}
-            , {field: 'createTime', title: '上传时间', sort: true}
+            ,{field: 'userId', title: '作者ID'}
+            , {field: 'date', title: '上传时间', sort: true}
             , {field: 'pushFlag', title: '发布状态', templet: '#buttonTpl', minWidth: 80, align: 'center'}
             , {title: '操作', minWidth: 150, align: 'center', fixed: 'right', toolbar: '#table-content-list'}
         ]]
@@ -45,7 +45,7 @@ layui.define(['table', 'form'], function (exports) {
                 var arr = [];
                 arr.push(obj.data);
                 admin.req({
-                    url: '/recommend/batch-delete'
+                    url: '/admin/strateBatchdelete'
                     , type: 'post'
                     , contentType: 'application/json'
                     , data: JSON.stringify(arr)
@@ -53,65 +53,153 @@ layui.define(['table', 'form'], function (exports) {
                 layer.close(index);
             });
         } else if (obj.event === 'edit') {
-            layer.open({
-                type: 2
-                , title: '编辑文章'
-                , content: '/recommend/add-page'
-                , maxmin: true
-                , area: ['700px', '600px']
-                , btn: ['确定', '取消']
-                , yes: function (index, layero) {
-                    var iframeWindow = window['layui-layer-iframe' + index]
-                        , submit = layero.find('iframe').contents().find("#layuiadmin-app-form-edit");
-
-                    //监听提交
-                    iframeWindow.layui.form.on('submit(layuiadmin-app-form-edit)', function (data) {
-                        var field = data.field; //获取提交的字段
-
-                        if (field.pushFlag === "on") {
-                            field.pushFlag = "1";
-                        } else {
-                            field.pushFlag = "0";
-                        }
-
-                        field.id = obj.data.id;
-
-                        //提交 Ajax 成功后，静态更新表格中的数据
-                        $.ajax({
-                            url: "/recommend/modify"
-                            , type: "post"
-                            , data: field
-                        });
-                        obj.update({
-                            title: field.title
-                            , pushFlag: field.pushFlag
-                            , content: field.content
-                        }); //数据更新
-
-                        form.render();
-                        layer.close(index); //关闭弹层
-                    });
-
-                    submit.trigger('click');
-                }, success: function (layero, index) {
-                    // 表单赋值
-                    var contents = layero.find('iframe').contents().find("#layuiadmin-app-form-list");
-                    // 标题赋值
-                    contents.find("#title").val(data.title);
-                    // 头图赋值
-                    contents.find("#LAY_headImgSrc").val(data.headImgUrl);
-                    // 内容赋值
-                    contents.find("#content").html(data.content);
-                    // 发布状态赋值
-                    var switchButton = contents.find("#pushFlag");
-                    if (data.pushFlag === 1) {
-                        switchButton.attr("checked", "checked");
-                    }
-                }
-            });
+            var id = obj.data.id;
+        }
+    });
+    //问答管理
+    table.render({
+        elem: '#LAY-app-question-list'
+        , url: '/admin/question-data' //模拟接口
+        , cols: [[
+            {type: 'checkbox', fixed: 'left'}
+            , {field: 'id', width: 100, title: '文章ID', sort: true}
+            // ,{field: 'label', title: '文章标签', minWidth: 100}
+            , {field: 'title', title: '标题'}
+            ,{field: 'userId', title: '作者ID'}
+            , {field: 'date', title: '上传时间', sort: true}
+            , {field: 'pushFlag', title: '问题状态', templet: '#buttonTpl', minWidth: 80, align: 'center'}
+            , {title: '操作', minWidth: 150, align: 'center', fixed: 'right', toolbar: '#table-question-list'}
+        ]]
+        , page: true
+        , limit: 10
+        , limits: [10, 15, 20, 25, 30]
+        , text: {
+            none: "搜索的内容不存在"
         }
     });
 
+    //监听工具条
+    table.on('tool(LAY-app-question-list)', function (obj) {
+        var data = obj.data;
+
+        if (obj.event === 'del') {
+            layer.confirm('确定删除此问答？', function (index) {
+                obj.del();
+                var arr = [];
+                arr.push(obj.data);
+                admin.req({
+                    url: '/admin/questionBatchdel'
+                    , type: 'post'
+                    , contentType: 'application/json'
+                    , data: JSON.stringify(arr)
+                });
+                layer.close(index);
+            });
+        } else if (obj.event === 'edit') {
+            var id = obj.data.id;
+        }
+    });
+    //小组审核
+    table.render({
+        elem: '#LAY-app-group-list'
+        , url: '/admin/groupReview-data' //模拟接口
+        , cols: [[
+            {type: 'checkbox', fixed: 'left'}
+            , {field: 'id', width: 100, title: '小组ID', sort: true}
+            // ,{field: 'label', title: '文章标签', minWidth: 100}
+            , {field: 'title', title: '标题'}
+            ,{field: 'userId', title: '作者ID'}
+            , {field: 'date', title: '创建时间', sort: true}
+            ,{field: 'content', title: '作者ID'}
+            , {title: '操作', minWidth: 150, align: 'center', fixed: 'right', toolbar: '#table-group-list'}
+        ]]
+        , page: true
+        , limit: 10
+        , limits: [10, 15, 20, 25, 30]
+        , text: {
+            none: "无审核小组"
+        }
+    });
+
+    //监听工具条
+    table.on('tool(LAY-app-group-list)', function (obj) {
+        var data = obj.data;
+
+        if (obj.event === 'acpt') {
+            layer.confirm('审核通过确认？', function (index) {
+                obj.del();
+                admin.req({
+                    url: '/admin/shenhe'
+                    , type: 'post'
+                    , data: {'id':data.id,'flag':'1'}
+                });
+                layer.close(index);
+            });
+        }
+        if (obj.event === 'reject') {
+            layer.confirm('审核驳回确认？', function (index) {
+                obj.del();
+                admin.req({
+                    url: '/admin/shenhe'
+                    , type: 'post'
+                    , data: {'id':data.id,'flag':'0'}
+                });
+                layer.close(index);
+            });
+        }
+    });
+    //用户管理
+    table.render({
+        elem: '#LAY-app-userinfo-list'
+        , url: '/admin/userinfo-data' //模拟接口
+        , cols: [[
+            {type: 'checkbox', fixed: 'left'}
+            , {field: 'id', width: 100, title: '用户ID', sort: true}
+            // ,{field: 'label', title: '文章标签', minWidth: 100}
+            , {field: 'name', title: '昵称'}
+            ,{field: 'email', title: '邮箱'}
+            , {field: 'sex', title: '性别', templet: '#buttonTpl', minWidth: 80, align: 'center'}
+            , {field: 'role', title: '角色', templet: '#buttonTp2', minWidth: 80, align: 'center'}
+            , {field: 'date', title: '创建时间', sort: true}
+            , {title: '操作', minWidth: 150, align: 'center', fixed: 'right', toolbar: '#table-userinfo-list'}
+        ]]
+        , page: true
+        , limit: 10
+        , limits: [10, 15, 20, 25, 30]
+        , text: {
+            none: "搜索结果为空"
+        }
+    });
+
+    //监听工具条
+    table.on('tool(LAY-app-userinfo-list)', function (obj) {
+        var data = obj.data;
+
+        if (obj.event === 'lookpassword') {
+            layer.open({
+                title: '密码'
+                ,content: data.password
+            });
+
+        }
+        if (obj.event === 'edit') {
+
+        }
+        if (obj.event === 'del') {
+            layer.confirm('确认删除选中用户？', function (index) {
+                obj.del();
+                var arr = [];
+                arr.push(obj.data);
+                admin.req({
+                    url: '/admin/delBatchuser'
+                    , type: 'post'
+                    , contentType: 'application/json'
+                    , data: JSON.stringify(arr)
+                });
+                layer.close(index);
+            });
+        }
+    });
     //分类管理
     table.render({
         elem: '#LAY-app-content-tags'
@@ -124,7 +212,6 @@ layui.define(['table', 'form'], function (exports) {
         ]]
         , text: '对不起，加载出现异常！'
     });
-
     //监听工具条
     table.on('tool(LAY-app-content-tags)', function (obj) {
         var data = obj.data;

@@ -1,10 +1,11 @@
 package com.guo.traveldemo.web.mapper;
 
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.guo.traveldemo.web.pojo.GroupType;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface GroupTypeMapper {
+public interface GroupTypeMapper extends BaseMapper<GroupType> {
     int deleteByPrimaryKey(Integer id);
 
     int insert(GroupType record);

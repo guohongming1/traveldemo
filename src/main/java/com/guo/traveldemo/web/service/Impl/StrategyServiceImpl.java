@@ -18,9 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
@@ -45,6 +43,8 @@ public class StrategyServiceImpl implements StrategyService {
     private StrategyDetailMapper strategyDetailMapper;
     @Autowired
     private CollectMapper collectMapper;
+    @Autowired
+    private StrategyCommentMapper strategyCommentMapper;
 
     /**
      * 发表游记
@@ -69,6 +69,7 @@ public class StrategyServiceImpl implements StrategyService {
                 strategyDetail.setRouteId(route1.getId());
                 strategyDetailMapper.insertSelective(strategyDetail);
                 strategy.setDetailId(strategyDetail.getId());
+                strategy.setDelFlag((byte)0);
                 strategyMapper.insertSelective(strategy);
             }
         }
@@ -103,6 +104,7 @@ public class StrategyServiceImpl implements StrategyService {
                     strategyDetail.setRouteId(route1.getId());
                     strategyDetailMapper.insertSelective(strategyDetail);
                     strategy.setDetailId(strategyDetail.getId());
+                    strategy.setDelFlag((byte)0);
                     strategyMapper.insertSelective(strategy);
                 }
             }
@@ -110,7 +112,7 @@ public class StrategyServiceImpl implements StrategyService {
             // 执行更新
             strategy.setDetailId(recod.getDetailId());
             strategy.setId(recod.getId());
-            strategyMapper.updateByPrimaryKey(strategy);
+            strategyMapper.updateByPrimaryKeySelective(strategy);
             StrategyDetail detail = strategyDetailMapper.selectByPrimaryKey(recod.getDetailId());
             detail.setContent(content);
             strategyDetailMapper.updateByPrimaryKeySelective(detail);
@@ -119,7 +121,7 @@ public class StrategyServiceImpl implements StrategyService {
             TravelTable travelTable1 = travelTableMapper.selectByPrimaryKey(detail.getTableId());
             travelTable.setId(travelTable1.getId());
             travelTable.setStraDeId(travelTable1.getStraDeId());
-            travelTableMapper.updateByPrimaryKey(travelTable);
+            travelTableMapper.updateByPrimaryKeySelective(travelTable);
             routeMapper.updateByPrimaryKey(routeT);
         }
         return Response.success("成功");
@@ -132,7 +134,11 @@ public class StrategyServiceImpl implements StrategyService {
      */
     @Override
     public Strategy selectStrategyById(int id) {
-        return strategyMapper.selectByPrimaryKey(id);
+        QueryWrapper<Strategy> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("id",id);
+        queryWrapper.eq("del_flag",(byte)0);
+        List<Strategy> list = strategyMapper.selectList(queryWrapper);
+        return (list==null||list.size()==0) ? null:list.get(0);
     }
 
     /**
@@ -149,7 +155,20 @@ public class StrategyServiceImpl implements StrategyService {
         IPage<Strategy> pageVo = strategyMapper.selectPageVo(pageHelper,address);
         return pageVo.getRecords();
     }
-
+    /**
+     * 后台获取攻略
+     */
+    @Override
+    public List<Strategy> adminGetList(int limit,int page,String title){
+        Page<Strategy> pageHelper = new Page<>();
+        pageHelper.setCurrent(page);
+        pageHelper.setSize(limit);
+        IPage<Strategy> pageVo = strategyMapper.admidSelectPageVo(pageHelper,title);
+        return pageVo.getRecords();
+    }
+    public int getCount(){
+        return strategyMapper.selectCount(new QueryWrapper<Strategy>());
+    }
     /**
      * 获取未发表攻略
      * @param userId
@@ -159,6 +178,7 @@ public class StrategyServiceImpl implements StrategyService {
         QueryWrapper<Strategy> query = new QueryWrapper<>();
         query.eq("user_id",userId);
         query.eq("push_flag", Constants.PUSH_NO);
+        query.eq("del_flag",(byte)0);
         Strategy strategy = strategyMapper.selectOne(query);
         if(null == strategy){
             return Response.fail(CodeMsg.FAIL);
@@ -204,7 +224,56 @@ public class StrategyServiceImpl implements StrategyService {
     public List<Strategy> getStrategyByUserId(int id){
         QueryWrapper<Strategy> query = new QueryWrapper<>();
         query.eq("user_id",id);
+        query.eq("del_flag",(byte)0);
         return strategyMapper.selectList(query);
+    }
+
+    /**
+     * 根据条件获取攻略
+     * @param query
+     * @return
+     */
+    @Override
+    public List<Strategy> queryStrategy(QueryWrapper<Strategy> query){
+        return strategyMapper.selectList(query);
+    }
+
+    /**
+     * 更新攻略表
+     * @param strategy
+     * @return
+     */
+    public int updateStrategy(Strategy strategy){
+        return strategyMapper.updateByPrimaryKeySelective(strategy);
+    }
+
+    /**
+     * 批次删除
+     * @param ids
+     * @return
+     */
+    @Transactional
+    public int delBatchStrategy(List<Integer> ids){
+        ids.forEach(item->{
+            Strategy strategy = strategyMapper.selectByPrimaryKey(item);
+            if(strategy != null){
+                // 删除明细 路线 攻略报表
+                StrategyDetail strategyDetail = strategyDetailMapper.selectByPrimaryKey(strategy.getDetailId());
+                if(!Objects.isNull(strategyDetail.getRouteId())){
+                    routeMapper.deleteByPrimaryKey(strategyDetail.getRouteId());
+                }
+                if(!Objects.isNull(strategyDetail.getTableId())){
+                    travelTableMapper.deleteByPrimaryKey(strategyDetail.getTableId());
+                }
+                // 删除评论
+                strategyCommentMapper.delCommentByStrategyId(strategyDetail.getId());
+                strategyDetailMapper.deleteByPrimaryKey(strategyDetail.getId());
+            }
+        });
+        if(ids!=null && ids.size()>0){
+            return strategyMapper.deleteBatchIds(ids);
+        }
+        return 0;
     }
 
 }

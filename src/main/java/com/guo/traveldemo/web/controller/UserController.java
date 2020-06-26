@@ -2,11 +2,13 @@ package com.guo.traveldemo.web.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.guo.traveldemo.cache.CollectionKey;
+import com.guo.traveldemo.common.exception.GlobalException;
 import com.guo.traveldemo.constants.Constants;
 import com.guo.traveldemo.result.CodeMsg;
 import com.guo.traveldemo.result.Response;
 import com.guo.traveldemo.web.dto.StrategyDTO;
 import com.guo.traveldemo.web.dto.UserDTO;
+import com.guo.traveldemo.web.mapper.CollectMapper;
 import com.guo.traveldemo.web.pojo.Collect;
 import com.guo.traveldemo.web.pojo.Notify;
 import com.guo.traveldemo.web.pojo.Strategy;
@@ -19,6 +21,7 @@ import com.guo.traveldemo.web.service.UserService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -45,6 +48,8 @@ public class UserController {
     private RedisService redisService;
     @Autowired
     private CommonServiceImpl commonService;
+    @Autowired
+    private CollectMapper collectMapper;
 
     /**
      * 用户注册
@@ -59,6 +64,22 @@ public class UserController {
             return Response.fail(CodeMsg.USER_NULL);
         }
        return  userService.register(user, vercode);
+    }
+
+    /**
+     * 发送邮箱随机数
+     *
+     * @return
+     */
+    @PostMapping("email-send")
+    @ResponseBody
+    public Response<Boolean> emailSend(String email, String mode) {
+        // 邮箱为空
+        if (StringUtils.isEmpty(email)) {
+            return Response.fail(CodeMsg.MAIL_NULL);
+        }
+
+        return userService.sendVercode(email, mode);
     }
 
     /*
@@ -145,6 +166,24 @@ public class UserController {
            return Response.success("旧密码错误");
        }
     }
+
+    /**
+     * 忘记密码
+     */
+    @PostMapping("/forgetpass")
+    @ResponseBody
+    public Response<String> forgetpass(User user,String vercode){
+        if (StringUtils.isEmpty(user.getEmail()) || StringUtils.isEmpty(user.getPassword())) {
+            return Response.fail(CodeMsg.FAIL);
+        }
+       return userService.forgetpass(user,vercode);
+    }
+    /**
+     * 修改头像
+     * @param session
+     * @param userHeadImgSrc
+     * @return
+     */
     @PostMapping("/reheadimg")
     @ResponseBody
     public Response<String> reheadimg(HttpSession session, String userHeadImgSrc){
@@ -218,7 +257,7 @@ public class UserController {
         User user = (User)session.getAttribute("userinfo");
         if(user != null){
             // 组装消息
-            String msg = "<a href='/userinfo?id="+user.getId()+"'><cite>"+user.getName()+"</cite></a>"+"向您发送了一条信息:"+content;
+            String msg = "<a href='/front/userInfo?id="+user.getId()+"'><cite>"+user.getName()+"</cite></a>"+"向您发送了一条信息:"+content;
            return messageService.sendMsg(user.getId(),acpter,msg);
         }
         return Response.fail(CodeMsg.FAIL);
@@ -248,6 +287,58 @@ public class UserController {
         return Response.success(map);
     }
 
+    /**
+     * 删除攻略  非物理删除
+     * @param session
+     * @param id
+     * @return
+     */
+    @PostMapping("/delOneStrategy")
+    @ResponseBody
+    public Response<String> delOneStrategy(HttpSession session,int id){
+        User sessionuser = (User)session.getAttribute("userinfo");
+        QueryWrapper<Strategy> query = new QueryWrapper<>();
+        query.eq("user_id",sessionuser.getId());
+        query.eq("id",id);
+        query.eq("del_flag",(byte)0);
+        List<Strategy> list = strategyService.queryStrategy(query);
+        if(list != null && list.size() >0){
+             Strategy strategy = new Strategy();
+             strategy.setId(list.get(0).getId());
+             strategy.setDelFlag((byte)1);
+             if(redisService.delHot(id,Constants.ESSAY_HOT_NAME)){
+                 if(strategyService.updateStrategy(strategy)>0){
+                     // 删除热度
+                     redisService.delHot(strategy.getId(),Constants.ESSAY_HOT_NAME);
+                     return Response.success("成功");
+                 }
+             }
+        }
+        return Response.fail(CodeMsg.FAIL);
+    }
+
+    /**
+     * 删除攻略收藏 物理删除
+     * @param session
+     * @param id
+     * @return
+     */
+    @PostMapping("/delstraCol")
+    @ResponseBody
+     public Response<String> delstraCol(HttpSession session,int id){
+        User sessionuser = (User)session.getAttribute("userinfo");
+        if(sessionuser != null){
+            if(collectMapper.deleteByPrimaryKey(id)>0){
+                return Response.success("成功");
+            }
+        }
+        return Response.fail(CodeMsg.FAIL);
+     }
+    /**
+     * 封装攻略DTO
+     * @param list
+     * @return
+     */
     public List<StrategyDTO> queryList(List<Strategy> list){
         List<StrategyDTO> result = new ArrayList<>();
         for(int i=0;i<list.size();i++){

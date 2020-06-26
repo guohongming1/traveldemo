@@ -36,7 +36,7 @@
       #{imgUrl,jdbcType=VARCHAR}, #{commentNum,jdbcType=INTEGER}, #{flag,jdbcType=TINYINT}, 
       #{date,jdbcType=TIMESTAMP})
   </insert>
-  <insert id="insertSelective" parameterType="com.guo.traveldemo.web.pojo.Question" >
+  <insert id="insertSelective" parameterType="com.guo.traveldemo.web.pojo.Question"  useGeneratedKeys="true" keyProperty="id" >
     insert into question
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="id != null" >
@@ -149,4 +149,20 @@
       date = #{date,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=INTEGER}
   </update>
+  <select id="selectPageVo" resultMap="BaseResultMap">
+    select * from question
+    <where>
+      <if test="flag != null">
+         flag = #{flag}
+      </if>
+      <if test="flag == null">
+        (flag = 1 or flag = 2)
+      </if>
+      <if test="title != null">
+         and (address like CONCAT(CONCAT('%',#{title}),'%')
+         or title like CONCAT(CONCAT('%',#{title}),'%'))
+      </if>
+    </where>
+    order by date desc
+  </select>
 </mapper>

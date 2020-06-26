@@ -1,0 +1,41 @@
+Manifest-Version: 1.0
+Class-Path: classmate-1.3.4.jar j2objc-annotations-1.1.jar spring-web-
+ 4.3.20.RELEASE.jar mybatis-plus-core-3.0.3.jar spring-context-support
+ -4.3.20.RELEASE.jar tomcat-juli-8.5.34.jar thymeleaf-2.1.6.RELEASE.ja
+ r spring-aop-4.3.20.RELEASE.jar fastjson-1.2.47.jar mybatis-plus-boot
+ -starter-3.0.3.jar ognl-3.0.8.jar tomcat-embed-el-8.5.34.jar spring-b
+ oot-starter-1.5.17.RELEASE.jar spring-core-4.3.20.RELEASE.jar jsr305-
+ 3.0.2.jar spring-jdbc-4.3.20.RELEASE.jar mybatis-spring-1.3.2.jar gro
+ ovy-2.4.15.jar error_prone_annotations-2.2.0.jar checker-qual-2.5.2.j
+ ar mybatis-plus-extension-3.0.3.jar jackson-annotations-2.8.0.jar jul
+ -to-slf4j-1.7.25.jar tomcat-annotations-api-8.5.34.jar javassist-3.21
+ .0-GA.jar commons-io-2.5.jar mybatis-generator-core-1.3.6.jar spring-
+ expression-4.3.20.RELEASE.jar spring-boot-starter-thymeleaf-1.5.17.RE
+ LEASE.jar jsqlparser-1.2.jar spring-boot-starter-jdbc-1.5.17.RELEASE.
+ jar javax.mail-1.5.6.jar spring-webmvc-4.3.20.RELEASE.jar slf4j-api-1
+ .7.25.jar spring-data-redis-1.8.16.RELEASE.jar spring-boot-starter-lo
+ gging-1.5.17.RELEASE.jar spring-boot-1.5.17.RELEASE.jar logback-core-
+ 1.1.11.jar mybatis-plus-3.0.3.jar tomcat-embed-core-8.5.34.jar animal
+ -sniffer-annotations-1.17.jar jackson-databind-2.8.11.2.jar spring-bo
+ ot-starter-data-redis-1.5.17.RELEASE.jar commons-pool2-2.4.3.jar thym
+ eleaf-spring4-2.1.6.RELEASE.jar mybatis-plus-annotation-3.0.3.jar mys
+ ql-connector-java-8.0.15.jar spring-boot-autoconfigure-1.5.17.RELEASE
+ .jar druid-1.1.9.jar spring-data-commons-1.13.16.RELEASE.jar snakeyam
+ l-1.17.jar spring-context-4.3.20.RELEASE.jar spring-oxm-4.3.20.RELEAS
+ E.jar jackson-core-2.8.11.jar mybatis-3.4.6.jar listenablefuture-9999
+ .0-empty-to-avoid-conflict-with-guava.jar protobuf-java-3.6.1.jar val
+ idation-api-1.1.0.Final.jar spring-boot-configuration-processor-1.5.1
+ 7.RELEASE.jar druid-spring-boot-starter-1.1.9.jar spring-data-keyvalu
+ e-1.2.16.RELEASE.jar spring-boot-devtools-1.5.17.RELEASE.jar spring-t
+ x-4.3.20.RELEASE.jar failureaccess-1.0.1.jar spring-beans-4.3.20.RELE
+ ASE.jar hibernate-validator-5.3.6.Final.jar jedis-2.9.0.jar nekohtml-
+ 1.9.22.jar spring-boot-starter-mail-1.5.17.RELEASE.jar logback-classi
+ c-1.1.11.jar guava-27.0.1-jre.jar xercesImpl-2.11.0.jar jcl-over-slf4
+ j-1.7.25.jar spring-boot-starter-web-1.5.17.RELEASE.jar mybatis-plus-
+ generator-3.0.3.jar log4j-over-slf4j-1.7.25.jar thymeleaf-layout-dial
+ ect-1.4.0.jar tomcat-jdbc-8.5.34.jar xml-apis-1.4.01.jar jboss-loggin
+ g-3.3.2.Final.jar unbescape-1.1.0.RELEASE.jar spring-boot-starter-tom
+ cat-1.5.17.RELEASE.jar tomcat-embed-websocket-8.5.34.jar activation-1
+ .1.jar commons-fileupload-1.3.1.jar
+Main-Class: com.guo.traveldemo.TraveldemoApplication
+

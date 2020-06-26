@@ -22,6 +22,10 @@
     delete from strategy_comment
     where id = #{id,jdbcType=INTEGER}
   </delete>
+  <delete id="delCommentByStrategyId" parameterType="java.lang.Integer" >
+    delete from strategy_comment
+    where stra_de_id = #{id,jdbcType=INTEGER}
+  </delete>
   <insert id="insert" parameterType="com.guo.traveldemo.web.pojo.StrategyComment" >
     insert into strategy_comment (id, stra_de_id, user_id, 
       content, reply, date

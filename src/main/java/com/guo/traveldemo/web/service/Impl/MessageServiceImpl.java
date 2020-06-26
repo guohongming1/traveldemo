@@ -94,45 +94,45 @@ public class MessageServiceImpl implements MessageService {
         // 话题消息 只包括评论和收藏
         if(Constants.TOPIC_MSG == targetType){
             int acpt_id;
-            acpt_id = topicMapper.selectByPrimaryKey(target).getId();
+            acpt_id = topicMapper.selectByPrimaryKey(target).getUserId();
             // 用户接收消息
-            if(this.queryMsgFlag(acpt_id,target,targetType,action)<= 0){
+            if(acpt_id != sender && this.queryMsgFlag(acpt_id,target,targetType,action)<= 0){
                 list.add(acpt_id);
             }
         }
         // 问答消息 问答消息会同步推送给关注该问答的所有用户
         if(Constants.QUESTION_MSG == targetType){
-            // 评论或者收藏消息
+            // 评论或者收藏消息  //收藏消息已经采用私信方式通知
             if(Constants.COM_MSG == action || Constants.COLLECT_MSG == action){
                 int author_id;//作者id
-                author_id = questionMapper.selectByPrimaryKey(target).getId();
-                if(!(this.queryMsgFlag(author_id,target,targetType,action)> 0)){
+                author_id = questionMapper.selectByPrimaryKey(target).getUserId();
+                if(!(this.queryMsgFlag(author_id,target,targetType,action)> 0)&&author_id != sender){
                     list.add(author_id);
                 }
                 // 查询关注的用户
                 QueryWrapper<Collect> query = new QueryWrapper<>();
-                query.eq("type",Constants.STRATEGY_MSG);
+                query.eq("type",(byte)2);// 问答收藏
                 query.eq("pro_id",target);
                 query.eq("flag",Constants.ACPT);
                 List<Collect> collectList = collectMapper.selectList(query);
                 //循环获取需要接收消息的用户
                 for(Collect co:collectList){
-                    if(co.getUserId() != sender){
+                    if(co.getUserId() != sender){  //// 不许要向发送者再次发送消息
                         list.add(co.getUserId());
                     }
                 }
             }
             // 问题解决消息 向所有关注问题的用户发送消息
-            if(Constants.QUESTION_FIN_MSG == targetType){
+            if(Constants.QUESTION_FIN_MSG == action){
                 // 查询关注的用户
                 QueryWrapper<Collect> query = new QueryWrapper<>();
-                query.eq("type",Constants.STRATEGY_MSG);
+                query.eq("type",(byte)2);
                 query.eq("pro_id",target);
                 query.eq("flag",Constants.ACPT);
                 List<Collect> collectList = collectMapper.selectList(query);
                 //循环获取需要接收消息的用户
                 for(Collect co:collectList){
-                    if(co.getUserId() != sender){
+                    if(co.getUserId() != sender){ // 不许要向发送者再次发送消息
                         list.add(co.getUserId());
                     }
                 }
@@ -201,11 +201,12 @@ public class MessageServiceImpl implements MessageService {
     @Override
     public List<Notify> queryUserAcptMsg(int userId){
        List<Notify> msgResults = new ArrayList<Notify>();
-       List<Integer> notifyList = userNotifyMapper.queryMsg(userId,Constants.ACPT);
-       for(int i:notifyList){
-           Notify notify = notifyMapper.selectByPrimaryKey(i);
-           msgResults.add(notify);
-       }
+        List<UserNotify> notifyList = userNotifyMapper.queryMsg(userId,Constants.ACPT);
+        for(UserNotify i:notifyList){
+            Notify notify = notifyMapper.selectByPrimaryKey(i.getNotifyId());
+            notify.setId(i.getId()); // 将notify的id改为usernotify的id
+            msgResults.add(notify);
+        }
        return msgResults;
     }
     /**
@@ -217,10 +218,10 @@ public class MessageServiceImpl implements MessageService {
     @Override
     public List<Notify> queryUserREJECTMsg(int userId){
         List<Notify> msgResults = new ArrayList<Notify>();
-        List<Integer> notifyList = userNotifyMapper.queryMsg(userId,Constants.ACPT);
-        for(int i:notifyList){
-            Notify notify = notifyMapper.selectByPrimaryKey(i);
-            notify.setId(i); // 将notify的id改为usernotify的id
+        List<UserNotify> notifyList = userNotifyMapper.queryMsg(userId,Constants.ACPT);
+        for(UserNotify i:notifyList){
+            Notify notify = notifyMapper.selectByPrimaryKey(i.getNotifyId());
+            notify.setId(i.getId()); // 将notify的id改为usernotify的id
             msgResults.add(notify);
         }
         return msgResults;
@@ -260,6 +261,23 @@ public class MessageServiceImpl implements MessageService {
             i++;
         }
         return i;
+    }
+
+    @Override
+    public List<UserNotify> queryUserNotify(QueryWrapper<UserNotify> query) {
+        return userNotifyMapper.selectList(query);
+    }
+
+    @Override
+    public int delNotifyById(int id) {
+        return notifyMapper.deleteByPrimaryKey(id);
+    }
+
+    public int delBatchUserNotify(List<Integer> ids){
+        if(ids != null && ids.size()>0){
+            return userNotifyMapper.deleteBatchIds(ids);
+        }
+        return 0;
     }
 
     /**

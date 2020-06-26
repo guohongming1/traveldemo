@@ -26,7 +26,7 @@ public class Question {
 
     private Byte flag;
 
-    @JSONField(format = "yyyy-MM-dd HH:mm:ss")
+    @JSONField(format = "yyyy-MM-dd")
     private Date date;
 
     public Integer getId() {

@@ -1,7 +1,10 @@
 package com.guo.traveldemo.web.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.guo.traveldemo.web.pojo.Topic;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
 @Repository
@@ -17,4 +20,6 @@ public interface TopicMapper extends BaseMapper<Topic> {
     int updateByPrimaryKeySelective(Topic record);
 
     int updateByPrimaryKey(Topic record);
+
+    IPage<Topic> selectPageVo(Page page, @Param("address")String address);
 }

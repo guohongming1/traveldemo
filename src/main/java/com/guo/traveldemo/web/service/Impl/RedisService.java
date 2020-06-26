@@ -65,7 +65,39 @@ public class RedisService {
     }
   }
 
-  //获取前十的对应id
+  /**
+   * 问答排名
+   * @param id
+   * @param type
+   */
+  public void addQuestionCommentNum(Integer id,String type){
+    Long value = redisUtil.getHotScore("article-id:"+id+":num",type);
+    if(value == null){
+      redisUtil.sortSetAdd(type,"article-id:" + id + ":num",1);
+    }else{
+      redisUtil.sortSetZincrby(type,"article-id:" + id + ":num",1);
+    }
+  }
+
+  /**
+   * 去除热度值
+   * @param id
+   * @param type
+   * @return
+   */
+  public boolean delHot(int id,String type){
+    Long value = redisUtil.getHotScore("article-id:"+id+":num",type);
+    if(value == null){
+      return true;
+    }else{
+      return redisUtil.removeSetRang(type,"article-id:"+id+":num");
+    }
+  }
+  /**
+   * //获取前十的对应id
+   * @param type
+   * @return
+   */
   public List<Integer> getTopNum(String type){
     Set<String> keys = redisUtil.sortSetRange(type,0,9);
     List<Integer> list = new ArrayList<>();
@@ -100,6 +132,18 @@ public class RedisService {
       redisUtil.increment(key, "article-id:" + id + ":num", 1);
     } else {
       redisUtil.set(key, "article-id:" + id + ":num", 1);
+    }
+  }
+
+  /**
+   * 减少收藏/评论数目
+   * @param id
+   * @param key
+   */
+  public void reCollectOrCommentNum(Integer id, BasePrefix key){
+    Optional optional = Optional.ofNullable(redisUtil.get(key, "article-id:" + id + ":num"));
+    if (optional.isPresent()) {
+      redisUtil.increment(key, "article-id:" + id + ":num", -1);
     }
   }
 

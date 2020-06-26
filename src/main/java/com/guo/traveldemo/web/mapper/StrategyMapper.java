@@ -21,4 +21,6 @@ public interface StrategyMapper extends BaseMapper<Strategy> {
 
     int updateByPrimaryKey(Strategy record);
     IPage<Strategy> selectPageVo(Page page,@Param("address")String address);
+
+    IPage<Strategy> admidSelectPageVo(Page page,@Param("title")String title);
 }

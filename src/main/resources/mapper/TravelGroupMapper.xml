@@ -174,4 +174,11 @@
       date = #{date,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=INTEGER}
   </update>
+  <select id="selectPageVo" resultMap="BaseResultMap">
+    select * from travel_group
+    <if test="flag != null" >
+      where flag = #{flag,jdbcType=TINYINT}
+    </if>
+    order by topic_num desc
+  </select>
 </mapper>

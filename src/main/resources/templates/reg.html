@@ -36,7 +36,7 @@
                                placeholder="验证码" class="layui-input">
                     </div>
                     <div class="layui-col-xs5">
-                        <div style="margin-left: 10px;">
+                        <div style="margin-left: 10px;" id="getvercode">
                             <button type="button" class="layui-btn layui-btn-primary layui-btn-fluid"
                                     id="LAY-user-getsmscode">获取验证码
                             </button>
@@ -145,8 +145,10 @@
 
             }
         };
+        var time = 60;
 
         $('#LAY-user-getsmscode').on('click', function () {
+            var _this = $(this);
             var emailElem = $('#LAY-user-login-email');
             var email = emailElem.val();
             // 邮箱格式验证
@@ -154,28 +156,68 @@
                 emailElem.focus();
                 return layer.msg('请输入正确的邮箱');
             }
+            _this.attr("disabled", "true");
+            //按钮禁用
+            _this.addClass("layui-btn-disabled");
+            $("#LAY-user-getsmscode").html("正在发送....");
+                layer.msg('验证码已发送至你的邮箱，请注意在60秒内完成验证', {
+                    icon: 1
+                    , shade: 0
+                });
+                $('#LAY-user-login-vercode').focus();
+                _this.attr("disabled", "true");
+                //按钮禁用
+                _this.addClass("layui-btn-disabled");
+                countDown();
+                // success && success(res);
 
-            admin.req({
-                url: '/user/email-send'
-                , type: 'post'
-                , data: {email: email, mode: "register"}
-                , success: function (res) {
-                    if (res.code === 200) {
-                        layer.msg('验证码已发送至你的邮箱，请注意在60秒内完成验证', {
-                            icon: 1
-                            , shade: 0
-                        });
-                        $('#LAY-user-login-vercode').focus();
-                        // countDown();
-                        // success && success(res);
-                    } else {
-                        layer.msg(res.message);
-                    }
-                }
+            // admin.req({
+            //     url: '/user/email-send'
+            //     , type: 'post'
+            //     , data: {'email': email, 'mode': "register"}
+            //     , success: function (res) {
+            //         if (res.code === 200) {
+            //             layer.msg('验证码已发送至你的邮箱，请注意在60秒内完成验证', {
+            //                 icon: 1
+            //                 , shade: 0
+            //             });
+            //             $('#LAY-user-login-vercode').focus();
+            //             _this.attr("disabled", "true");
+            //             //按钮禁用
+            //             _this.addClass("layui-btn-disabled");
+            //             countDown();
+            //             // success && success(res);
+            //         } else {
+            //             layer.msg(res.message);
+            //         }
+            //     }
+            //     ,error:function () {
+            //         console.log("test")
+            //         _this.removeAttr("disabled");
+            //         _this.removeClass("layui-btn-disabled");
+            //         $("#LAY-user-getsmscode").html("重新发送");
+            //     }
 
-            });
+            // });
 
         })
+
+        function countDown() {
+            if(time==60){
+                var time1=setInterval(function(){
+                    if(time==0){
+                        $("#LAY-user-getsmscode").html("重新发送");
+                        $("#LAY-user-getsmscode").removeAttr("disabled");
+                        $("#LAY-user-getsmscode").removeClass("layui-btn-disabled");
+                        time=60;
+                        clearInterval(time1);
+                    }else{
+                        $("#LAY-user-getsmscode").html("重新发送("+time+")");
+                        time--;
+                    }
+                }, 1000);
+            }
+        }
 
     });
 </script>

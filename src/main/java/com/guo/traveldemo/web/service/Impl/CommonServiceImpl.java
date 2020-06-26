@@ -70,6 +70,16 @@ public class CommonServiceImpl{
         query.eq("type",type);
         return collectMapper.selectList(query);
     }
+    public Collect getCollect(int userId,byte type,int proId){
+        QueryWrapper<Collect> query = new QueryWrapper<>();
+        query.eq("user_id",userId);
+        query.eq("type",type);
+        query.eq("pro_id",proId);
+        return collectMapper.selectOne(query);
+    }
+    public int delCollect(int id){
+        return collectMapper.deleteByPrimaryKey(id);
+    }
     /**
      * 获取攻略评论
      * @param detailId

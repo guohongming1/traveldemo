@@ -48,7 +48,7 @@ public enum CodeMsg {
     /**
      * 缓存超过限时
      */
-    CODE_TIME_OUT(500008, "缓存失效"),
+    CODE_TIME_OUT(500008, "验证码失效"),
     /**
      * 验证码错误
      */

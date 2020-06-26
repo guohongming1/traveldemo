@@ -39,14 +39,17 @@ layui.define(['layer', 'laytpl', 'form', 'element', 'upload', 'util'],function(e
     $('body').on('blur', '.fxAnswer', function(){
         layui.sel = window.getSelection();
         layui.range = layui.sel.getRangeAt(0);
+        // :删除range的内容片段。
         layui.range.deleteContents();
     });
+    // 将html插入到富文本中
     layui.insertHtmlAtCaret = function(html){
         if (window.getSelection) {
             // IE9 and non-IE
             if (layui.sel.getRangeAt && layui.sel.rangeCount) {
                 var el = document.createElement("div");
                 el.innerHTML = html;
+                // 创建文档碎片节点
                 var frag = document.createDocumentFragment(), node, lastNode;
                 while ((node = el.firstChild)) {
                     lastNode = frag.appendChild(node);
@@ -54,10 +57,15 @@ layui.define(['layer', 'laytpl', 'form', 'element', 'upload', 'util'],function(e
                 layui.range.insertNode(frag);
                 // Preserve the selection
                 if (lastNode) {
+                    // 克隆一个range的内容片段。
                     layui.range = layui.range.cloneRange();
+                    // 把范围的开始点设置为紧邻指定的 lastNode 节点的位置。
                     layui.range.setStartAfter(lastNode);
+                    // 向边界点折叠range，即是设置光标位置，toStart默认为false，表示光标定位在节点末尾。true表示光标定位在节点起点。
                     layui.range.collapse(true);
+                    // 从当前selection对象中移除所有的range对象,取消所有的选择只 留下anchorNode 和focusNode属性并将其设置为null。
                     layui.sel.removeAllRanges();
+                    // 将一个范围添加到Selection对象中
                     layui.sel.addRange(layui.range);
                 }
             }

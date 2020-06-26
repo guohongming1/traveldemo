@@ -20,10 +20,10 @@
             </a>
         </h1>
         <p class="nav">
-            <a href="/front/page/index">首页</a>
-            <a href="/question/list-page">小组</a>
-            <a href="/travel-essay/list-page">问答</a>
-            <a href="/question/list-page">发表攻略</a>
+            <a href="/front/index" target="_blank">首页</a>
+            <a href="/front/group"  target="_blank">小组</a>
+            <a href="/front/question"  target="_blank">问答</a>
+            <a href="/front/newstrategy"  target="_blank">发表攻略</a>
         </p>
         <div class="search-bar">
             <form class="layui-form" action="">
@@ -37,21 +37,22 @@
             </form>
         </div>
         <div class="login">
-            <!--<a th:if="${session.sessionUser == null}" href="/front/page/login">-->
-            <!--登录-->
-            <!--</a>-->
+            <a th:if="${session.userinfo == null}" href="/front/login">
+                登录
+            </a>
             <!--<img th:src="@{/layuiadmin/myfile/images/header.png}" style="width: 36px; height: 36px;">-->
-            <ul class="layui-nav" style="background-color: #fff;">
+            <ul th:if="${session.userinfo != null}" class="layui-nav" style="background-color: #fff;">
+                <span id="user-id" style="display:none" th:text="${session.userinfo.getId()}"></span>
                 <li class="layui-nav-item">
-                    <a href="" style="font-size: 16px;color: #222;">消息<span class="layui-badge">3</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</a>
+                    <a href="/front/usermsg" style="font-size: 16px;color: #222;">消息<span th:text="${session.msgnum}" class="layui-badge"></span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</a>
                 </li>
                 <li class="layui-nav-item" lay-unselect="">
-                    <a href="javascript:;" style="font-size: 16px;color: #222;"><img th:src="@{/layuiadmin/myfile/images/test01.jpg}" style="height: 30px; width: 30px;" class="layui-nav-img">&nbsp;&nbsp;</a>
+                    <a href="javascript:;" style="font-size: 16px;color: #222;"><img th:src="${session.userinfo.getImgUrl()}" style="height: 30px; width: 30px;" class="layui-nav-img" onerror="getdefaultImg(event)">&nbsp;&nbsp;</a>
                     <dl class="layui-nav-child">
-                        <dd style="text-align: center"><a href="javascript:;"><i class="layui-icon layui-icon-user"></i>&nbsp;个人资料</a></dd>
-                        <dd style="text-align: center"><a href="javascript:;"><i class="layui-icon layui-icon-note"></i>&nbsp;攻略/问答</a></dd>
-                        <dd style="text-align: center"><a href="javascript:;"><i class="layui-icon layui-icon-rate"></i>&nbsp;收藏</a></dd>
-                        <dd style="text-align: center"><a href="javascript:;"><i class="layui-icon layui-icon-logout"></i>&nbsp;登出</a></dd>
+                        <dd style="text-align: center"><a href="/front/userset"><i class="layui-icon layui-icon-user"></i>&nbsp;个人资料</a></dd>
+                        <dd style="text-align: center"><a href="/front/userstrategy"><i class="layui-icon layui-icon-note"></i>&nbsp;攻略/问答</a></dd>
+                        <dd style="text-align: center"><a href="/front/usergroup"><i class="layui-icon layui-icon-rate"></i>&nbsp;小组</a></dd>
+                        <dd layadmin-event="logout" style="text-align: center"><a href="javascript:;"><i class="layui-icon layui-icon-logout"></i>&nbsp;登出</a></dd>
                     </dl>
                 </li>
             </ul>
@@ -146,35 +147,36 @@
     <div class="layui-row layui-col-space15">
         <div class="layui-col-md8 content detail">
             <div class="fly-panel detail-box">
-                <h1>Fly Template v3.0，基于 layui 的极简社区页面模版</h1>
+                <h1 th:text="${question.getTitle()}"></h1>
+                <span id="question-id" th:attr="data-id=${question.getId()}"></span>
                 <div class="fly-detail-info">
-                    <span class="layui-badge layui-bg-red">置顶</span>
-                    <span class="layui-badge" style="background-color: #999;">未结</span>
-                    <span class="layui-badge" style="background-color: #999;">未结</span>
-                    <span class="layui-badge" style="background-color: #999;">未结</span>
+                    <!--<span class="layui-badge layui-bg-red">置顶</span>-->
+                    <span class="layui-badge" style="background-color: #999;" th:text="${question.getTags()}"></span>
+                    <!--<span class="layui-badge" style="background-color: #999;">未结</span>-->
+                    <!--<span class="layui-badge" style="background-color: #999;">未结</span>-->
                     <span class="fly-list-nums">
-                         <a href="#comment"><i class="layui-icon layui-icon-dialogue"></i>66</a>
-                         <i class="layui-icon layui-icon-fire"></i> 999
+                         <a href="#comment"><i class="layui-icon layui-icon-dialogue"></i><span style="margin-left: 2px" th:text="${question.getCommentNum()}"></span></a>
+                         <i class="layui-icon layui-icon-fire"></i><span style="margin-left: 2px;margin-right: 3px;" th:text="${question.getHotNum()}" title="热度"></span>
+                         <i class="layui-icon layui-icon-star collect" title="收藏" th:if="${colstate == '1' }"></i>
+                         <i class="layui-icon layui-icon-star-fill" title="收藏" th:if="${colstate == '2' }"></i>
                     </span>
                 </div>
                 <div class="detail-about">
                     <a class="fly-avatar" href="#">
-                        <img src="https://tva1.sinaimg.cn/crop.0.0.118.118.180/5db11ff4gw1e77d3nqrv8j203b03cweg.jpg" alt="贤心">
+                        <img th:src="${question.getImgUrl()}" alt="">
                     </a>
-                    <div class="fly-detail-user">
-                        <a href="../user/home.html" class="fly-link">
-                            <cite>贤心</cite>
+                    <div class="fly-detail-user" id="authorId" th:attr="data-id=${question.getUserId()}">
+                        <a th:href="'/front/userInfo?id='+${question.getUserId()}" class="fly-link">
+                            <cite th:text="${question.getUserName()}"></cite>
                         </a>
-                        <span>2017-11-30</span>
+                        <span th:text="${#dates.format(question.getDate(),'yyyy-MM-dd')}"></span>
                     </div>
                     <div class="detail-hits" id="LAY_jieAdmin" data-id="123">
-                        <span style="padding-right: 10px; color: #FF7200">悬赏：60飞吻</span>
+                        <span style="padding-right: 10px; color: #FF7200"></span>
                     </div>
                 </div>
-                <div class="detail-body photos">
-                    <p>
-                    该模版由 layui官方社区（<a href="http://fly.layui.com/" target="_blank">fly.layui.com</a>）倾情提供，只为表明我们对 layui 执着的信念、以及对未来持续加强的承诺。该模版基于 layui 搭建而成，可作为极简通用型社区的页面支撑。
-                </p>
+                <div class="detail-body photos" th:utext="${question.getContent()}">
+
                 </div>
             </div>
             <div class="fly-panel detail-box" id="flyReply">
@@ -182,136 +184,20 @@
                     <legend>回答</legend>
                 </fieldset>
                 <ul class="jieda" id="jieda">
-                    <li data-id="111" class="jieda-daan">
-                        <a name="item-1111111111"></a>
-                        <div class="detail-about detail-about-reply">
-                            <a class="fly-avatar" href="">
-                                <img src="https://tva1.sinaimg.cn/crop.0.0.118.118.180/5db11ff4gw1e77d3nqrv8j203b03cweg.jpg" alt=" ">
-                            </a>
-                            <div class="fly-detail-user">
-                                <a href="" class="fly-link">
-                                    <cite>贤心</cite>
-                                </a>
-
-                                <span>(楼主)</span>
-                            </div>
-
-                            <div class="detail-hits">
-                                <span>2017-11-30</span>
-                            </div>
-
-                            <i class="layui-icon layui-icon-auz iconfont icon-caina" title="最佳答案"></i>
-                        </div>
-                        <div class="detail-body jieda-body photos">
-                            <p>香菇那个蓝瘦，这是一条被采纳的回帖</p>
-                        </div>
-                        <div class="jieda-reply">
-                        <span class="jieda-zan zanok" type="zan">
-                        <i class="layui-icon layui-icon-praise"></i>
-                        <em>66</em>
-                        </span>
-                            <span class="jieda-zan" type="zan">
-                            <i class="layui-icon layui-icon-tread"></i>
-                            <em>6</em>
-                          </span>
-                            <span type="reply">
-                <i class="layui-icon layui-icon-reply-fill"></i>
-                回复
-              </span>
-                            <div class="jieda-admin">
-                                <span type="del">删除</span>
-                                <span class="jieda-accept" type="accept">采纳</span>
-                            </div>
-                        </div>
-                    </li>
-                    <li data-id="111" class="jieda-daan">
-                        <a name="item-1111111111"></a>
-                        <div class="detail-about detail-about-reply">
-                            <a class="fly-avatar" href="">
-                                <img src="https://tva1.sinaimg.cn/crop.0.0.118.118.180/5db11ff4gw1e77d3nqrv8j203b03cweg.jpg" alt=" ">
-                            </a>
-                            <div class="fly-detail-user">
-                                <a href="" class="fly-link">
-                                    <cite>贤心</cite>
-                                </a>
-
-                                <span>(楼主)</span>
-                            </div>
-
-                            <div class="detail-hits">
-                                <span>2017-11-30</span>
-                            </div>
-                        </div>
-                        <div class="detail-body jieda-body photos">
-                            <p>香菇那个蓝瘦，这是一条被采纳的回帖</p>
-                        </div>
-                        <div class="jieda-reply">
-              <span class="jieda-zan zanok" type="zan">
-                <i class=" layui-icon layui-icon-praise"></i>
-                <em>66</em>
-              </span>
-                            <span class="jieda-zan" type="zan">
-                            <i class="layui-icon layui-icon-tread"></i>
-                            <em>6</em>
-                          </span>
-                            <span type="reply">
-                <i class="layui-icon layui-icon-reply-fill"></i>
-                回复
-              </span>
-                            <div class="jieda-admin">
-                                <span type="del">删除</span>
-                                <span class="jieda-accept" type="accept">采纳</span>
-                            </div>
-                        </div>
-                    </li>
-                    <li data-id="111" class="jieda-daan">
-                        <a name="item-1111111111"></a>
-                        <div class="detail-about detail-about-reply">
-                            <a class="fly-avatar" href="">
-                                <img src="https://tva1.sinaimg.cn/crop.0.0.118.118.180/5db11ff4gw1e77d3nqrv8j203b03cweg.jpg" alt=" ">
-                            </a>
-                            <div class="fly-detail-user">
-                                <a href="" class="fly-link">
-                                    <cite>贤心</cite>
-                                </a>
-
-                                <span>(楼主)</span>
-                            </div>
-
-                            <div class="detail-hits">
-                                <span>2017-11-30</span>
-                            </div>
-                        </div>
-                        <div class="detail-body jieda-body photos">
-                            <p>香菇那个蓝瘦，这是一条被采纳的回帖</p>
-                        </div>
-                        <div class="jieda-reply">
-              <span class="jieda-zan" type="zan">
-                <i class="layui-icon layui-icon-praise"></i>
-                <em>66</em>
-              </span>
-                            <span class="jieda-zan" type="zan">
-                            <i class="layui-icon layui-icon-tread"></i>
-                            <em>6</em>
-                          </span>
-                            <span type="reply">
-                <i class="layui-icon layui-icon-reply-fill"></i>
-                回复
-              </span>
-                            <div class="jieda-admin">
-                                <span type="del">删除</span>
-                                <span class="jieda-accept" type="accept">采纳</span>
-                            </div>
-                        </div>
-                    </li>
-                    <!-- 无数据时 -->
-                    <!-- <li class="fly-none">消灭零回复</li> -->
                 </ul>
                 <div class="layui-form layui-form-pane">
-                    <form action="/jie/reply/" method="post">
+                    <form action="" method="post">
                         <div class="layui-form-item layui-form-text">
                             <a name="comment"></a>
                             <div class="layui-input-block">
+                                <div id="replyUser" style="background-color:#e2e2e2;height: 50px;margin-bottom: 2px;line-height: 50px;display: none">
+                                    <span style="margin: 0 5px 0 3px;color: #FF5722">回复：</span>
+                                    <span class="name" style="color: #01AAED;margin-right: 10px"></span>
+                                    <span class="value" style="display: none"></span>
+                                    <button type="button" class="layui-btn layui-btn-sm layui-btn-primary">
+                                        <i class="layui-icon layui-icon-close"></i>
+                                    </button>
+                                </div>
                                 <textarea id="L_content" name="content" required lay-verify="required" placeholder="请输入内容"  class="layui-textarea fly-editor" style="height: 150px;"></textarea>
                             </div>
                         </div>
@@ -325,77 +211,217 @@
         </div>
         <div class="layui-col-md4" style="max-width: 360px;margin-left:-20px;margin-top: 20px">
             <dl class="fly-panel fly-list-one">
-                <dt class="fly-panel-title">你可能还想问</dt>
-                <dd>
-                    <a href="">基于 layui 的极简社区页面模版基于 layui 的极简社区页面模版</a>
-                    <span><i class=" layui-icon layui-icon-dialogue"></i> 16</span>
-                </dd>
-                <dd>
-                    <a href="">基于 layui 的极简社区页面模版</a>
-                    <span><i class=" layui-icon layui-icon-dialogue"></i> 16</span>
-                </dd>
-                <dd>
-                    <a href="">基于 layui 的极简社区页面模版</a>
-                    <span><i class=" layui-icon layui-icon-dialogue"></i> 16</span>
-                </dd>
-                <dd>
-                    <a href="">基于 layui 的极简社区页面模版</a>
-                    <span><i class=" layui-icon layui-icon-dialogue"></i> 16</span>
-                </dd>
-                <dd>
-                    <a href="">基于 layui 的极简社区页面模版</a>
-                    <span><i class=" layui-icon layui-icon-dialogue"></i> 16</span>
-                </dd>
-                <dd>
-                    <a href="">基于 layui 的极简社区页面模版</a>
-                    <span><i class=" layui-icon layui-icon-dialogue"></i> 16</span>
-                </dd>
+
 
             </dl>
         </div>
     </div>
 </div>
 <script type="text/javascript" th:src="@{/layui/layui.js}"></script>
+<script id="comment-mod" type="text/html">
+    {{# layui.each(d,function(index,item){}}
+    <li data-id="{{item.id}}" class="jieda-daan">
+        <a name="item-1"></a>
+        <div class="detail-about detail-about-reply">
+            <a class="fly-avatar" href="">
+                <img src="{{item.userImg}}" alt=" ">
+            </a>
+            <div class="fly-detail-user">
+                <a href="/front/userInfo?id={{item.userId}}" class="fly-link">
+                    <cite data-id="{{item.userId}}">{{item.userName}}</cite>
+                </a>
+                {{# var authorId = $('#authorId').data('id'); if(item.userId== authorId){ }}
+                 <span>(楼主)</span>
+                {{#}}}
+            </div>
+            <div class="detail-hits">
+                <span>{{item.date}}</span>
+            </div>
+            {{#if(item.flag==2){}}
+            <i class="layui-icon layui-icon-auz iconfont icon-caina" title="最佳答案"></i>
+            {{#}}}
+        </div>
+        <div class="detail-body jieda-body photos">
+            <p>{{item.content}}</p>
+        </div>
+        <div class="jieda-reply">
+                        <!--<span class="jieda-zan zanok" type="zan">-->
+                        <!--<i class="layui-icon layui-icon-praise"></i>-->
+                        <!--<em>{{item.zan}}</em>-->
+                        <!--</span>-->
+            <!--<span class="jieda-zan" type="zan">-->
+                            <!--<i class="layui-icon layui-icon-tread"></i>-->
+                            <!--<em>{{item.tread}}</em>-->
+                          <!--</span>-->
+            <span type="reply" class="reply">
+                <i class="layui-icon layui-icon-reply-fill"></i>
+                回复
+              </span>
+            <div class="jieda-admin" data-id="{{item.id}}">
+                {{# var sessionUserId = $('#user-id').text(); if(item.userId== sessionUserId && item.flag!=2){ }}
+                <span data-type="del">删除</span>
+                {{#}}}
+                {{# var authorId = $('#authorId').data('id');if(sessionUserId== authorId && item.flag!=2){ }}
+                <span class="jieda-accept" data-type="accept">采纳</span>
+                {{#}}}
+            </div>
+        </div>
+    </li>
+    {{#});}}
+</script>
 <script>
-    layui.cache.page = 'jie';
-    layui.cache.user = {
-        username: '游客'
-        ,uid: -1
-        ,avatar: '../../res/images/avatar/00.jpg'
-        ,experience: 83
-        ,sex: '男'
-    };
-    layui.config({
-        version: "3.0.0"
-        ,base: '/mods/'
-    }).extend({
-        fly: 'index'
-    }).use(['fly', 'face','element'], function(){
-        var $ = layui.$
-            ,fly = layui.fly;
-        //如果你是采用模版自带的编辑器，你需要开启以下语句来解析。
-        /*
-        $('.detail-body').each(function(){
-          var othis = $(this), html = othis.html();
-          othis.html(fly.content(html));
-        });
-        */
+    $('.search-btn').on('click', function () {
+        var inpVal = $(this).siblings('input').val();
+        // 搜索条件不为空串
+        if (inpVal !== '') {
+            var url = "/front/search-page";
+            // window.open(encodeURI(url + "?pattern=" + inpVal));
+            window.location.href = encodeURI(url + "?pattern=" + inpVal);
+            // window.location.href = "/front/page/search-page?pattern=" + inpVal;
+        }
+        return false;
     });
-    // layui.use(['element','carousel','layer','form','layedit'], function(){
-    //     var element = layui.element; //导航的hover效果、二级菜单等功能，需要依赖element模块
-    //     var carousel = layui.carousel; // 轮播框设置
-    //     /*旅游攻略页面*/
-    //     /*left nav*/
-    //     $('.nav-item').hover(function() {
-    //         $('.gonglve-nav').css('border-right-color', '#fff');
-    //         $('.nav-item .nav-panel').eq($(this).index()).css('display', 'block');
-    //     }, function() {
-    //         $('.gonglve-nav').css('border-right-color', '#ddd');
-    //         $('.nav-panel').css('display', 'none');
-    //     });
-    //     var layedit = layui.layedit;
-    //     layedit.build('L_content'); //建立编辑器
-    // });
+    layui.use(['element','laytpl','layer','form'], function(){
+        var element = layui.element,
+            laytpl = layui.laytpl,
+            layer = layui.layer,
+            form = layui.form;
+        $('body').on('click','#jieda li .reply',function () {
+            $('#replyUser').show();
+            var val =  $('#replyUser .name').text();
+            var idVal = $('#replyUser .value').text().trim();
+            var aite = '@'+ $(this).parent().parent('li').find('.fly-detail-user cite').text().replace(/\s/g, '');
+            $('#L_content').focus()
+            if(val.indexOf(aite) !== -1) return;
+            $('#replyUser .name').text(aite +' ' + val);
+            $('#replyUser .value').text($(this).parent().parent('li').find('.fly-detail-user cite').data('id')+'-'+idVal);
+        });
+        $('#replyUser button').click(function () {
+            $('#replyUser .name').text('');
+            $('#replyUser .value').text('');
+            $('#replyUser').hide();
+        });
+        loacDataComment();
+        function loacDataComment(){
+            var questionId = $('#question-id').data('id');
+            $.ajax({
+                type:'post',
+                url:'/comm/getQuestionComment',
+                data:{'questionId':questionId},
+                success:function (res) {
+                    if(res.data.length == 0){
+                        $("#jieda").html('<li class="fly-none">消灭零回复</li>');
+                    }
+                    var laycom = document.getElementById('comment-mod').innerHTML;
+                    laytpl(laycom).render(res.data,function (html) {
+                        $("#jieda").html(html);
+                    });
+                },
+                error:function (res) {
+                }
+            });
+        }
+        $('body').on('click','.jieda-admin span',function () {
+            var othis = $(this), type = othis.data('type');
+            var id = othis.parent().data('id');
+            if(type == 'del'){
+                console.log('del'+othis.parent().data('id'));
+                var questionId = $('#question-id').data('id');
+                layer.confirm('是否确认删除这条评论？', function(index){
+                    layer.close(index);
+                    $.ajax({
+                        type:'post',
+                        url:'/question/delQuestionComment',
+                        data:{'id':id,'questionId':questionId},
+                        success:function (res) {
+                            layer.msg("删除成功");
+                            othis.parent().parent().parent('li').remove();
+                        }
+                    });
+                });
+            }
+            if(type == 'accept'){
+                console.log('accept'+othis.parent().data('id'))
+                var questionId = $('#question-id').data('id');
+                layer.confirm('是否采纳该回答为最佳答案？', function(index){
+                    layer.close(index);
+                    $.ajax({
+                        type:'post',
+                        url:'/question/acptComment',
+                        data:{'Id':id,'questionId':questionId},
+                        success:function (res) {
+                            layer.msg("采纳成功");
+                            othis.parent().parent().parent('li').find('.detail-about').append('<i class="iconfont icon-caina" title="最佳答案"></i>');
+                            othis.remove();
+                        }
+                    });
+                });
+            }
+        });
+        form.on('submit(*)', function(data){
+            var name = $('#replyUser .name').text();
+            var vlaue = $('#replyUser .value').text();
+            var val =  $('#L_content').val();
+            var questionId = $('#question-id').data('id');
+            if(val.trim() == null){
+                layer.msg("内容不能为空");
+                return false; //阻止表单跳转。如果需要表单跳转，去掉这段即可。
+            }else{
+                if(name!=null){
+                    val = name +val;
+                }
+                if(vlaue.trim()==null){
+                    vlaue = 'null';
+                }
+                $.ajax({
+                    type:'post',
+                    url:'/question/createQuestionCommment',
+                    data:{'userIds':vlaue,'questionId':questionId,'content':val},
+                    success:function (res) {
+                        layer.msg("发表成功");
+                        // othis.remove();
+                        // othis.parent().parent().parent('li').find('.detail-about').append('<i class="iconfont icon-caina" title="最佳答案"></i>');
+                    },
+                    complete : function(xhr, status) {
+                        //拦截器拦截没有权限跳转
+                        // 通过xhr取得响应头
+                        var REDIRECT = xhr.getResponseHeader("REDIRECT");
+                        //如果响应头中包含 REDIRECT 则说明是拦截器返回的
+                        if (REDIRECT == "REDIRECT")
+                        {
+                            document.location.href = xhr.getResponseHeader("CONTEXTPATH");
+                        }
+                    }
+                });
+            }
+        });
+        // 收藏
+        $('.collect').click(function () {
+           var quesitonId = $("#question-id").data('id');
+           var othis = $(this);
+            $.ajax({
+                type:'post',
+                url:'/question/collectQuestion',
+                data:{'questionId':quesitonId},
+                success:function (res) {
+                    layer.msg("收藏成功");
+                    othis.removeClass('layui-icon-star');
+                    othis.addClass('layui-icon-star-fill');
+                    othis.unbind();
+                },
+                complete : function(xhr, status) {
+                    //拦截器拦截没有权限跳转
+                    // 通过xhr取得响应头
+                    var REDIRECT = xhr.getResponseHeader("REDIRECT");
+                    //如果响应头中包含 REDIRECT 则说明是拦截器返回的
+                    if (REDIRECT == "REDIRECT")
+                    {
+                        document.location.href = xhr.getResponseHeader("CONTEXTPATH");
+                    }
+                }
+            });
+        });
+    });
 </script>
 </body>
 </html>

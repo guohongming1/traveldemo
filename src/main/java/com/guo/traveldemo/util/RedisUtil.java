@@ -96,6 +96,15 @@ public class RedisUtil {
       return null;
     }
   }
+  public Boolean removeSetRang(String type,String key){
+    try {
+       template.opsForZSet().remove(type,key);
+       return true;
+    } catch (Exception e) {
+      e.printStackTrace();
+      return false;
+    }
+  }
 
   /**
    * 带权重 返回前n条数据

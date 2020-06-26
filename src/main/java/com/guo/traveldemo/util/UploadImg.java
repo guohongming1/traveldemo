@@ -32,11 +32,6 @@ public class UploadImg {
           String name = "userid" ;//filename.substring(0, filename.indexOf("."));
           //文件后缀,如.jpeg
           String suffix = filename.substring(filename.lastIndexOf("."));
-          /*TODO
-           * 省略代码：
-           * name应该等于===当月第n天+学id+i(i防止重复)
-           *
-           * */
           filename = name+suffix;
           //创建年月文件夹
           Calendar date = Calendar.getInstance();

@@ -55,8 +55,6 @@ public class IPUtils {
             ipAddress="";
             logger.error("获取用户的ip地址发生异常",e);
         }
-        // ipAddress = this.getRequest().getRemoteAddr();
-
         return ipAddress;
     }
 

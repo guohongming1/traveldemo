@@ -1,7 +1,9 @@
 package com.guo.traveldemo.web.service;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.guo.traveldemo.result.Response;
 import com.guo.traveldemo.web.pojo.Notify;
+import com.guo.traveldemo.web.pojo.UserNotify;
 
 import java.util.List;
 
@@ -18,4 +20,7 @@ public interface MessageService {
      List<Notify> queryUserREJECTMsg(int userId);
      int delOneMsgById(int userId,int msgId);
      int delBatchMsgById(int userId);
+     List<UserNotify> queryUserNotify(QueryWrapper<UserNotify> query);
+     int delNotifyById(int id);
+     int delBatchUserNotify(List<Integer> ids);
 }

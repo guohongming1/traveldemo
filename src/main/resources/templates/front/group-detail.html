@@ -19,10 +19,10 @@
             </a>
         </h1>
         <p class="nav">
-            <a href="/front/page/index">首页</a>
-            <a href="/question/list-page" class="active">小组</a>
-            <a href="/travel-essay/list-page">问答</a>
-            <a href="/question/list-page">发表攻略</a>
+            <a href="/front/index" target="_blank">首页</a>
+            <a href="/front/group"  target="_blank" class="active">小组</a>
+            <a href="/front/question"  target="_blank">问答</a>
+            <a href="/strategy/newstrategy"  target="_blank">发表攻略</a>
         </p>
         <div class="search-bar">
             <form class="layui-form" action="">
@@ -36,21 +36,22 @@
             </form>
         </div>
         <div class="login">
-            <!--<a th:if="${session.sessionUser == null}" href="/front/page/login">-->
-            <!--登录-->
-            <!--</a>-->
+            <a th:if="${session.userinfo == null}" href="/front/login">
+                登录
+            </a>
             <!--<img th:src="@{/layuiadmin/myfile/images/header.png}" style="width: 36px; height: 36px;">-->
-            <ul class="layui-nav" style="background-color: #fff;">
+            <ul th:if="${session.userinfo != null}" class="layui-nav" style="background-color: #fff;">
+                <span id="user-id" style="display:none" th:text="${session.userinfo.getId()}"></span>
                 <li class="layui-nav-item">
-                    <a href="" style="font-size: 16px;color: #222;">消息<span class="layui-badge">3</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</a>
+                    <a href="/front/usermsg" style="font-size: 16px;color: #222;">消息<span th:text="${session.msgnum}" class="layui-badge"></span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</a>
                 </li>
                 <li class="layui-nav-item" lay-unselect="">
-                    <a href="javascript:;" style="font-size: 16px;color: #222;"><img th:src="@{/layuiadmin/myfile/images/test01.jpg}" style="height: 30px; width: 30px;" class="layui-nav-img">&nbsp;&nbsp;</a>
+                    <a href="javascript:;" style="font-size: 16px;color: #222;"><img th:src="${session.userinfo.getImgUrl()}" style="height: 30px; width: 30px;" class="layui-nav-img" onerror="getdefaultImg(event)">&nbsp;&nbsp;</a>
                     <dl class="layui-nav-child">
-                        <dd style="text-align: center"><a href="javascript:;"><i class="layui-icon layui-icon-user"></i>&nbsp;个人资料</a></dd>
-                        <dd style="text-align: center"><a href="javascript:;"><i class="layui-icon layui-icon-note"></i>&nbsp;攻略/问答</a></dd>
-                        <dd style="text-align: center"><a href="javascript:;"><i class="layui-icon layui-icon-rate"></i>&nbsp;收藏</a></dd>
-                        <dd style="text-align: center"><a href="javascript:;"><i class="layui-icon layui-icon-logout"></i>&nbsp;登出</a></dd>
+                        <dd style="text-align: center"><a href="/front/userset"><i class="layui-icon layui-icon-user"></i>&nbsp;个人资料</a></dd>
+                        <dd style="text-align: center"><a href="/front/userstrategy"><i class="layui-icon layui-icon-note"></i>&nbsp;攻略/问答</a></dd>
+                        <dd style="text-align: center"><a href="/front/usergroup"><i class="layui-icon layui-icon-rate"></i>&nbsp;小组</a></dd>
+                        <dd layadmin-event="logout" style="text-align: center"><a href="javascript:;"><i class="layui-icon layui-icon-logout"></i>&nbsp;登出</a></dd>
                     </dl>
                 </li>
             </ul>
@@ -153,13 +154,13 @@
 </style>
 <div class="layui-container wrap-main">
     <div id="group-info">
+        <span id="group-id" th:text="${travelGroup.getId()}" style="display: none"></span>
         <div class="group-desc">
-            <img th:src="@{/layuiadmin/myfile/images/test01.jpg}"alt="旅行也要穿的很好看">
-            <h1>
-                旅行也要穿得很好看
+            <img th:src="${travelGroup.getHeadImg()}"alt="">
+            <h1 th:text="${travelGroup.getTitle()}">
             </h1>&nbsp;&nbsp;
-            <div class="group-misc">
-                <a href="/register?reason=join-group" class="bn-join-group" rel="nofollow">
+            <div class="group-misc" th:if="${gflag=='2'}">
+                <a id="joinGroup" href="javascript:" class="bn-join-group" rel="nofollow">
                     <span>加入小组</span>
                 </a>
             </div>
@@ -167,38 +168,26 @@
     </div>
     <div class="group-detail">
         <div class="group-board">
-            <p>创建于2020-02-12 &nbsp;&nbsp;&nbsp;组长：<a href="#">蝈蝈小姐</a> </p>
-            <div class="group-intrc">
-                就算背包徒步大西北,也要穿得很上镜的样子.
-
-                说是这么说,
-                事实上这是一个关于带什么上路的小组,
-                小至一首歌,一件贴身衣物;
-                大至一辆坐驾,你的另一半.
-
-
-                欢迎畅所欲言,分享经验~~
-
-
-                -------------------------------------------------------------------------
-                P.S. 打广告的同学们请于标题处注明 [广告] 的字样,不要加特殊符号、发重复性广告及重复顶贴
-                谢谢.
-                各小组成员有权对不符合小组主题的广告(例如:嫌服饰过土)提出撤除的要求(在相关广告贴下留言即可)
+            <p>创建于<span th:text="${#dates.format(travelGroup.getDate(),'YYYY-mm-dd')}"></span> &nbsp;&nbsp;&nbsp;组长：<a th:href="'/front/userInfo?id='+${travelGroup.getUserId()}" th:text="${authorName}"></a> </p>
+            <div class="group-intrc" th:utext="${travelGroup.getContent()}">
             </div>
             <div class="group-tags">
-                小组标签:&nbsp;&nbsp;<span>环球旅行</span><span>时尚</span>
+                小组标签:&nbsp;&nbsp;<span th:text="${travelGroup.getTags()}"></span>
             </div>
         </div>
     </div>
     <div id="group-topics" class="mod">
         <div id="group-new-topic-bar">
-            <div class="bns">
-                <button type="button" class="layui-btn layui-btn-radius layui-btn-sm "><i class="layui-icon">&#xe608;</i>发言</button>
+            <div class="bns" th:if="${gflag=='1'}">
+                <a th:href="'/group/tonewtopic?groupId='+${travelGroup.getId()}" target="_blank" class="layui-btn layui-btn-radius layui-btn-sm "><i class="layui-icon">&#xe608;</i>发言</a>
+            </div>
+            <div class="bns" th:if="${gflag=='2'}">
+                <button th:href="'/group/tonewtopic?groupId='+${travelGroup.getId()}" type="button" title="加入小组后才可发言" class="layui-btn layui-btn-radius layui-btn-sm layui-btn-disabled"><i class="layui-icon">&#xe608;</i>发言</button>
             </div>
             <div class="topic-tab">
                 <a href="https://www.douban.com/group/68529/#topics" class="on">最近讨论</a>
-                <i>/</i>
-                <a href="https://www.douban.com/group/68529/?type=essence#topics">最热讨论</a>
+                <!--<i>/</i>-->
+                <!--<a href="https://www.douban.com/group/68529/?type=essence#topics">最热讨论</a>-->
                 <div class="topic-search">
                     <div class="layui-input-inline" style="width: 200px;margin: 0px;">
                         <input style="margin: 0px;" type="text" name="type" placeholder="搜索小组话题" autocomplete="off" class="layui-input">
@@ -210,573 +199,49 @@
         </div>
         <div class="">
             <table class="olt">
-                <tbody><tr class="th">
+                <tbody id="topic"><tr class="th">
                     <td>讨论</td>
                     <td>作者</td>
                     <td nowrap="nowrap">回复</td>
-                    <td nowrap="nowrap">最后回复</td>
+                    <td nowrap="nowrap">创建时间</td>
                 </tr>
-                <tr class="">
-                    <td class="title">
-                        <a href="https://www.douban.com/group/topic/2232688/" title="长途旅行打包清单" class="">
-                            长途旅行打包清单
-                        </a>
-                    </td>
-                    <td class="info"><a href="https://www.douban.com/people/uniwong/" class="">小宇宙</a></td>
-                    <td>103</td>
-                    <td class="time">03-27 22:04</td>
-                </tr>
-                <tr class="">
-                    <td class="title">
-                        <a href="https://www.douban.com/group/topic/5376732/" title="旅行要穿什么，上搭配网搭配一下" class="">
-                            旅行要穿什么，上搭配网搭配一下
-                        </a>
-                    </td>
-                    <td nowrap="nowrap"><a href="https://www.douban.com/people/3498887/" class="">舞动奇迹</a></td>
-                    <td nowrap="nowrap" class="">39</td>
-                    <td nowrap="nowrap" class="time">2016-09-14</td>
-                </tr>
-                <tr class="">
-                    <td class="title">
-                        <a href="https://www.douban.com/group/topic/167825505/" title="4月，在西藏开始我们的故事" class="">
-                            4月，在西藏开始我们的故事
-                        </a>
-                    </td>
-                    <td nowrap="nowrap"><a href="https://www.douban.com/people/213603011/" class="">雾夜飞虫</a></td>
-                    <td nowrap="nowrap" class="">6</td>
-                    <td nowrap="nowrap" class="time">03-29 13:44</td>
-                </tr>
-                <tr class="">
-                    <td class="title">
-                        <a href="https://www.douban.com/group/topic/162445613/" title="4月10号自驾拼车去拉萨. 4月25号西宁去新疆" class="">
-                            4月10号自驾拼车去拉萨. 4月25号西宁去新疆
-                        </a>
-                    </td>
-                    <td nowrap="nowrap"><a href="https://www.douban.com/people/192501609/" class="">AXin.</a></td>
-                    <td nowrap="nowrap" class="">4</td>
-                    <td nowrap="nowrap" class="time">03-28 13:07</td>
-                </tr>
-                <tr class="">
-                    <td class="title">
-                        <a href="https://www.douban.com/group/topic/157547392/" title="4月10号成都自驾拼车去拉萨，4月25号西宁去新疆" class="">
-                            4月10号成都自驾拼车去拉萨，4月25号西宁去新疆
-                        </a>
-                    </td>
-                    <td nowrap="nowrap"><a href="https://www.douban.com/people/li358786327/" class="">脑壳疼探险队</a></td>
-                    <td nowrap="nowrap" class="">25</td>
-                    <td nowrap="nowrap" class="time">03-28 12:49</td>
-                </tr>
-                <tr class="">
-                    <td class="title">
-                        <a href="https://www.douban.com/group/topic/113109066/" title="2020年【我们一起去西藏】结伴同行" class="">
-                            2020年【我们一起去西藏】结伴同行
-                        </a>
-                    </td>
-                    <td nowrap="nowrap"><a href="https://www.douban.com/people/wzren888/" class="">行者魏仁</a></td>
-                    <td nowrap="nowrap" class="">183</td>
-                    <td nowrap="nowrap" class="time">03-28 08:43</td>
-                </tr>
-                <tr class="">
-                    <td class="title">
-                        <a href="https://www.douban.com/group/topic/165630233/" title="极光之旅怎么穿" class="">
-                            极光之旅怎么穿
-                        </a>
-                    </td>
-                    <td nowrap="nowrap"><a href="https://www.douban.com/people/208997712/" class="">tt旅行日志</a></td>
-                    <td nowrap="nowrap" class="">2</td>
-                    <td nowrap="nowrap" class="time">03-19 18:08</td>
-                </tr>
-                <tr class="">
-                    <td class="title">
-                        <a href="https://www.douban.com/group/topic/165606118/" title="  疫情过后，你们都想去哪里疯狂？" class="">
-                            疫情过后，你们都想去哪里疯狂？
-                        </a>
-                    </td>
-                    <td nowrap="nowrap"><a href="https://www.douban.com/people/205815818/" class="">熙帆家</a></td>
-                    <td nowrap="nowrap" class="">3</td>
-                    <td nowrap="nowrap" class="time">03-19 13:10</td>
-                </tr>
-                <tr class="">
-                    <td class="title">
-                        <a href="https://www.douban.com/group/topic/168124763/" title="成都漫花庄园的春天" class="">
-                            成都漫花庄园的春天
-                        </a>
-                    </td>
-                    <td nowrap="nowrap"><a href="https://www.douban.com/people/208997712/" class="">tt旅行日志</a></td>
-                    <td nowrap="nowrap" class=""></td>
-                    <td nowrap="nowrap" class="time">03-18 11:16</td>
-                </tr>
-                <tr class="">
-                    <td class="title">
-                        <a href="https://www.douban.com/group/topic/127661314/" title="结伴旅行，" class="">
-                            结伴旅行，
-                        </a>
-                    </td>
-                    <td nowrap="nowrap"><a href="https://www.douban.com/people/E876236/" class="">喵星人</a></td>
-                    <td nowrap="nowrap" class="">3</td>
-                    <td nowrap="nowrap" class="time">03-17 20:16</td>
-                </tr>
-                <tr class="">
-                    <td class="title">
-                        <a href="https://www.douban.com/group/topic/146116054/" title="疫情过后：有一起去色达、稻城亚丁、西藏拉萨的吗？" class="">
-                            疫情过后：有一起去色达、稻城亚丁、西藏拉萨的吗？
-                        </a>
-                    </td>
-                    <td nowrap="nowrap"><a href="https://www.douban.com/people/145113131/" class="">川藏线小何哥</a></td>
-                    <td nowrap="nowrap" class="">7</td>
-                    <td nowrap="nowrap" class="time">03-16 11:39</td>
-                </tr>
-                <tr class="">
-                    <td class="title">
-                        <a href="https://www.douban.com/group/topic/165758328/" title="2020出游计划，招小伙伴" class="">
-                            2020出游计划，招小伙伴
-                        </a>
-                    </td>
-                    <td nowrap="nowrap"><a href="https://www.douban.com/people/145327094/" class="">云淡风轻</a></td>
-                    <td nowrap="nowrap" class=""></td>
-                    <td nowrap="nowrap" class="time">02-23 22:40</td>
-                </tr>
-                <tr class="">
-                    <td class="title">
-                        <a href="https://www.douban.com/group/topic/165702465/" title="旅行打算穿这一双！" class="">
-                            旅行打算穿这一双！
-                        </a>
-                    </td>
-                    <td nowrap="nowrap"><a href="https://www.douban.com/people/141292187/" class="">_CucKOOOOO</a></td>
-                    <td nowrap="nowrap" class="">1</td>
-                    <td nowrap="nowrap" class="time">02-23 10:39</td>
-                </tr>
-                <tr class="">
-                    <td class="title">
-                        <a href="https://www.douban.com/group/topic/165691072/" title="2020旅行计划" class="">
-                            2020旅行计划
-                        </a>
-                    </td>
-                    <td nowrap="nowrap"><a href="https://www.douban.com/people/160164305/" class="">高.Mr</a></td>
-                    <td nowrap="nowrap" class=""></td>
-                    <td nowrap="nowrap" class="time">02-23 01:19</td>
-                </tr>
-                <tr class="">
-                    <td class="title">
-                        <a href="https://www.douban.com/group/topic/155682881/" title="【全球自由行攻略分享】" class="">
-                            【全球自由行攻略分享】
-                        </a>
-                    </td>
-                    <td nowrap="nowrap"><a href="https://www.douban.com/people/170193521/" class="">卡基波</a></td>
-                    <td nowrap="nowrap" class="">3</td>
-                    <td nowrap="nowrap" class="time">02-22 00:10</td>
-                </tr>
-                <tr class="">
-                    <td class="title">
 
-                        <a href="https://www.douban.com/group/topic/165536709/" title="有没喜欢旅行喜欢思考人生，无牵无挂的伙伴打算去东南亚旅行几个月的?穷游啊，太贵了折腾不起(❀╹◡╹)ﾉ~已经到缅甸，长期有效！" class="">
-                            有没喜欢旅行喜欢思考人生，无牵无挂的伙伴打算去...
-                        </a>
-                    </td>
-                    <td nowrap="nowrap"><a href="https://www.douban.com/people/180286116/" class="">你在哪里~~</a></td>
-                    <td nowrap="nowrap" class=""></td>
-                    <td nowrap="nowrap" class="time">02-21 03:11</td>
-                </tr>
-                <tr class="">
-                    <td class="title">
-                        <a href="https://www.douban.com/group/topic/165312426/" title="约旦～佩特拉古城" class="">
-                            约旦～佩特拉古城
-                        </a>
-                    </td>
-                    <td nowrap="nowrap"><a href="https://www.douban.com/people/210541999/" class="">陈泽彦</a></td>
-                    <td nowrap="nowrap" class=""></td>
-                    <td nowrap="nowrap" class="time">02-18 01:18</td>
-                </tr>
-                <tr class="">
-                    <td class="title">
-                        <a href="https://www.douban.com/group/topic/164765581/" title="有没有一起玩的" class="">
-                            有没有一起玩的
-                        </a>
-                    </td>
-                    <td nowrap="nowrap"><a href="https://www.douban.com/people/179494815/" class="">kk</a></td>
-                    <td nowrap="nowrap" class=""></td>
-                    <td nowrap="nowrap" class="time">02-10 11:36</td>
-                </tr>
-                <tr class="">
-                    <td class="title">
-                        <a href="https://www.douban.com/group/topic/164264261/" title="结伴组队自驾游，限北京和周边" class="">
-                            结伴组队自驾游，限北京和周边
-                        </a>
-                    </td>
-                    <td nowrap="nowrap"><a href="https://www.douban.com/people/50511492/" class="">- 刘刘</a></td>
-                    <td nowrap="nowrap" class=""></td>
-                    <td nowrap="nowrap" class="time">02-02 18:58</td>
-                </tr>
-                <tr class="">
-                    <td class="title">
-                        <a href="https://www.douban.com/group/topic/163601337/" title="缘分" class="">
-                            缘分
-                        </a>
-                    </td>
-                    <td nowrap="nowrap"><a href="https://www.douban.com/people/144094406/" class="">不丹旅游分享</a></td>
-                    <td nowrap="nowrap" class=""></td>
-                    <td nowrap="nowrap" class="time">01-20 19:18</td>
-                </tr>
-                <tr class="">
-                    <td class="title">
-                        <a href="https://www.douban.com/group/topic/157383176/" title="这个冬天有去东北哈尔滨看雪的吗？" class="">
-                            这个冬天有去东北哈尔滨看雪的吗？
-                        </a>
-                    </td>
-                    <td nowrap="nowrap"><a href="https://www.douban.com/people/146618515/" class="">菲猫☕️</a></td>
-                    <td nowrap="nowrap" class="">2</td>
-                    <td nowrap="nowrap" class="time">01-16 21:48</td>
-                </tr>
-                <tr class="">
-                    <td class="title">
-
-                        <a href="https://www.douban.com/group/topic/163335719/" title="开车旅行过年从深圳出发往广西-贵州-云南 招募同行者" class="">
-                            开车旅行过年从深圳出发往广西-贵州-云南 招募同行者
-                        </a>
-                    </td>
-                    <td nowrap="nowrap"><a href="https://www.douban.com/people/203519187/" class="">单单</a></td>
-                    <td nowrap="nowrap" class=""></td>
-                    <td nowrap="nowrap" class="time">01-16 10:04</td>
-                </tr>
-                <tr class="">
-                    <td class="title">
-
-                        <a href="https://www.douban.com/group/topic/163079889/" title="日本三月底四月初旅游" class="">
-                            日本三月底四月初旅游
-                        </a>
-                    </td>
-                    <td nowrap="nowrap"><a href="https://www.douban.com/people/193629445/" class="">Ambition🦄</a></td>
-                    <td nowrap="nowrap" class=""></td>
-                    <td nowrap="nowrap" class="time">01-12 11:08</td>
-                </tr>
-                <tr class="">
-                    <td class="title">
-
-                        <a href="https://www.douban.com/group/topic/147642238/" title="1🈷底出发西藏" class="">
-                            1🈷底出发西藏
-                        </a>
-                    </td>
-                    <td nowrap="nowrap"><a href="https://www.douban.com/people/193988451/" class="">V友 TG55589</a></td>
-                    <td nowrap="nowrap" class="">1</td>
-                    <td nowrap="nowrap" class="time">01-10 10:31</td>
-                </tr>
-                <tr class="">
-                    <td class="title">
-
-                        <a href="https://www.douban.com/group/topic/147795826/" title="1月有没有一起进藏" class="">
-                            1月有没有一起进藏
-                        </a>
-                    </td>
-                    <td nowrap="nowrap"><a href="https://www.douban.com/people/193988451/" class="">V友 TG55589</a></td>
-                    <td nowrap="nowrap" class="">1</td>
-                    <td nowrap="nowrap" class="time">01-10 10:31</td>
-                </tr>
-                <tr class="">
-                    <td class="title">
-
-                        <a href="https://www.douban.com/group/topic/162303728/" title="现在来找我吧" class="">
-                            现在来找我吧
-                        </a>
-                    </td>
-                    <td nowrap="nowrap"><a href="https://www.douban.com/people/4513439/" class="">阿若</a></td>
-                    <td nowrap="nowrap" class=""></td>
-                    <td nowrap="nowrap" class="time">01-02 10:36</td>
-                </tr>
-                <tr class="">
-                    <td class="title">
-
-                        <a href="https://www.douban.com/group/topic/162303385/" title="都2020年了 你什么时候来找我" class="">
-                            都2020年了 你什么时候来找我
-                        </a>
-                    </td>
-                    <td nowrap="nowrap"><a href="https://www.douban.com/people/4513439/" class="">阿若</a></td>
-                    <td nowrap="nowrap" class=""></td>
-                    <td nowrap="nowrap" class="time">01-02 10:32</td>
-                </tr>
-                <tr class="">
-                    <td class="title">
-
-                        <a href="https://www.douban.com/group/topic/161915779/" title="1月16号我们一起去西藏跨年" class="">
-                            1月16号我们一起去西藏跨年
-                        </a>
-                    </td>
-                    <td nowrap="nowrap"><a href="https://www.douban.com/people/208498025/" class="">DJY</a></td>
-                    <td nowrap="nowrap" class=""></td>
-                    <td nowrap="nowrap" class="time">2019-12-28</td>
-                </tr>
-                <tr class="">
-                    <td class="title">
-
-                        <a href="https://www.douban.com/group/topic/161601564/" title="坐标喀什，2020年3月杏花打卡" class="">
-                            坐标喀什，2020年3月杏花打卡
-                        </a>
-                    </td>
-                    <td nowrap="nowrap"><a href="https://www.douban.com/people/192966369/" class="">小蚂蚁</a></td>
-                    <td nowrap="nowrap" class="">1</td>
-                    <td nowrap="nowrap" class="time">2019-12-24</td>
-                </tr>
-                <tr class="">
-                    <td class="title">
-
-                        <a href="https://www.douban.com/group/topic/161558396/" title="一份兼职个一个免费去西藏的机会" class="">
-                            一份兼职个一个免费去西藏的机会
-                        </a>
-                    </td>
-                    <td nowrap="nowrap"><a href="https://www.douban.com/people/167037189/" class="">追生鸡的姑娘的</a></td>
-                    <td nowrap="nowrap" class=""></td>
-                    <td nowrap="nowrap" class="time">2019-12-23</td>
-                </tr>
-                <tr class="">
-                    <td class="title">
-
-                        <a href="https://www.douban.com/group/topic/159011813/" title="旅行是生活，一个旅行裙推荐" class="">
-                            旅行是生活，一个旅行裙推荐
-                        </a>
-                    </td>
-                    <td nowrap="nowrap"><a href="https://www.douban.com/people/206635751/" class="">扎着双马尾</a></td>
-                    <td nowrap="nowrap" class="">1</td>
-                    <td nowrap="nowrap" class="time">2019-12-20</td>
-                </tr>
-                <tr class="">
-                    <td class="title">
-
-                        <a href="https://www.douban.com/group/topic/160166920/" title="有想通过旅游赚钱的吗 全国招募享游达人啦" class="">
-                            有想通过旅游赚钱的吗 全国招募享游达人啦
-                        </a>
-                    </td>
-                    <td nowrap="nowrap"><a href="https://www.douban.com/people/186720439/" class="">糖豆儿🙃️</a></td>
-                    <td nowrap="nowrap" class="">3</td>
-                    <td nowrap="nowrap" class="time">2019-12-08</td>
-                </tr>
-                <tr class="">
-                    <td class="title">
-
-                        <a href="https://www.douban.com/group/topic/158831472/" title="组队/12月份丽江～虎跳峡～香格里拉～梅里雪山～徒步雨崩六日游" class="">
-                            组队/12月份丽江～虎跳峡～香格里拉～梅里雪山～徒...
-                        </a>
-                    </td>
-                    <td nowrap="nowrap"><a href="https://www.douban.com/people/205615641/" class="">王子</a></td>
-                    <td nowrap="nowrap" class="">1</td>
-                    <td nowrap="nowrap" class="time">2019-12-02</td>
-                </tr>
-                <tr class="">
-                    <td class="title">
-
-                        <a href="https://www.douban.com/group/topic/159550896/" title="有木有想做旅行短视频自媒体的小姐姐" class="">
-                            有木有想做旅行短视频自媒体的小姐姐
-                        </a>
-                    </td>
-                    <td nowrap="nowrap"><a href="https://www.douban.com/people/162065605/" class="">En</a></td>
-                    <td nowrap="nowrap" class="">1</td>
-                    <td nowrap="nowrap" class="time">2019-12-02</td>
-                </tr>
-                <tr class="">
-                    <td class="title">
-
-                        <a href="https://www.douban.com/group/topic/158674991/" title="想来一场说走就走的旅行" class="">
-                            想来一场说走就走的旅行
-                        </a>
-                    </td>
-                    <td nowrap="nowrap"><a href="https://www.douban.com/people/205605810/" class="">sos</a></td>
-                    <td nowrap="nowrap" class="">4</td>
-                    <td nowrap="nowrap" class="time">2019-12-01</td>
-                </tr>
-                <tr class="">
-                    <td class="title">
-
-                        <a href="https://www.douban.com/group/topic/158653536/" title="【摩洛哥】12月-1月捡人拼团游，有兴趣的豆友可以了解下噢" class="">
-                            【摩洛哥】12月-1月捡人拼团游，有兴趣的豆友可以...
-                        </a>
-                    </td>
-                    <td nowrap="nowrap"><a href="https://www.douban.com/people/176013835/" class="">撒哈拉的猫</a></td>
-                    <td nowrap="nowrap" class="">3</td>
-                    <td nowrap="nowrap" class="time">2019-11-28</td>
-                </tr>
-                <tr class="">
-                    <td class="title">
-
-                        <a href="https://www.douban.com/group/topic/158887253/" title="哈尔滨-雪乡" class="">
-                            哈尔滨-雪乡
-                        </a>
-                    </td>
-                    <td nowrap="nowrap"><a href="https://www.douban.com/people/192734555/" class="">18547005244</a></td>
-                    <td nowrap="nowrap" class=""></td>
-                    <td nowrap="nowrap" class="time">2019-11-23</td>
-                </tr>
-                <tr class="">
-                    <td class="title">
-
-                        <a href="https://www.douban.com/group/topic/158803493/" title="1.11-20 海南环岛自驾游" class="">
-                            1.11-20 海南环岛自驾游
-                        </a>
-                    </td>
-                    <td nowrap="nowrap"><a href="https://www.douban.com/people/140947044/" class="">Ni酱</a></td>
-                    <td nowrap="nowrap" class=""></td>
-                    <td nowrap="nowrap" class="time">2019-11-23</td>
-                </tr>
-                <tr class="">
-                    <td class="title">
-
-                        <a href="https://www.douban.com/group/topic/158508997/" title="2019.12.14—12.24 已出票包车含司机 三女寻找到另外一女（女生谢谢）" class="">
-                            2019.12.14—12.24 已出票包车含司机 三女寻找到另...
-                        </a>
-                    </td>
-                    <td nowrap="nowrap"><a href="https://www.douban.com/people/186979173/" class="">KimX</a></td>
-                    <td nowrap="nowrap" class="">4</td>
-                    <td nowrap="nowrap" class="time">2019-11-22</td>
-                </tr>
-                <tr class="">
-                    <td class="title">
-
-                        <a href="https://www.douban.com/group/topic/158451239/" title="元旦西安" class="">
-                            元旦西安
-                        </a>
-                    </td>
-                    <td nowrap="nowrap"><a href="https://www.douban.com/people/193629445/" class="">Ambition🦄</a></td>
-                    <td nowrap="nowrap" class=""></td>
-                    <td nowrap="nowrap" class="time">2019-11-19</td>
-                </tr>
-                <tr class="">
-                    <td class="title">
-
-                        <a href="https://www.douban.com/group/topic/158420720/" title="昨天去乡下游玩无意中拍到这个东西。" class="">
-                            昨天去乡下游玩无意中拍到这个东西。
-                        </a>
-                    </td>
-                    <td nowrap="nowrap"><a href="https://www.douban.com/people/65586091/" class="">有梦</a></td>
-                    <td nowrap="nowrap" class=""></td>
-                    <td nowrap="nowrap" class="time">2019-11-19</td>
-                </tr>
-                <tr class="">
-                    <td class="title">
-
-                        <a href="https://www.douban.com/group/topic/157866574/" title="有谁共鸣……" class="">
-                            有谁共鸣……
-                        </a>
-                    </td>
-                    <td nowrap="nowrap"><a href="https://www.douban.com/people/205702524/" class="">小宇宙</a></td>
-                    <td nowrap="nowrap" class=""></td>
-                    <td nowrap="nowrap" class="time">2019-11-13</td>
-                </tr>
-                <tr class="">
-                    <td class="title">
-
-                        <a href="https://www.douban.com/group/topic/157537025/" title="旅行是对自己的身体心一种疗养和对美好的向往……一个人挺自在的！！！" class="">
-                            旅行是对自己的身体心一种疗养和对美好的向往……...
-                        </a>
-                    </td>
-                    <td nowrap="nowrap"><a href="https://www.douban.com/people/205702524/" class="">小宇宙</a></td>
-                    <td nowrap="nowrap" class=""></td>
-                    <td nowrap="nowrap" class="time">2019-11-09</td>
-                </tr>
-                <tr class="">
-                    <td class="title">
-
-                        <a href="https://www.douban.com/group/topic/157070591/" title="准备过年了，家里面又电话来问今年有女朋友带回家过年嘛？好迷茫。。。" class="">
-                            准备过年了，家里面又电话来问今年有女朋友带回家...
-                        </a>
-                    </td>
-                    <td nowrap="nowrap"><a href="https://www.douban.com/people/65586091/" class="">有梦</a></td>
-                    <td nowrap="nowrap" class=""></td>
-                    <td nowrap="nowrap" class="time">2019-11-05</td>
-                </tr>
-                <tr class="">
-                    <td class="title">
-
-                        <a href="https://www.douban.com/group/topic/157038858/" title="单身久了，想找人一起去旅行" class="">
-                            单身久了，想找人一起去旅行
-                        </a>
-                    </td>
-                    <td nowrap="nowrap"><a href="https://www.douban.com/people/203964204/" class="">一生注定</a></td>
-                    <td nowrap="nowrap" class=""></td>
-                    <td nowrap="nowrap" class="time">2019-11-05</td>
-                </tr>
-                <tr class="">
-                    <td class="title">
-
-                        <a href="https://www.douban.com/group/topic/156724308/" title="过几天去林芝，完全没准备… 求推荐" class="">
-                            过几天去林芝，完全没准备… 求推荐
-                        </a>
-                    </td>
-                    <td nowrap="nowrap"><a href="https://www.douban.com/people/OH-is-Shel/" class="">🍊</a></td>
-                    <td nowrap="nowrap" class=""></td>
-                    <td nowrap="nowrap" class="time">2019-11-01</td>
-                </tr>
-                <tr class="">
-                    <td class="title">
-
-                        <a href="https://www.douban.com/group/topic/156561856/" title="有没有小伙伴跟我一起去旅行  行程已经计划好" class="">
-                            有没有小伙伴跟我一起去旅行  行程已经计划好
-                        </a>
-                    </td>
-                    <td nowrap="nowrap"><a href="https://www.douban.com/people/154629991/" class="">你我是平行线</a></td>
-                    <td nowrap="nowrap" class=""></td>
-                    <td nowrap="nowrap" class="time">2019-10-31</td>
-                </tr>
-                <tr class="">
-                    <td class="title">
-
-                        <a href="https://www.douban.com/group/topic/156556651/" title="为什么一个人单身久了现在想找一个一起摄影的都没有了？" class="">
-                            为什么一个人单身久了现在想找一个一起摄影的都没...
-                        </a>
-                    </td>
-                    <td nowrap="nowrap"><a href="https://www.douban.com/people/65586091/" class="">有梦</a></td>
-                    <td nowrap="nowrap" class=""></td>
-                    <td nowrap="nowrap" class="time">2019-10-30</td>
-                </tr>
-                <tr class="">
-                    <td class="title">
-
-                        <a href="https://www.douban.com/group/topic/156380780/" title="2020春节有木有去新西兰的小伙伴" class="">
-                            2020春节有木有去新西兰的小伙伴
-                        </a>
-                    </td>
-                    <td nowrap="nowrap"><a href="https://www.douban.com/people/133511899/" class="">一夜白了我的</a></td>
-                    <td nowrap="nowrap" class=""></td>
-                    <td nowrap="nowrap" class="time">2019-10-29</td>
-                </tr>
-                <tr class="">
-                    <td class="title">
-
-                        <a href="https://www.douban.com/group/topic/156371484/" title="找志同道合的小伙伴一起上路（2020）" class="">
-                            找志同道合的小伙伴一起上路（2020）
-                        </a>
-                    </td>
-                    <td nowrap="nowrap"><a href="https://www.douban.com/people/154629991/" class="">你我是平行线</a></td>
-                    <td nowrap="nowrap" class=""></td>
-                    <td nowrap="nowrap" class="time">2019-10-29</td>
-                </tr>
-                <tr class="">
-                    <td class="title">
-
-                        <a href="https://www.douban.com/group/topic/156228911/" title="法国自由行感受" class="">
-                            法国自由行感受
-                        </a>
-                    </td>
-                    <td nowrap="nowrap"><a href="https://www.douban.com/people/205826232/" class="">你的关关</a></td>
-                    <td nowrap="nowrap" class=""></td>
-                    <td nowrap="nowrap" class="time">2019-10-27</td>
-                </tr>
-                <tr class="">
-                    <td class="title">
-
-                        <a href="https://www.douban.com/group/topic/155955907/" title="10月28日结伴拼车丽江出发，自由行，7座越野车，香格里拉～稻城亚丁" class="">
-                            10月28日结伴拼车丽江出发，自由行，7座越野车，香...
-                        </a>
-                    </td>
-                    <td nowrap="nowrap"><a href="https://www.douban.com/people/205615641/" class="">王子</a></td>
-                    <td nowrap="nowrap" class=""></td>
-                    <td nowrap="nowrap" class="time">2019-10-24</td>
-                </tr>
                 </tbody></table>
         </div>
     </div>
 </div>
+<script id="topic-mod" type="text/html">
+    {{#layui.each(d,function(index,item){ }}
+    <tr class="">
+        <td class="title">
+            <a href="/front/topic_detail?id={{item.id}}" title="" class="">
+                {{item.title}}
+            </a>
+        </td>
+        <td nowrap="nowrap"><a href="/front/userInfo?id={{item.userId}}" class="">{{item.tags}}</a></td>
+        <td nowrap="nowrap" class="">{{item.replyNum}}评论/{{item.readNum}}热度</td>
+        <td nowrap="nowrap" class="time">{{item.date}}</td>
+    </tr>
+    {{# });}}
+</script>
 <script type="text/javascript" th:src="@{/layui/layui.js}"></script>
 <script>
-    layui.use(['element','carousel'], function(){
+    $('.search-btn').on('click', function () {
+        var inpVal = $(this).siblings('input').val();
+        // 搜索条件不为空串
+        if (inpVal !== '') {
+            var url = "/front/search-page";
+            // window.open(encodeURI(url + "?pattern=" + inpVal));
+            window.location.href = encodeURI(url + "?pattern=" + inpVal);
+            // window.location.href = "/front/page/search-page?pattern=" + inpVal;
+        }
+        return false;
+    });
+    layui.use(['element','carousel','laytpl','layer'], function(){
         var element = layui.element; //导航的hover效果、二级菜单等功能，需要依赖element模块
         var carousel = layui.carousel; // 轮播框设置
+        var laytpl= layui.laytpl;
+        var layer = layui.layer;
         /*旅游攻略页面*/
         /*left nav*/
         $('.nav-item').hover(function() {
@@ -786,6 +251,67 @@
             $('.gonglve-nav').css('border-right-color', '#ddd');
             $('.nav-panel').css('display', 'none');
         });
+        loadTopic();
+        function loadTopic() {
+            var groupId = $('#group-id').text();
+            if(groupId != null){
+                $.ajax({
+                    type:'post',
+                    url:'/comm/getgrouptopic',
+                    data:{'id':groupId},
+                    success:function (res) {
+                        var layhot = document.getElementById('topic-mod').innerHTML;
+                        laytpl(layhot).render(res.data,function (html) {
+                            $("body #topic").append(html);
+                        });
+                    }
+                });
+            }
+        }
+        // 加入小组
+        $("#joinGroup").click(function () {
+            var groupId = $('#group-id').text();
+            var index = layer.load();
+            var othis = $(this);
+            if(groupId != null){
+                $.ajax({
+                    type:'post',
+                    url:'/group/joinGroup',
+                    data:{'id':groupId},
+                    success:function (res) {
+                        othis.remove();
+                        layer.close(index);
+                        layer.msg(res.data);
+                        // 发言按钮解除禁用
+                        var a = '<a th:href="/group/tonewtopic?groupId="'+groupId+' target="_blank" class="layui-btn layui-btn-radius layui-btn-sm "><i class="layui-icon">&#xe608;</i>发言</a>';
+                        $('.bns').find('button').remove();
+                        $('.bns').append(a);
+                    },
+                    complete : function(xhr, status) {
+                        //拦截器拦截没有权限跳转
+                        // 通过xhr取得响应头
+                        var REDIRECT = xhr.getResponseHeader("REDIRECT");
+                        //如果响应头中包含 REDIRECT 则说明是拦截器返回的
+                        if (REDIRECT == "REDIRECT")
+                        {
+                            document.location.href = xhr.getResponseHeader("CONTEXTPATH");
+                        }
+                    }
+                });
+            }
+        });
+        //创建话题
+        function createTopic() {
+            layer.open({
+                type: 2,
+                title: '很多时候，我们想最大化看，比如像这个页面。',
+                shadeClose: true,
+                shade: false,
+                maxmin: true, //开启最大化最小化按钮
+                area: ['893px', '600px'],
+                content: '//fly.layui.com/'
+            });
+        }
     });
 </script>
 </body>

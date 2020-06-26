@@ -90,8 +90,21 @@ public class Constants {
      * 审核通过状态
      */
     public static final Byte PASS_YES = 2 ;
+    /**\
+     * 审核驳回状态
+     */
+    public static final Byte PASS_REJECT = 4 ;
+    /**\
+     * 最佳答案
+     */
+    public static final Byte BEST_ANSWER = 2 ;
+    /**\
+     * 正常评论（非最佳）
+     */
+    public static final Byte NOM_ANSWER = 1 ;
 
     public static final String ESSAY_HOT_NAME = "strahot";
     public static final String QUESTION_HOT_NAME = "queshot";
-    public static final String RECOMMEND_HOT_NAME = "topichot";
+    public static final String TOPIC_HOT_NAME = "topichot";
+    public static final String USER_QUESTION_COM_NUM = "userquecomnum";
 }

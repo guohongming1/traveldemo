@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.guo.traveldemo.web.pojo.StrategyComment;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
 @Repository
@@ -20,5 +21,7 @@ public interface StrategyCommentMapper extends BaseMapper<StrategyComment> {
 
     int updateByPrimaryKey(StrategyComment record);
 
-    IPage<StrategyComment> selectPageVo(Page page,int detailId);
+    IPage<StrategyComment> selectPageVo(Page page,@Param("detailId") int detailId);
+
+    int delCommentByStrategyId(int id);
 }
